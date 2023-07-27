@@ -1,10 +1,46 @@
-import { signIn, signOut, useSession } from "next-auth/react";
+import {
+  type ClientSafeProvider,
+  type LiteralUnion,
+  getCsrfToken,
+  getProviders,
+  signIn,
+  signOut,
+  useSession,
+} from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
 import { api } from "@/utils/api";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import { type BuiltInProviderType } from "next-auth/providers";
 
 export default function Home() {
   const hello = api.example.hello.useQuery({ text: "from tRPC" });
+  const [providers, setProviders] = useState<Record<
+    LiteralUnion<BuiltInProviderType, string>,
+    ClientSafeProvider
+  > | null>(null);
+  const [csrfToken, setCsrfToken] = useState<string | undefined>(undefined);
+  // const { data: session, status } = useSession()
+
+  useEffect(() => {
+    const fetchNextAuth = async () => {
+      if (status !== "loading") {
+        if (providers === null) {
+          const providersTemp = await getProviders();
+          setProviders(providersTemp);
+          if (csrfToken === undefined) {
+            const csrfTokenTemp = await getCsrfToken();
+            setCsrfToken(csrfTokenTemp);
+          }
+        }
+      }
+    };
+
+    void fetchNextAuth();
+  }, []);
+
+  const { query } = useRouter();
 
   return (
     <>
