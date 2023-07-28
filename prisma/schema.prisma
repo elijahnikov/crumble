@@ -10,6 +10,7 @@ datasource db {
 
 // -----------------------------------------------------------------------------//
 // ------------------------------ Next Auth ------------------------------------//
+// -----------------------------------------------------------------------------//
 model Account {
     id                String  @id @default(cuid())
     userId            String
@@ -46,6 +47,7 @@ model Session {
 
 // -----------------------------------------------------------------------------//
 // ---------------------------------- User -------------------------------------//
+// -----------------------------------------------------------------------------//
 model User {
     id                 String    @id @default(cuid())
     name               String?
@@ -70,12 +72,14 @@ model User {
     sessions Session[]
 
     // Non-Next Auth
-    reviews     Review[]
-    reviewLikes ReviewLike[]
+    reviews        Review[]
+    reviewLikes    ReviewLike[]
+    reviewComments ReviewComment[]
 }
 
 // -----------------------------------------------------------------------------//
 // -------------------------------- Reviews ------------------------------------//
+// -----------------------------------------------------------------------------//
 model Review {
     id               String    @id @default(cuid())
     movieId          Int
@@ -88,20 +92,20 @@ model Review {
     movieTitle       String
     movieReleaseYear String
     ratingGiven      Float     @default(0)
-    score            Int?      @default(0)
     watchedOn        DateTime?
-    noOfComments     Int?      @default(0)
     createdAt        DateTime  @default(now())
     updatedAt        DateTime  @updatedAt
 
     // Relationships
-    user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-    reviewLikes ReviewLike[]
+    user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+    reviewLikes    ReviewLike[]
+    reviewComments ReviewComment[]
 
     @@unique([createdAt, id])
     @@index([userId])
 }
 
+// -------------------------------- Review Likes --------------------------------//
 model ReviewLike {
     userId   String
     reviewId String
@@ -111,4 +115,27 @@ model ReviewLike {
     @@id([userId, reviewId])
     @@index([userId])
     @@index([reviewId])
+}
+
+// ------------------------------ Review Comments -------------------------------//
+model ReviewComment {
+    id       String @id @default(cuid())
+    userId   String
+    reviewId String
+    text     String
+
+    review Review @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@index([reviewId])
+    @@index([userId])
+}
+
+// -------------------------------- Review Tags --------------------------------//
+model ReviewTag {
+    id        String   @id @default(cuid())
+    text      String
+    count     Int      @default(0)
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 }

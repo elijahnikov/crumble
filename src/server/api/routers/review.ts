@@ -13,6 +13,9 @@ const ratelimit = new Ratelimit({
 });
 
 export const reviewRouter = createTRPCRouter({
+    // -----------------------------------------------------------------------------//
+    // -------------------------------- Reviews ------------------------------------//
+    // -----------------------------------------------------------------------------//
     //
     // Get all reviews
     //
@@ -26,7 +29,7 @@ export const reviewRouter = createTRPCRouter({
                 orderBy: [{ createdAt: "desc" }, { id: "desc" }],
                 include: {
                     _count: {
-                        select: { reviewLikes: true },
+                        select: { reviewLikes: true, reviewComments: true },
                     },
                     reviewLikes:
                         currentUserId === null
@@ -57,6 +60,7 @@ export const reviewRouter = createTRPCRouter({
                     return {
                         ...review,
                         likeCount: review._count.reviewLikes,
+                        commentCount: review._count.reviewComments,
                         user: { ...review.user },
                         likedByMe: review.reviewLikes.length > 0,
                     };
@@ -70,11 +74,21 @@ export const reviewRouter = createTRPCRouter({
     review: publicProcedure
         .input(z.object({ id: z.string() }))
         .query(async ({ ctx, input: { id } }) => {
-            const review = await ctx.prisma.review.findFirst({
+            const currentUserId = ctx.session?.user.id;
+
+            const data = await ctx.prisma.review.findFirst({
                 where: {
                     id,
                 },
                 include: {
+                    _count: {
+                        select: { reviewLikes: true, reviewComments: true },
+                    },
+                    reviewLikes:
+                        currentUserId === null
+                            ? false
+                            : { where: { userId: currentUserId } },
+                    reviewComments: true,
                     user: {
                         select: {
                             id: true,
@@ -85,7 +99,22 @@ export const reviewRouter = createTRPCRouter({
                     },
                 },
             });
-            return review;
+            if (!data) {
+                throw new TRPCError({
+                    code: "NOT_FOUND",
+                    message: `Review with id: ${id} not found`,
+                });
+            }
+            return {
+                review: {
+                    ...data,
+                    likeCount: data?._count.reviewLikes,
+                    commentCount: data._count.reviewComments,
+                    user: { ...data.user },
+                    likedByMe: data.reviewLikes.length > 0,
+                    comments: { ...data.reviewComments },
+                },
+            };
         }),
     //
     // Create review
@@ -98,6 +127,32 @@ export const reviewRouter = createTRPCRouter({
             const { success } = await ratelimit.limit(userId);
 
             if (!success) throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
+
+            if (input.tags) {
+                const tags = input.tags.split(",");
+                tags.forEach((tag) => {
+                    async () => {
+                        const tagCheck = await ctx.prisma.reviewTag.findFirst({
+                            where: {
+                                text: tag,
+                            },
+                        });
+                        if (tagCheck) {
+                            await ctx.prisma.reviewTag.update({
+                                where: { id: tagCheck.id },
+                                data: { count: { increment: 1 } },
+                            });
+                        } else {
+                            await ctx.prisma.reviewTag.create({
+                                data: {
+                                    text: tag,
+                                    count: 1,
+                                },
+                            });
+                        }
+                    };
+                });
+            }
 
             const review = await ctx.prisma.review.create({
                 data: {
@@ -157,5 +212,68 @@ export const reviewRouter = createTRPCRouter({
                 });
                 return { addedLike: false };
             }
+        }),
+    // -----------------------------------------------------------------------------//
+    // -------------------------------- Comments -----------------------------------//
+    // -----------------------------------------------------------------------------//
+    //
+    // Create review comment
+    //
+    createReviewComment: protectedProcedure
+        .input(
+            z.object({
+                reviewId: z.string(),
+                text: z.string(),
+            })
+        )
+        .mutation(async ({ ctx, input }) => {
+            const currentUserId = ctx.session.user.id;
+            const reviewComment = await ctx.prisma.reviewComment.create({
+                data: { ...input, userId: currentUserId },
+            });
+            return reviewComment;
+        }),
+    //
+    // Delete review comment
+    //
+    deleteReviewComment: protectedProcedure
+        .input(
+            z.object({
+                id: z.string(),
+            })
+        )
+        .mutation(async ({ ctx, input }) => {
+            await ctx.prisma.reviewComment.delete({
+                where: {
+                    id: input.id,
+                },
+            });
+        }),
+    //
+    // Update review comment
+    //
+    updateReviewComment: protectedProcedure
+        .input(
+            z.object({
+                id: z.string(),
+                text: z.string(),
+            })
+        )
+        .mutation(async ({ ctx, input }) => {
+            const updatedComment = await ctx.prisma.reviewComment.update({
+                where: {
+                    id: input.id,
+                },
+                data: {
+                    text: input.text,
+                },
+            });
+            if (!updatedComment) {
+                throw new TRPCError({
+                    code: "BAD_REQUEST",
+                    message: "Could not update review comment.",
+                });
+            }
+            return updatedComment;
         }),
 });
