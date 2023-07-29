@@ -194,7 +194,7 @@ export const reviewRouter = createTRPCRouter({
     //
     // Like/Unlike review
     //
-    toggleLike: protectedProcedure
+    toggleReviewLike: protectedProcedure
         .input(z.object({ id: z.string() }))
         .mutation(async ({ input: { id }, ctx }) => {
             const data = { reviewId: id, userId: ctx.session.user.id };
@@ -275,5 +275,28 @@ export const reviewRouter = createTRPCRouter({
                 });
             }
             return updatedComment;
+        }),
+    //
+    // Toggle like for review comment
+    //
+    toggleReviewCommentLike: protectedProcedure
+        .input(z.object({ id: z.string() }))
+        .mutation(async ({ input: { id }, ctx }) => {
+            const data = { reviewCommentId: id, userId: ctx.session.user.id };
+
+            const existingLike = await ctx.prisma.reviewCommentLike.findUnique({
+                where: { userId_reviewCommentId: data },
+            });
+            if (!existingLike) {
+                await ctx.prisma.reviewCommentLike.create({ data });
+                return { addedLike: true };
+            } else {
+                await ctx.prisma.reviewCommentLike.delete({
+                    where: {
+                        userId_reviewCommentId: data,
+                    },
+                });
+                return { addedLike: false };
+            }
         }),
 });
