@@ -173,3 +173,22 @@ model FilmList {
 
     @@index([userId])
 }
+
+// -----------------------------------------------------------------------------//
+// ----------------------------------- Film ------------------------------------//
+// -----------------------------------------------------------------------------//
+
+model Film {
+    id           String   @id @default(cuid())
+    movieId      Int
+    movieTitle   String
+    overview     String?
+    poster       String?
+    backdrop     String?
+    releaseDate  String
+    watchedCount Int      @default(0)
+    listCount    Int      @default(0)
+    likeCount    Int      @default(0)
+    createdAt    DateTime @default(now())
+    updatedAt    DateTime @updatedAt
+}
