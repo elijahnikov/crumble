@@ -3,8 +3,25 @@ import Head from "next/head";
 import Link from "next/link";
 import { api } from "@/utils/api";
 import NavigationBar from "@/components/common/NavigationBar/NavigationBar";
+import { fetchTyped } from "@/utils/fetch/fetchTypes";
+import { filmFetchSchema, filmSchema } from "@/server/api/schemas/film";
+import { useEffect } from "react";
+import { env } from "@/env.mjs";
+import CreateReviewModal from "@/components/common/CreateReviewModal/CreateReviewModal";
 
 export default function Home() {
+    const fetchAsync = async () => {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        const test = await fetchTyped(
+            `https://api.themoviedb.org/3/search/movie?query=${"Avengers"}&include_adult=false&language=en-US'`,
+            filmFetchSchema
+        );
+        console.log(test);
+    };
+
+    useEffect(() => {
+        void fetchAsync();
+    }, []);
     return (
         <>
             <NavigationBar />
@@ -19,6 +36,7 @@ export default function Home() {
                         Create{" "}
                         <span className="text-[hsl(280,100%,70%)]">T3</span> App
                     </h1>
+                    <CreateReviewModal />
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
                         <Link
                             className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
