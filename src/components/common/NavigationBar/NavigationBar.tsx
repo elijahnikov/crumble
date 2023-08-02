@@ -12,12 +12,13 @@ import { type BuiltInProviderType } from "next-auth/providers";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import DiscordSignIn from "../DiscordSignIn/DiscordSignIn";
+import DarkModeSwitch from "../DarkModeSwitch/DarkModeSwitch";
 
 const NavigationBar = () => {
     const router = useRouter();
     const { data: session } = useSession();
     return (
-        <div className="fixed z-10 flex min-h-[5vh] w-full border-b-[1px] bg-white text-center text-black dark:border-gray-800 dark:bg-black dark:text-white">
+        <div className="fixed z-10 flex min-h-[5vh] w-full bg-white text-center text-black dark:bg-black dark:text-white">
             <div className="align-center ml-[10px] inline-flex w-full min-w-[80%] items-center ">
                 <Link
                     href={"/"}
@@ -33,6 +34,7 @@ const NavigationBar = () => {
                 </Link>
             </div>
             <div className="mx-0 mr-5 flex w-[10%] items-center justify-center text-center">
+                <DarkModeSwitch />
                 {session &&
                     (session.user.image ? (
                         <Image

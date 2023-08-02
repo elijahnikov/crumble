@@ -4,10 +4,7 @@
 import { env } from "@/env.mjs";
 import { z } from "zod";
 
-export const fetchTyped = async <T extends z.Schema>(
-    url: string,
-    schema: T
-) => {
+export const zodFetch = async <T extends z.Schema>(url: string, schema: T) => {
     const res = await fetch(url, {
         method: "GET",
         headers: {
