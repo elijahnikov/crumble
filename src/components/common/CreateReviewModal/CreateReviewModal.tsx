@@ -1,10 +1,12 @@
+import Button from "@/components/ui/Button/Button";
+import Input from "@/components/ui/Input/Input";
 import Modal from "@/components/ui/Modal/Modal";
 import {
     type IFilm,
     type IFilmFetch,
     filmFetchSchema,
 } from "@/server/api/schemas/film";
-import { fetchTyped } from "@/utils/fetch/fetchTypes";
+import { zodFetch } from "@/utils/fetch/zodFetch";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
@@ -31,7 +33,7 @@ const CreateReviewModal = ({ film }: CreateReviewModalProps) => {
     const fetchMoviesFromSearchTerm = async () => {
         if (searchedMovieName !== "") {
             setMovieFetchData(
-                await fetchTyped(
+                await zodFetch<typeof filmFetchSchema>(
                     `https://api.themoviedb.org/3/search/movie?query=${searchedMovieName}&include_adult=false&language=en-US'`,
                     filmFetchSchema
                 )
@@ -50,11 +52,13 @@ const CreateReviewModal = ({ film }: CreateReviewModalProps) => {
     return (
         <>
             <Modal>
-                <Modal.Trigger>
-                    <h1>Create review</h1>
-                </Modal.Trigger>
-                <Modal.Content>
-                    <p>hello!</p>
+                <Modal.Trigger>Create a review</Modal.Trigger>
+                <Modal.Content title="Create a review">
+                    <Input
+                        change={setSearchedMovieName}
+                        placeholder="Search for a movie"
+                    />
+                    {/* {movieFetchData && JSON.stringify(movieFetchData)} */}
                 </Modal.Content>
             </Modal>
         </>
