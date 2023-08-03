@@ -4,9 +4,9 @@ export const filmSchema = z.object({
     filmId: z.number(),
     movieTitle: z.string(),
     releaseDate: z.string(),
-    poster: z.string().optional(),
-    overview: z.string().optional(),
-    backdrop: z.string().optional(),
+    poster: z.string().nullable(),
+    overview: z.string().nullable(),
+    backdrop: z.string().nullable(),
 });
 export type IFilm = z.infer<typeof filmSchema>;
 
@@ -17,7 +17,7 @@ export const filmFetchSchema = z
         release_date: z.string(),
         poster_path: z.string().nullable(),
         backdrop_path: z.string().nullable(),
-        overview: z.string(),
+        overview: z.string().nullable(),
     })
     .transform(
         ({
@@ -26,12 +26,14 @@ export const filmFetchSchema = z
             original_title,
             poster_path,
             release_date,
+            overview,
             ...rest
         }) => ({
-            backdrop: backdrop_path,
+            backdrop: backdrop_path ?? "",
             filmId: id,
             movieTitle: original_title,
-            poster: poster_path,
+            overview: overview ?? "",
+            poster: poster_path ?? "",
             releaseDate: release_date,
             ...rest,
         })
