@@ -19,7 +19,7 @@ const config = {
         defaultLocale: "en",
     },
     images: {
-        domains: ["i.ibb.co", "cdn.discordapp.com"],
+        domains: ["i.ibb.co", "cdn.discordapp.com", "image.tmdb.org"],
     },
 };
 
