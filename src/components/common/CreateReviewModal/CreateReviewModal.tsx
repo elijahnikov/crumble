@@ -11,19 +11,20 @@ import {
 import { zodFetch } from "@/utils/fetch/zodFetch";
 import { type SetStateType } from "@/utils/types/helpers";
 import Image from "next/image";
-import { useRouter } from "next/router";
-import { ChangeEventHandler, useCallback, useEffect, useState } from "react";
+// import { useRouter } from "next/router";
+import { useCallback, useEffect, useState } from "react";
 import { BsArrowLeft, BsFillXCircleFill } from "react-icons/bs";
 import { BiX } from "react-icons/bi";
 import { Rating } from "react-simple-star-rating";
 import DatePicker from "@/components/ui/DatePicker/DatePicker";
+import { api } from "@/utils/api";
 
 interface CreateReviewModalProps {
     movie?: IMovie;
 }
 
-const CreateReviewModal = ({ movie }: CreateReviewModalProps) => {
-    const router = useRouter();
+const CreateReviewModal = ({}: CreateReviewModalProps) => {
+    // const router = useRouter();
 
     const [searchedMovieName, setSearchedMovieName] = useState<string>("");
     const [chosenMovieDetails, setChosenMovieDetails] = useState<IMovie | null>(
@@ -33,8 +34,6 @@ const CreateReviewModal = ({ movie }: CreateReviewModalProps) => {
 
     const [reviewText, setReviewText] = useState<string>("");
     const [tags, setTags] = useState<Array<string>>([]);
-    const [selectedMovieVisible, setSelectedMovieVisible] =
-        useState<boolean>(false);
     const [ratingValue, setRatingValue] = useState<number>(0);
 
     const [blockInput, setBlockInput] = useState<boolean>(false);
@@ -46,6 +45,11 @@ const CreateReviewModal = ({ movie }: CreateReviewModalProps) => {
     const [watchedOnDate, setWatchedOnDate] = useState<Date | undefined>(
         new Date()
     );
+
+    const { mutate: filmMutate, isLoading: filmLoading } =
+        api.movie.createFilm.useMutation();
+    const { mutate: reviewMutate, isLoading: reviewLoading } =
+        api.review.createReview.useMutation();
 
     const fetchMoviesFromSearchTerm = useCallback(async () => {
         if (searchedMovieName !== "") {
@@ -84,7 +88,6 @@ const CreateReviewModal = ({ movie }: CreateReviewModalProps) => {
     };
 
     const handleCreateReview = () => {
-        const reviewResponse = null;
         console.log(chosenMovieDetails);
         console.log({
             ratingValue,
@@ -94,6 +97,7 @@ const CreateReviewModal = ({ movie }: CreateReviewModalProps) => {
             watchedOnDate,
             reviewText,
         });
+        chosenMovieDetails && filmMutate(chosenMovieDetails);
     };
 
     useEffect(() => {

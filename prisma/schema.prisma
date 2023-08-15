@@ -180,9 +180,9 @@ model MovieList {
 
 model Movie {
     id           String   @id @default(cuid())
-    movieId      Int
+    movieId      Int      @unique
     title        String
-    overview     String?
+    overview     String?  @db.Text
     poster       String?
     backdrop     String?
     releaseDate  String
