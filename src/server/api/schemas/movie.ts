@@ -1,16 +1,16 @@
 import { z } from "zod";
 
-export const filmSchema = z.object({
-    filmId: z.number(),
-    movieTitle: z.string(),
+export const movieSchema = z.object({
+    movieId: z.number(),
+    title: z.string(),
     releaseDate: z.string(),
     poster: z.string().nullable(),
     overview: z.string().nullable(),
     backdrop: z.string().nullable(),
 });
-export type IFilm = z.infer<typeof filmSchema>;
+export type IMovie = z.infer<typeof movieSchema>;
 
-export const filmFetchSchema = z
+export const movieFetchSchema = z
     .object({
         id: z.number(),
         original_title: z.string(),
@@ -30,12 +30,12 @@ export const filmFetchSchema = z
             ...rest
         }) => ({
             backdrop: backdrop_path ?? "",
-            filmId: id,
-            movieTitle: original_title,
+            movieId: id,
+            title: original_title,
             overview: overview ?? "",
             poster: poster_path ?? "",
             releaseDate: release_date,
             ...rest,
         })
     );
-export type IFilmFetch = z.infer<typeof filmFetchSchema>;
+export type IMovieFetch = z.infer<typeof movieFetchSchema>;

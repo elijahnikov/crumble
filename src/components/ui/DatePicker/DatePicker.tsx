@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import * as PopoverPrimitive from "@radix-ui/react-popover";
-import Button from "../Button/Button";
 import Calendar from "../Calendar/Calendar";
-import { SetStateType } from "@/utils/types/helpers";
+import { type SetStateType } from "@/utils/types/helpers";
 
 interface DatePickerProps {
     buttonText: string;
@@ -16,6 +15,7 @@ const DatePicker = ({
     selectDateValue,
 }: DatePickerProps) => {
     const [open, setOpen] = useState<boolean>(false);
+
     return (
         <PopoverPrimitive.Root open={open} onOpenChange={() => setOpen(!open)}>
             <PopoverPrimitive.Trigger>
@@ -26,9 +26,12 @@ const DatePicker = ({
             <PopoverPrimitive.Portal>
                 <PopoverPrimitive.Content className="z-50 mt-2 space-y-1 rounded-lg border-[2px] border-sky-light bg-white p-[5px] dark:border-slate-800 dark:bg-black">
                     <Calendar
+                        onDayClick={(e) => {
+                            setOpen(!open);
+                            selectDateValue(e);
+                        }}
                         mode="single"
                         selected={dateValue}
-                        onSelect={selectDateValue}
                     />
                 </PopoverPrimitive.Content>
             </PopoverPrimitive.Portal>
