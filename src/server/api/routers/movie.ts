@@ -10,6 +10,16 @@ export const movieRouter = createTRPCRouter({
     createFilm: protectedProcedure
         .input(movieSchema)
         .mutation(async ({ ctx, input }) => {
+            const film = await ctx.prisma.movie.findFirst({
+                where: {
+                    movieId: input.movieId,
+                },
+            });
+
+            if (film) {
+                return;
+            }
+
             await ctx.prisma.movie.create({
                 data: {
                     ...input,
