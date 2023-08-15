@@ -4,9 +4,9 @@ export const movieSchema = z.object({
     movieId: z.number(),
     title: z.string(),
     releaseDate: z.string(),
-    poster: z.string().nullable(),
+    poster: z.string().optional(),
     overview: z.string().nullable(),
-    backdrop: z.string().nullable(),
+    backdrop: z.string().optional(),
 });
 export type IMovie = z.infer<typeof movieSchema>;
 
