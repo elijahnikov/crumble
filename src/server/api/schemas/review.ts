@@ -3,8 +3,8 @@ import { z } from "zod";
 export const newReviewSchema = z.object({
     movieId: z.number(),
     text: z.string(),
-    moviePost: z.string(),
-    backdrop: z.string(),
+    moviePoster: z.string().optional(),
+    backdrop: z.string().optional(),
     watchedOn: z.string(),
     movieTitle: z.string(),
     movieReleaseYear: z.string(),

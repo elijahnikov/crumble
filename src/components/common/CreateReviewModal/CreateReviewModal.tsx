@@ -98,6 +98,19 @@ const CreateReviewModal = ({}: CreateReviewModalProps) => {
             reviewText,
         });
         chosenMovieDetails && filmMutate(chosenMovieDetails);
+        if (chosenMovieDetails && reviewText) {
+            reviewMutate({
+                tags: tags.join(","),
+                containsSpoilers: spoilerChecked,
+                watchedOn: watchedOnDate!.toISOString(),
+                moviePoster: chosenMovieDetails.poster,
+                movieReleaseYear: chosenMovieDetails.releaseDate,
+                movieTitle: chosenMovieDetails.title,
+                ratingGiven: ratingValue,
+                text: reviewText,
+                ...chosenMovieDetails,
+            });
+        }
     };
 
     useEffect(() => {
