@@ -4,10 +4,10 @@ import Input from "@/components/ui/Input/Input";
 import InputArea from "@/components/ui/InputArea/InputArea";
 import Modal from "@/components/ui/Modal/Modal";
 import {
-    type IFilm,
-    type IFilmFetch,
-    filmFetchSchema,
-} from "@/server/api/schemas/film";
+    type IMovie,
+    type IMovieFetch,
+    movieFetchSchema,
+} from "@/server/api/schemas/movie";
 import { zodFetch } from "@/utils/fetch/zodFetch";
 import { type SetStateType } from "@/utils/types/helpers";
 import Image from "next/image";
@@ -19,17 +19,17 @@ import { Rating } from "react-simple-star-rating";
 import DatePicker from "@/components/ui/DatePicker/DatePicker";
 
 interface CreateReviewModalProps {
-    film?: IFilm;
+    movie?: IMovie;
 }
 
-const CreateReviewModal = ({ film }: CreateReviewModalProps) => {
+const CreateReviewModal = ({ movie }: CreateReviewModalProps) => {
     const router = useRouter();
 
     const [searchedMovieName, setSearchedMovieName] = useState<string>("");
-    const [chosenMovieDetails, setChosenMovieDetails] = useState<IFilm | null>(
+    const [chosenMovieDetails, setChosenMovieDetails] = useState<IMovie | null>(
         null
     );
-    const [movieFetchData, setMovieFetchData] = useState<IFilmFetch[]>([]);
+    const [movieFetchData, setMovieFetchData] = useState<IMovieFetch[]>([]);
 
     const [reviewText, setReviewText] = useState<string>("");
     const [tags, setTags] = useState<Array<string>>([]);
@@ -50,9 +50,9 @@ const CreateReviewModal = ({ film }: CreateReviewModalProps) => {
     const fetchMoviesFromSearchTerm = useCallback(async () => {
         if (searchedMovieName !== "") {
             setMovieFetchData(
-                await zodFetch<typeof filmFetchSchema>(
+                await zodFetch<typeof movieFetchSchema>(
                     `https://api.themoviedb.org/3/search/movie?query=${searchedMovieName}&include_adult=false&language=en-US'`,
-                    filmFetchSchema
+                    movieFetchSchema
                 )
             );
         } else setMovieFetchData([]);
@@ -66,8 +66,8 @@ const CreateReviewModal = ({ film }: CreateReviewModalProps) => {
         return () => clearTimeout(delaySearch);
     }, [fetchMoviesFromSearchTerm, searchedMovieName]);
 
-    const handleFilmSelect = (film: IFilm) => {
-        setChosenMovieDetails(film);
+    const handleFilmSelect = (movie: IMovie) => {
+        setChosenMovieDetails(movie);
         setMovieFetchData([]);
         setSearchedMovieName("");
         setBlockInput(true);
@@ -75,7 +75,25 @@ const CreateReviewModal = ({ film }: CreateReviewModalProps) => {
 
     const handleCancel = () => {
         setChosenMovieDetails(null);
+        setReviewText("");
+        setRatingValue(0);
+        setTags([]);
+        setSpoilerChecked(false);
         setBlockInput(false);
+        setRewatchChecked(false);
+    };
+
+    const handleCreateReview = () => {
+        const reviewResponse = null;
+        console.log(chosenMovieDetails);
+        console.log({
+            ratingValue,
+            spoilerChecked,
+            tags,
+            // watchedOnChecked
+            watchedOnDate,
+            reviewText,
+        });
     };
 
     useEffect(() => {
@@ -105,7 +123,7 @@ const CreateReviewModal = ({ film }: CreateReviewModalProps) => {
                     {chosenMovieDetails && (
                         <SelectedFilmForm
                             handleCancel={handleCancel}
-                            film={chosenMovieDetails}
+                            movie={chosenMovieDetails}
                             reviewText={reviewText}
                             setReviewText={setReviewText}
                             setRatingValue={setRatingValue}
@@ -129,6 +147,18 @@ const CreateReviewModal = ({ film }: CreateReviewModalProps) => {
                             setWatchedOnDate={setWatchedOnDate}
                         />
                     )}
+                    {blockInput && (
+                        <>
+                            <Modal.Close>
+                                <Button onClick={() => handleCreateReview()}>
+                                    Save
+                                </Button>
+                            </Modal.Close>
+                            <Modal.Close>
+                                <Button intent="outline">Cancel</Button>
+                            </Modal.Close>
+                        </>
+                    )}
                 </Modal.Content>
             </Modal>
         </>
@@ -138,8 +168,8 @@ const CreateReviewModal = ({ film }: CreateReviewModalProps) => {
 export default CreateReviewModal;
 
 interface FilmSearchResultsProps {
-    filmSearchResults: IFilm[];
-    handleMovieClick: (film: IFilm) => void;
+    filmSearchResults: IMovie[];
+    handleMovieClick: (film: IMovie) => void;
 }
 
 const FilmSearchResults = ({
@@ -148,32 +178,32 @@ const FilmSearchResults = ({
 }: FilmSearchResultsProps) => {
     return (
         <div className="mt-5 w-full columns-4 gap-4">
-            {filmSearchResults?.slice(0, 10).map((film: IFilm) => (
+            {filmSearchResults?.slice(0, 10).map((movie: IMovie) => (
                 <div
-                    key={film.filmId}
+                    key={movie.movieId}
                     className=" break-inside-avoid-column pb-5"
-                    onClick={() => handleMovieClick(film)}
+                    onClick={() => handleMovieClick(movie)}
                 >
                     <div className="column group flow-root cursor-pointer rounded-md border-[1px] border-gray-300 dark:border-brand-light">
-                        {film.poster ? (
+                        {movie.poster ? (
                             <Image
                                 className="rounded-md"
                                 width={0}
                                 height={0}
                                 sizes="100vw"
                                 style={{ width: "100%", height: "auto" }}
-                                alt={`${film.movieTitle}`}
-                                src={`https://image.tmdb.org/t/p/w500${film.poster}`}
+                                alt={`${movie.title}`}
+                                src={`https://image.tmdb.org/t/p/w500${movie.poster}`}
                             />
                         ) : (
                             <div className="mb-5 mt-5 text-center">?</div>
                         )}
                         <div className="p-2">
                             <p className="overflow-hidden text-ellipsis text-sm font-semibold text-crumble-base group-hover:text-crumble-base">
-                                {film.releaseDate.slice(0, 4)}
+                                {movie.releaseDate.slice(0, 4)}
                             </p>
                             <p className="overflow-hidden text-ellipsis text-sm text-sky-lighter group-hover:text-crumble-base">
-                                {film.movieTitle}
+                                {movie.title}
                             </p>
                         </div>
                     </div>
@@ -184,7 +214,7 @@ const FilmSearchResults = ({
 };
 
 interface SelectedFilmFormProps {
-    film: IFilm;
+    movie: IMovie;
     handleCancel: () => void;
     reviewText: string;
     setReviewText: SetStateType<string>;
@@ -204,7 +234,7 @@ interface SelectedFilmFormProps {
 }
 
 const SelectedFilmForm = ({
-    film,
+    movie,
     handleCancel,
     watchedOnChecked,
     handleWatchedOnCheck,
@@ -236,8 +266,8 @@ const SelectedFilmForm = ({
             </Button>
             <div className="mt-5 flex p-5">
                 <Image
-                    alt={film.movieTitle}
-                    src={`https://image.tmdb.org/t/p/w500${film.poster}`}
+                    alt={movie.title}
+                    src={`https://image.tmdb.org/t/p/w500${movie.poster}`}
                     width={0}
                     height={0}
                     sizes="100vw"
@@ -246,9 +276,9 @@ const SelectedFilmForm = ({
                 />
                 <div className="ml-5 w-[100%] text-left">
                     <div className="mb-5 flex h-max w-[100%]">
-                        <h2 className="text-white">{film.movieTitle}</h2>
+                        <h2 className="text-white">{movie.title}</h2>
                         <h3 className="ml-2 mt-1 text-crumble">
-                            {film.releaseDate.slice(0, 4)}
+                            {movie.releaseDate.slice(0, 4)}
                         </h3>
                     </div>
                     {watchedOnChecked ? (
@@ -259,19 +289,17 @@ const SelectedFilmForm = ({
                                     onChange={handleWatchedOnCheck}
                                 />
                                 <p>Watched on</p>
-                                {/* <DatePicker
-                                    className="bg-crumble-100 ml-1 mt-[-10px] inline w-[110px] rounded-md border-none"
-                                    selected={watchedOnDate}
-                                    dateFormat="dd/MM/yyyy"
-                                    onChange={(date: Date) =>
-                                        setWatchedOnDate(date)
-                                    }
-                                /> */}
                                 <DatePicker
                                     dateValue={watchedOnDate!}
                                     selectDateValue={setWatchedOnDate}
                                     buttonText={
-                                        watchedOnDate?.toLocaleDateString() ??
+                                        watchedOnDate
+                                            ?.toLocaleDateString("en-GB", {
+                                                day: "numeric",
+                                                month: "short",
+                                                year: "numeric",
+                                            })
+                                            .replace(/ /g, " ") ??
                                         "Watched date"
                                     }
                                 />

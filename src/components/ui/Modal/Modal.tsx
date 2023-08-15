@@ -74,7 +74,7 @@ const Close = ({ children }: { children: React.ReactNode }) => {
     return (
         <DialogPrimitive.Close
             asChild
-            className="focus-none mr-5 mt-5 outline-none"
+            className="focus-none float-right mx-2 mt-5 outline-none"
         >
             {children}
         </DialogPrimitive.Close>
