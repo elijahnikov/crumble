@@ -172,17 +172,19 @@ const CreateReviewModal = ({}: CreateReviewModalProps) => {
                 <Modal.Content title="Create a review">
                     {!blockInput ? (
                         <Input
-                            className="w-[25vw]"
+                            className="mb-[10px] w-[25vw]"
                             value={searchedMovieName}
                             change={setSearchedMovieName}
                             placeholder="Search for a film"
                         />
                     ) : null}
                     {movieFetchData.length > 0 && (
-                        <FilmSearchResults
-                            filmSearchResults={movieFetchData}
-                            handleMovieClick={handleFilmSelect}
-                        />
+                        <div className="max-h-[600px] overflow-y-auto pt-[10px]">
+                            <FilmSearchResults
+                                filmSearchResults={movieFetchData}
+                                handleMovieClick={handleFilmSelect}
+                            />
+                        </div>
                     )}
                     {chosenMovieDetails && (
                         <SelectedFilmForm
@@ -253,7 +255,7 @@ const FilmSearchResults = ({
     handleMovieClick,
 }: FilmSearchResultsProps) => {
     return (
-        <div className="mt-5  w-full columns-4 gap-4 overflow-y-scroll">
+        <div className="mt-5 h-max w-full columns-4 gap-4">
             {filmSearchResults?.slice(0, 10).map((movie: IMovie) => (
                 <div
                     key={movie.movieId}
