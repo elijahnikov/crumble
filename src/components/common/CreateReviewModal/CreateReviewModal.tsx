@@ -18,6 +18,8 @@ import { BiX } from "react-icons/bi";
 import { Rating } from "react-simple-star-rating";
 import DatePicker from "@/components/ui/DatePicker/DatePicker";
 import { api } from "@/utils/api";
+import toast from "react-hot-toast";
+import Link from "next/link";
 
 interface CreateReviewModalProps {
     movie?: IMovie;
@@ -42,14 +44,25 @@ const CreateReviewModal = ({}: CreateReviewModalProps) => {
     const [spoilerChecked, setSpoilerChecked] = useState<boolean>(false);
     const [reviewStarted, setReviewStarted] = useState<boolean>(false);
 
+    const [modalOpen, setModalOpen] = useState<boolean>(false);
     const [watchedOnDate, setWatchedOnDate] = useState<Date | undefined>(
         new Date()
     );
 
     const { mutate: filmMutate, isLoading: filmLoading } =
         api.movie.createFilm.useMutation();
-    const { mutate: reviewMutate, isLoading: reviewLoading } =
-        api.review.createReview.useMutation();
+    const {
+        mutate: reviewMutate,
+        isLoading: reviewLoading,
+        isSuccess: reviewSuccess,
+        isError: reviewError,
+    } = api.review.createReview.useMutation();
+    const {
+        mutate: watchedMutate,
+        isLoading: watchedLoading,
+        isSuccess: watchedSuccess,
+        isError: watchedError,
+    } = api.watched.createWatched.useMutation();
 
     const fetchMoviesFromSearchTerm = useCallback(async () => {
         if (searchedMovieName !== "") {
@@ -88,29 +101,63 @@ const CreateReviewModal = ({}: CreateReviewModalProps) => {
     };
 
     const handleCreateReview = () => {
-        console.log(chosenMovieDetails);
-        console.log({
-            ratingValue,
-            spoilerChecked,
-            tags,
-            // watchedOnChecked
-            watchedOnDate,
-            reviewText,
-        });
-        chosenMovieDetails && filmMutate(chosenMovieDetails);
-        if (chosenMovieDetails && reviewText) {
-            reviewMutate({
-                tags: tags.join(","),
-                containsSpoilers: spoilerChecked,
-                watchedOn: watchedOnDate!.toISOString(),
-                moviePoster: chosenMovieDetails.poster,
-                movieReleaseYear: chosenMovieDetails.releaseDate,
-                movieTitle: chosenMovieDetails.title,
+        if (chosenMovieDetails) {
+            filmMutate(chosenMovieDetails);
+            watchedMutate({
                 ratingGiven: ratingValue,
-                text: reviewText,
-                ...chosenMovieDetails,
+                movieTitle: chosenMovieDetails.title,
+                movieId: chosenMovieDetails.movieId,
+                poster: chosenMovieDetails.poster,
             });
+            if (reviewText) {
+                reviewMutate({
+                    tags: tags.join(","),
+                    containsSpoilers: spoilerChecked,
+                    watchedOn: watchedOnDate!.toISOString(),
+                    moviePoster: chosenMovieDetails.poster,
+                    movieReleaseYear: chosenMovieDetails.releaseDate,
+                    movieTitle: chosenMovieDetails.title,
+                    ratingGiven: ratingValue,
+                    text: reviewText,
+                    ...chosenMovieDetails,
+                });
+            }
         }
+
+        if (reviewText && reviewSuccess) {
+            toast(
+                (t) => (
+                    <span>
+                        Created review for {chosenMovieDetails?.title}!{" "}
+                        <Link
+                            className="underline"
+                            href={"/"}
+                            onClick={() => toast.dismiss(t.id)}
+                        >
+                            View
+                        </Link>
+                    </span>
+                ),
+                {
+                    icon: "✅",
+                    duration: 4000,
+                    position: "bottom-center",
+                    className: "dark:bg-brand-light dark:text-white text-black",
+                }
+            );
+        } else if (watchedSuccess) {
+            toast.success(
+                `Added ${chosenMovieDetails?.title} to your watched!`,
+                {
+                    position: "bottom-center",
+                    duration: 4000,
+                    className: "dark:bg-brand-light dark:text-white text-black",
+                }
+            );
+        }
+        handleCancel();
+        setModalOpen(false);
+        return;
     };
 
     useEffect(() => {
@@ -120,7 +167,7 @@ const CreateReviewModal = ({}: CreateReviewModalProps) => {
 
     return (
         <>
-            <Modal>
+            <Modal open={modalOpen} onOpenChange={setModalOpen}>
                 <Modal.Trigger>Create a review</Modal.Trigger>
                 <Modal.Content title="Create a review">
                     {!blockInput ? (
@@ -164,17 +211,29 @@ const CreateReviewModal = ({}: CreateReviewModalProps) => {
                             setWatchedOnDate={setWatchedOnDate}
                         />
                     )}
+                    {filmLoading || (reviewLoading && <p>loading</p>)}
                     {blockInput && (
-                        <>
-                            <Modal.Close>
-                                <Button onClick={() => handleCreateReview()}>
-                                    Save
-                                </Button>
-                            </Modal.Close>
-                            <Modal.Close>
-                                <Button intent="outline">Cancel</Button>
-                            </Modal.Close>
-                        </>
+                        <div className="flex-end float-right space-x-2">
+                            <Button
+                                onClick={() => handleCreateReview()}
+                                loading={
+                                    filmLoading ||
+                                    reviewLoading ||
+                                    watchedLoading
+                                }
+                            >
+                                Save
+                            </Button>
+                            <Button
+                                intent="outline"
+                                onClick={() => {
+                                    handleCancel();
+                                    setModalOpen(false);
+                                }}
+                            >
+                                Cancel
+                            </Button>
+                        </div>
                     )}
                 </Modal.Content>
             </Modal>
@@ -194,7 +253,7 @@ const FilmSearchResults = ({
     handleMovieClick,
 }: FilmSearchResultsProps) => {
     return (
-        <div className="mt-5 w-full columns-4 gap-4">
+        <div className="mt-5  w-full columns-4 gap-4 overflow-y-scroll">
             {filmSearchResults?.slice(0, 10).map((movie: IMovie) => (
                 <div
                     key={movie.movieId}

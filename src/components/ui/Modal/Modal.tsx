@@ -7,8 +7,11 @@ interface ModalProps {
     children: React.ReactNode;
 }
 
-const Modal = ({ children }: ModalProps) => {
-    return <DialogPrimitive.Root>{children}</DialogPrimitive.Root>;
+const Modal = ({
+    children,
+    ...props
+}: ModalProps & DialogPrimitive.DialogProps) => {
+    return <DialogPrimitive.Root {...props}>{children}</DialogPrimitive.Root>;
 };
 
 const Trigger = ({ children }: { children: React.ReactNode }) => {
@@ -32,12 +35,13 @@ const Trigger = ({ children }: { children: React.ReactNode }) => {
 const Content = ({
     children,
     title,
+    ...props
 }: {
     children: React.ReactNode;
     title?: string;
-}) => {
+} & DialogPrimitive.DialogPortalProps) => {
     return (
-        <DialogPrimitive.Portal>
+        <DialogPrimitive.Portal {...props}>
             <DialogPrimitive.Overlay className="bg-background/80 data-[state=closed]:animate-out data-[state=closed]:fade-out data-[state=open]:fade-in fixed inset-0 z-10 backdrop-blur-md transition-all duration-100" />
             <DialogPrimitive.Content
                 className={clxsm(
@@ -62,17 +66,27 @@ const Content = ({
     );
 };
 
-const Title = ({ children }: { children: React.ReactNode }) => {
+const Title = ({
+    children,
+    ...props
+}: { children: React.ReactNode } & DialogPrimitive.DialogTitleProps) => {
     return (
-        <DialogPrimitive.Title className="text-mauve12 m-0 mb-5 text-[17px] font-medium">
+        <DialogPrimitive.Title
+            {...props}
+            className="text-mauve12 m-0 mb-5 text-[17px] font-medium"
+        >
             {children}
         </DialogPrimitive.Title>
     );
 };
 
-const Close = ({ children }: { children: React.ReactNode }) => {
+const Close = ({
+    children,
+    ...props
+}: { children: React.ReactNode } & DialogPrimitive.DialogCloseProps) => {
     return (
         <DialogPrimitive.Close
+            {...props}
             asChild
             className="focus-none float-right mx-2 mt-5 outline-none"
         >
