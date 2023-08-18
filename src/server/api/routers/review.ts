@@ -13,9 +13,6 @@ const ratelimit = new Ratelimit({
 });
 
 export const reviewRouter = createTRPCRouter({
-    // -----------------------------------------------------------------------------//
-    // -------------------------------- Reviews ------------------------------------//
-    // -----------------------------------------------------------------------------//
     //
     // Get all reviews
     //
@@ -124,9 +121,9 @@ export const reviewRouter = createTRPCRouter({
         .mutation(async ({ ctx, input }) => {
             const userId = ctx.session.user.id;
 
-            const { success } = await ratelimit.limit(userId);
+            // const { success } = await ratelimit.limit(userId);
 
-            if (!success) throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
+            // if (!success) throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
 
             if (input.tags) {
                 const tags = input.tags.split(",");
