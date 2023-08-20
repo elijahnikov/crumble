@@ -1,14 +1,18 @@
-import { exampleRouter } from "@/server/api/routers/example";
 import { createTRPCRouter } from "@/server/api/trpc";
+// User
+import { userRouter } from "./routers/user";
+// Movie
+import { movieRouter } from "./routers/movie";
+// Review
+import { reviewRouter } from "./routers/review";
+// Watched
+import { watchedRouter } from "./routers/watched";
 
-/**
- * This is the primary router for your server.
- *
- * All routers added in /api/routers should be manually added here.
- */
 export const appRouter = createTRPCRouter({
-  example: exampleRouter,
+    user: userRouter,
+    movie: movieRouter,
+    review: reviewRouter,
+    watched: watchedRouter,
 });
 
-// export type definition of API
 export type AppRouter = typeof appRouter;
