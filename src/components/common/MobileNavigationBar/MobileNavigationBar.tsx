@@ -3,18 +3,9 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState, useEffect, Fragment } from "react";
-import { BiCameraMovie, BiCommentDetail } from "react-icons/bi";
-import { BsBook, BsEye, BsCardList } from "react-icons/bs";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import Image from "next/image";
-
-const navigation = [
-    { name: "Films", icon: BiCameraMovie, href: "/films" },
-    { name: "Diary", icon: BsBook, href: "/diary" },
-    { name: "Reviews", icon: BiCommentDetail, href: "/reviews" },
-    { name: "People", icon: BsEye, href: "/people" },
-    { name: "Lists", icon: BsCardList, href: "/lists" },
-];
+import navigation from "@/utils/data/navLinks";
 
 const MobileNavigationBar = () => {
     const [currentPath, setCurrentPath] = useState("");

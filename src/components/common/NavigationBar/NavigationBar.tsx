@@ -1,25 +1,11 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
-import { BsBook, BsCardList, BsEye } from "react-icons/bs";
-import { BiCameraMovie, BiCommentDetail } from "react-icons/bi";
 import clxsm from "@/utils/clsxm";
 import { useEffect, useState } from "react";
 import CreateReviewModal from "../CreateReviewModal/CreateReviewModal";
 import DarkModeSwitch from "../DarkModeSwitch/DarkModeSwitch";
-
-const navigation = [
-    { name: "Films", icon: BiCameraMovie, href: "/films" },
-    { name: "Diary", icon: BsBook, href: "/diary" },
-    {
-        name: "Reviews",
-        icon: BiCommentDetail,
-        href: "/reviews",
-        include: ["reviews", "review"],
-    },
-    { name: "People", icon: BsEye, href: "/people" },
-    { name: "Lists", icon: BsCardList, href: "/lists" },
-];
+import navigation from "@/utils/data/navLinks";
 
 const NavigationBar = () => {
     const [currentPath, setCurrentPath] = useState("");
