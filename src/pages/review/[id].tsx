@@ -1,4 +1,5 @@
 import Layout from "@/components/common/Layout/Layout";
+import SingleReviewView from "@/components/common/Pages/Reviews/SingleReviewView";
 import { generateSSGHelper } from "@/server/helpers/ssgHelper";
 import { api } from "@/utils/api";
 import type {
@@ -24,7 +25,7 @@ const SingleReviewPage: NextPage<PageProps> = ({ id }) => {
                 <title>{`@${data.review.user.name} - ${data.review.movieTitle}`}</title>
             </Head>
             <Layout>
-                <h1>{data.review.text}</h1>
+                <SingleReviewView review={data} />
             </Layout>
         </>
     );
