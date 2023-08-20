@@ -1,10 +1,10 @@
 import classNames from "classnames";
-import { signOut, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState, useEffect, Fragment } from "react";
 import { BiCameraMovie, BiCommentDetail } from "react-icons/bi";
-import { BsBook, BsEye, BsCardList, BsArrowRightSquare } from "react-icons/bs";
+import { BsBook, BsEye, BsCardList } from "react-icons/bs";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import Image from "next/image";
 
