@@ -1,16 +1,22 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/router";
 import { BsBook, BsCardList, BsEye } from "react-icons/bs";
 import { BiCameraMovie, BiCommentDetail } from "react-icons/bi";
 import clxsm from "@/utils/clsxm";
 import { useEffect, useState } from "react";
+import CreateReviewModal from "../CreateReviewModal/CreateReviewModal";
+import DarkModeSwitch from "../DarkModeSwitch/DarkModeSwitch";
 
 const navigation = [
     { name: "Films", icon: BiCameraMovie, href: "/films" },
     { name: "Diary", icon: BsBook, href: "/diary" },
-    { name: "Reviews", icon: BiCommentDetail, href: "/reviews" },
+    {
+        name: "Reviews",
+        icon: BiCommentDetail,
+        href: "/reviews",
+        include: ["reviews", "review"],
+    },
     { name: "People", icon: BsEye, href: "/people" },
     { name: "Lists", icon: BsCardList, href: "/lists" },
 ];
@@ -18,7 +24,6 @@ const navigation = [
 const NavigationBar = () => {
     const [currentPath, setCurrentPath] = useState("");
 
-    const router = useRouter();
     const { data: session } = useSession();
     const authenticated = !!session;
 
@@ -64,8 +69,8 @@ const NavigationBar = () => {
                                     className={clxsm(
                                         currentPath === item.href
                                             ? "text-gray-500"
-                                            : "text-white",
-                                        "mr-3 h-6 w-6 flex-shrink-0"
+                                            : " dark:text-white",
+                                        "mr-3 h-6 w-6 flex-shrink-0 text-brand"
                                     )}
                                     aria-hidden="true"
                                 />
@@ -75,6 +80,9 @@ const NavigationBar = () => {
                         </Link>
                     ))}
                 </nav>
+            </div>
+            <div className="mb-5 text-center">
+                <CreateReviewModal />
             </div>
             {authenticated && (
                 <div className="flex flex-shrink-0 border-t border-gray-200 p-4 dark:border-gray-700">
@@ -90,9 +98,10 @@ const NavigationBar = () => {
                                 />
                             )}
                             <div className="ml-3 flex">
-                                <p className="text-sm font-medium text-gray-700 dark:text-white">
+                                <p className="mt-[5px] text-sm font-medium text-gray-700 dark:text-white">
                                     {session?.user.name}
                                 </p>
+                                <DarkModeSwitch />
                             </div>
                         </div>
                     </div>

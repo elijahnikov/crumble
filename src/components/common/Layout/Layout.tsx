@@ -1,13 +1,15 @@
 import { useSession } from "next-auth/react";
 import NavigationBar from "../NavigationBar/NavigationBar";
 import MobileNavigationBar from "../MobileNavigationBar/MobileNavigationBar";
+import clxsm from "@/utils/clsxm";
 
 interface LayoutProps {
     children: React.ReactNode;
-    title: string;
+    title?: string;
+    fullWidth?: boolean;
 }
 
-const Layout = ({ children, title }: LayoutProps) => {
+const Layout = ({ children, title, fullWidth }: LayoutProps) => {
     const { data: session } = useSession();
     const authenticated = !!session;
 
@@ -24,8 +26,15 @@ const Layout = ({ children, title }: LayoutProps) => {
                 </div>
             )}
 
-            <main className="mx-auto flex w-full flex-col gap-6 px-4 py-8 dark:bg-brand sm:px-6 sm:pt-12 lg:px-8">
-                {children}
+            <main className="mx-auto flex w-full flex-col items-center gap-6 px-4 py-8 dark:bg-brand sm:px-6 sm:pt-12 lg:px-8">
+                <div
+                    className={clxsm(
+                        fullWidth ? "w-full" : "w-[50vw]",
+                        "flex flex-col gap-6 bg-red-400 lg:gap-8"
+                    )}
+                >
+                    {children}
+                </div>
             </main>
         </div>
     );

@@ -1,6 +1,4 @@
 import Head from "next/head";
-import NavigationBar from "@/components/common/NavigationBar/NavigationBar";
-import CreateReviewModal from "@/components/common/CreateReviewModal/CreateReviewModal";
 import Layout from "@/components/common/Layout/Layout";
 
 export default function Home() {
@@ -14,9 +12,6 @@ export default function Home() {
             </Head>
             <Layout title="test">
                 <div className="ml-[100px] flex flex-col gap-6 lg:gap-8">
-                    <p className="-my-4 text-sm italic text-gray-400">
-                        Newest first, updated Mar 25
-                    </p>
                     <dl className="w-full gap-6 md:columns-2 lg:gap-10 xl:columns-3 2xl:columns-4"></dl>
                 </div>
             </Layout>

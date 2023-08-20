@@ -16,7 +16,7 @@ const DarkModeSwitch = () => {
 
     return (
         <div
-            className="cursor-pointer rounded-md p-2"
+            className="ml-2 cursor-pointer rounded-md p-2"
             onClick={() => {
                 setTheme(theme === "light" ? "dark" : "light");
             }}

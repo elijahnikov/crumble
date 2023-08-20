@@ -5,6 +5,7 @@ import { api } from "@/utils/api";
 import "@/styles/globals.css";
 import { ThemeProvider } from "next-themes";
 import { Toaster } from "react-hot-toast";
+import Head from "next/head";
 
 const MyApp: AppType<{ session: Session | null }> = ({
     Component,
@@ -13,6 +14,11 @@ const MyApp: AppType<{ session: Session | null }> = ({
     return (
         <SessionProvider session={session}>
             <ThemeProvider enableSystem={true} attribute="class">
+                <Head>
+                    <title>Crumble</title>
+                    <meta name="description" content="crumble" />
+                    <link rel="icon" href="/favicon.ico" />
+                </Head>
                 <Toaster />
                 <Component {...pageProps} />
             </ThemeProvider>
