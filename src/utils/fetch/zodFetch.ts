@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 import { env } from "@/env.mjs";
-import { z } from "zod";
+import type { z } from "zod";
 
 export const zodFetch = async <T extends z.Schema>(url: string, schema: T) => {
     const res = await fetch(url, {
