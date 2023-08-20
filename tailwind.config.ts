@@ -15,7 +15,6 @@ module.exports = {
         extend: {
             fontFamily: {
                 primary: ["Inter", ...fontFamily.sans],
-                // crumble: ["DM Serif Display"],
             },
             colors: {
                 brand: { DEFAULT: "#0a0a0a", light: "#212121" },

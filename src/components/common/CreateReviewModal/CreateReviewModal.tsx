@@ -180,7 +180,7 @@ const CreateReviewModal = ({}: CreateReviewModalProps) => {
                     ) : null}
                     {movieFetchData.length > 0 && (
                         <div className="max-h-[600px] overflow-y-auto pt-[10px]">
-                            <FilmSearchResults
+                            <MovieSearchResults
                                 filmSearchResults={movieFetchData}
                                 handleMovieClick={handleFilmSelect}
                             />
@@ -245,15 +245,15 @@ const CreateReviewModal = ({}: CreateReviewModalProps) => {
 
 export default CreateReviewModal;
 
-interface FilmSearchResultsProps {
+interface MovieSearchResultsProps {
     filmSearchResults: IMovie[];
     handleMovieClick: (film: IMovie) => void;
 }
 
-const FilmSearchResults = ({
+const MovieSearchResults = ({
     filmSearchResults,
     handleMovieClick,
-}: FilmSearchResultsProps) => {
+}: MovieSearchResultsProps) => {
     return (
         <div className="mt-5 h-max w-full columns-4 gap-4">
             {filmSearchResults?.slice(0, 10).map((movie: IMovie) => (
