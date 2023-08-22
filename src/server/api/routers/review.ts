@@ -85,7 +85,14 @@ export const reviewRouter = createTRPCRouter({
                         currentUserId === null
                             ? false
                             : { where: { userId: currentUserId } },
-                    reviewComments: true,
+                    reviewComments: {
+                        select: {
+                            id: true,
+                            text: true,
+                            reviewId: true,
+                            user: true,
+                        },
+                    },
                     user: {
                         select: {
                             id: true,
