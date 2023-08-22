@@ -1,5 +1,5 @@
 import Layout from "@/components/common/Layout/Layout";
-import SingleReviewView from "@/components/common/Pages/Reviews/SingleReviewView";
+import SingleReviewView from "@/components/common/Pages/Reviews/SingleReviewPage/SingleReviewView";
 import { generateSSGHelper } from "@/server/helpers/ssgHelper";
 import { api } from "@/utils/api";
 import type {
@@ -26,6 +26,7 @@ const SingleReviewPage: NextPage<PageProps> = ({ id }) => {
             </Head>
             <Layout>
                 <SingleReviewView review={data} />
+                <
             </Layout>
         </>
     );

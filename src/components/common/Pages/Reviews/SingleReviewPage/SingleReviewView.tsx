@@ -1,4 +1,4 @@
-import type { RouterOutputs } from "@/utils/api";
+import { api, type RouterOutputs } from "@/utils/api";
 import clxsm from "@/utils/clsxm";
 import { shortMonthDateFormat } from "@/utils/general/dateFormat";
 import useIsAuthenticated from "@/utils/hooks/useIsAuthenticated";
@@ -6,6 +6,7 @@ import Image from "next/image";
 import React from "react";
 import { BsHeartFill } from "react-icons/bs";
 import { Rating } from "react-simple-star-rating";
+import Tags from "../../../Tags/Tags";
 
 interface SingleReviewViewProps {
     review: RouterOutputs["review"]["review"];
@@ -15,10 +16,20 @@ const SingleReviewView = ({ review }: SingleReviewViewProps) => {
     const { review: reviewData } = review;
     const { user: author } = reviewData;
 
+    const trpcUtils = api.useContext();
+    const toggleLike = api.review.toggleReviewLike.useMutation({
+        onSuccess: async ({ addedLike }) => {
+            await trpcUtils.review.review.invalidate();
+        },
+    });
     const isAuthed = useIsAuthenticated();
+
+    const handleToggleLike = () => {
+        toggleLike.mutate({ id: review.review.id });
+    };
     return (
         <>
-            <div className=" rounded-md border-[1px] border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-brand-light">
+            <div className="rounded-md border-[1px] border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-brand-light">
                 <div className="w-[100%] pb-5">
                     <span className="flex w-[100%] text-sm dark:text-slate-200">
                         Review by{" "}
@@ -50,11 +61,12 @@ const SingleReviewView = ({ review }: SingleReviewViewProps) => {
                         )}
                         <div className="mt-4 flex space-x-2 text-sm font-semibold text-gray-600 dark:text-gray-300">
                             <BsHeartFill
+                                onClick={handleToggleLike}
                                 className={clxsm(
                                     reviewData.likedByMe
                                         ? "fill-crumble"
                                         : "fill-gray-600 dark:fill-gray-300",
-                                    "mt-[2px] h-6 w-6"
+                                    "mt-[5px] h-4 w-4 cursor-pointer hover:fill-crumble hover:dark:fill-crumble"
                                 )}
                             />
                             <div className="mt-[3px] flex space-x-1">
@@ -62,6 +74,7 @@ const SingleReviewView = ({ review }: SingleReviewViewProps) => {
                                 <p>likes</p>
                             </div>
                         </div>
+                        {reviewData.tags && <Tags tags={reviewData.tags} />}
                     </div>
                     <div className="ml-10 w-[80%]">
                         <div className="flex space-x-2">
