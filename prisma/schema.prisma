@@ -72,7 +72,7 @@ model User {
 model Review {
   id               String          @id @default(cuid())
   movieId          Int
-  text             String
+  text             String          @db.LongText
   containsSpoilers Boolean         @default(false)
   tags             String?
   moviePoster      String?
