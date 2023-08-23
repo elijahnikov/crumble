@@ -85,18 +85,6 @@ export const reviewRouter = createTRPCRouter({
                         currentUserId === null
                             ? false
                             : { where: { userId: currentUserId } },
-                    reviewComments: {
-                        select: {
-                            id: true,
-                            text: true,
-                            reviewId: true,
-                            user: true,
-                            createdAt: true,
-                        },
-                        orderBy: {
-                            createdAt: "desc",
-                        },
-                    },
                     user: {
                         select: {
                             id: true,
@@ -120,7 +108,6 @@ export const reviewRouter = createTRPCRouter({
                     commentCount: data._count.reviewComments,
                     user: { ...data.user },
                     likedByMe: data.reviewLikes.length > 0,
-                    comments: { ...data.reviewComments },
                 },
             };
         }),
@@ -279,6 +266,7 @@ export const reviewRouter = createTRPCRouter({
                         user: comment.user,
                         likeCount: comment._count.reviewCommentLikes,
                         likedByMe: comment.reviewCommentLikes?.length > 0,
+                        createdAt: comment.createdAt,
                     };
                 }),
                 nextCursor,

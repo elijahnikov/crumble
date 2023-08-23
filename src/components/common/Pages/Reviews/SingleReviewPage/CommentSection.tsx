@@ -11,14 +11,22 @@ import clxsm from "@/utils/clsxm";
 import toast from "react-hot-toast";
 
 interface CommentSectionProps {
-    review: RouterOutputs["review"]["review"];
-    comment: RouterOutputs["review"]["review"]["review"]["comments"][0];
+    reviewId: string;
+    commentCount: number;
 }
 
-const CommentSection = ({ review }: Pick<CommentSectionProps, "review">) => {
+const CommentSection = ({ reviewId, commentCount }: CommentSectionProps) => {
     const [commentText, setCommentText] = useState<string>("");
 
-    const { commentCount, reviewComments } = review.review;
+    const { data: reviewComments, isLoading } =
+        api.review.infiniteCommentFeed.useInfiniteQuery(
+            {
+                id: reviewId,
+            },
+            {
+                getNextPageParam: (lastPage) => lastPage.nextCursor,
+            }
+        );
     const { data: session } = useSession();
     const authenticated = !!session;
 
@@ -32,11 +40,16 @@ const CommentSection = ({ review }: Pick<CommentSectionProps, "review">) => {
     const handlePostComment = () => {
         if (commentText !== "")
             mutate({
-                reviewId: review.review.id,
+                reviewId,
                 text: commentText,
             });
         setCommentText("");
     };
+    console.log(reviewComments);
+
+    if (isLoading) return <div>Loading...</div>;
+
+    if (!reviewComments) return <div>404</div>;
 
     return (
         <>
@@ -60,13 +73,13 @@ const CommentSection = ({ review }: Pick<CommentSectionProps, "review">) => {
                     </>
                 )}
                 <hr className="mt-12 border-gray-200 dark:border-gray-700" />
-                {reviewComments.map((comment) => (
+                {/* {reviewComments.pages.map((comment) => (
                     <SingleComment
-                        comment={comment}
+                        comment={comment.reviewComments[index]}
                         currentUserId={session?.user.id}
-                        key={comment.id}
+                        key={comment.reviewComments.}
                     />
-                ))}
+                ))} */}
             </div>
         </>
     );
@@ -74,10 +87,14 @@ const CommentSection = ({ review }: Pick<CommentSectionProps, "review">) => {
 
 export default CommentSection;
 
+interface SingleCommentProps {
+    comment: RouterOutputs["review"]["infiniteCommentFeed"]["reviewComments"][0];
+}
+
 const SingleComment = ({
     comment,
     currentUserId,
-}: Pick<CommentSectionProps, "comment"> & { currentUserId?: string }) => {
+}: SingleCommentProps & { currentUserId?: string }) => {
     return (
         <div className="mt-2 rounded-lg  p-2">
             <div className="flex">
