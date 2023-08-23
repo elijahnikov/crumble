@@ -18,7 +18,7 @@ const SingleReviewView = ({ review }: SingleReviewViewProps) => {
 
     const trpcUtils = api.useContext();
     const toggleLike = api.review.toggleReviewLike.useMutation({
-        onSuccess: async ({ addedLike }) => {
+        onSuccess: async () => {
             await trpcUtils.review.review.invalidate();
         },
     });

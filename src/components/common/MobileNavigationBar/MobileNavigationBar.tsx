@@ -119,7 +119,7 @@ const MobileNavigationBar = () => {
                                                             active
                                                                 ? "bg-brand-light"
                                                                 : "",
-                                                            "block flex cursor-pointer px-4 py-2 text-sm text-gray-700 dark:text-white"
+                                                            "flex cursor-pointer px-4 py-2 text-sm text-gray-700 dark:text-white"
                                                         )}
                                                     >
                                                         Sign out
