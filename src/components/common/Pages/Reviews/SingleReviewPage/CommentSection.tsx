@@ -9,6 +9,7 @@ import { BsThreeDots } from "react-icons/bs";
 import { Menu, Transition } from "@headlessui/react";
 import clxsm from "@/utils/clsxm";
 import toast from "react-hot-toast";
+
 interface CommentSectionProps {
     review: RouterOutputs["review"]["review"];
     comment: RouterOutputs["review"]["review"]["review"]["comments"][0];
@@ -36,6 +37,7 @@ const CommentSection = ({ review }: Pick<CommentSectionProps, "review">) => {
             });
         setCommentText("");
     };
+
     return (
         <>
             <div className="rounded-md border-[1px] border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-brand-light">
