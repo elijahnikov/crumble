@@ -27,7 +27,10 @@ const SingleReviewPage: NextPage<PageProps> = ({ id }) => {
             </Head>
             <Layout>
                 <SingleReviewView review={data} />
-                <CommentSection review={data} />
+                <CommentSection
+                    commentCount={data.review.commentCount}
+                    reviewId={data.review.id}
+                />
             </Layout>
         </>
     );
