@@ -91,6 +91,10 @@ export const reviewRouter = createTRPCRouter({
                             text: true,
                             reviewId: true,
                             user: true,
+                            createdAt: true,
+                        },
+                        orderBy: {
+                            createdAt: "desc",
                         },
                     },
                     user: {

@@ -17,7 +17,7 @@ module.exports = {
                 primary: ["Inter", ...fontFamily.sans],
             },
             colors: {
-                brand: { DEFAULT: "#0a0a0a", light: "#212121" },
+                brand: { DEFAULT: "#0a0a0a", light: "#15181D" },
                 primary: {
                     lightest: "#E7E7FF",
                     lighter: "#C6C4FF",
