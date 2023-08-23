@@ -225,6 +225,66 @@ export const reviewRouter = createTRPCRouter({
     // -------------------------------- Comments -----------------------------------//
     // -----------------------------------------------------------------------------//
     //
+    // Infinite feed of review comments
+    //
+    infiniteCommentFeed: publicProcedure
+        .input(
+            z.object({
+                id: z.string(),
+                limit: z.number().optional(),
+                cursor: z
+                    .object({ id: z.string(), createdAt: z.date() })
+                    .optional(),
+            })
+        )
+        .query(async ({ input: { limit = 10, cursor }, ctx }) => {
+            const currentUserId = ctx.session?.user.id;
+
+            const reviewComments = await ctx.prisma.reviewComment.findMany({
+                take: limit + 1,
+                cursor: cursor ? { createdAt_id: cursor } : undefined,
+                orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+                select: {
+                    id: true,
+                    text: true,
+                    reviewId: true,
+                    user: true,
+                    createdAt: true,
+                    _count: {
+                        select: { reviewCommentLikes: true },
+                    },
+                    reviewCommentLikes:
+                        currentUserId === null
+                            ? false
+                            : { where: { userId: currentUserId } },
+                },
+            });
+
+            let nextCursor: typeof cursor | undefined;
+            if (reviewComments.length > limit) {
+                const nextItem = reviewComments.pop();
+                if (nextItem != null) {
+                    nextCursor = {
+                        id: nextItem.id,
+                        createdAt: nextItem.createdAt,
+                    };
+                }
+            }
+            return {
+                reviewComments: reviewComments.map((comment) => {
+                    return {
+                        id: comment.id,
+                        text: comment.text,
+                        reviewId: comment.reviewId,
+                        user: comment.user,
+                        likeCount: comment._count.reviewCommentLikes,
+                        likedByMe: comment.reviewCommentLikes?.length > 0,
+                    };
+                }),
+                nextCursor,
+            };
+        }),
+    //
     // Create review comment
     //
     createReviewComment: protectedProcedure
@@ -257,34 +317,6 @@ export const reviewRouter = createTRPCRouter({
                 },
             });
         }),
-    //
-    // Update review comment
-    //
-    updateReviewComment: protectedProcedure
-        .input(
-            z.object({
-                id: z.string(),
-                text: z.string(),
-            })
-        )
-        .mutation(async ({ ctx, input }) => {
-            const updatedComment = await ctx.prisma.reviewComment.update({
-                where: {
-                    id: input.id,
-                },
-                data: {
-                    text: input.text,
-                },
-            });
-            if (!updatedComment) {
-                throw new TRPCError({
-                    code: "BAD_REQUEST",
-                    message: "Could not update review comment.",
-                });
-            }
-            return updatedComment;
-        }),
-    //
     // Toggle like for review comment
     //
     toggleReviewCommentLike: protectedProcedure
