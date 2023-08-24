@@ -111,10 +111,11 @@ model ReviewComment {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  review            Review              @relation(fields: [reviewId], references: [id], onDelete: Cascade)
-  user              User                @relation(fields: [userId], references: [id], onDelete: Cascade)
-  ReviewCommentLike ReviewCommentLike[]
+  review             Review              @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  user               User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reviewCommentLikes ReviewCommentLike[]
 
+  @@unique([createdAt, id])
   @@index([reviewId])
   @@index([userId])
 }
