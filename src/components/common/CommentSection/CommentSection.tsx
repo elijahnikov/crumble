@@ -1,11 +1,10 @@
 import Button from "@/components/ui/Button/Button";
 import InputArea from "@/components/ui/InputArea/InputArea";
-import { type RouterOutputs } from "@/utils/api";
 import { useSession } from "next-auth/react";
 import React, { Fragment, useState } from "react";
 import Image from "next/image";
 import { fromNow } from "@/utils/general/dateFormat";
-import { BsThreeDots } from "react-icons/bs";
+import { BsHeartFill, BsThreeDots } from "react-icons/bs";
 import { Menu, Transition } from "@headlessui/react";
 import clxsm from "@/utils/clsxm";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -34,6 +33,7 @@ interface CommentSectionProps {
     fetchNewComments: () => Promise<unknown>;
     createNewComment: (variables: { text: string; linkedToId: string }) => void;
     deleteComment: (variables: { id: string }) => void;
+    toggleLike: (variables: { id: string }) => void;
     comments?: Comment[];
 }
 
@@ -46,6 +46,7 @@ const CommentSection = ({
     fetchNewComments,
     createNewComment,
     deleteComment,
+    toggleLike,
     comments,
 }: CommentSectionProps) => {
     const [commentText, setCommentText] = useState<string>("");
@@ -96,6 +97,7 @@ const CommentSection = ({
                     {comments.map((comment) => (
                         <SingleComment
                             deleteComment={deleteComment}
+                            toggleLike={toggleLike}
                             comment={comment}
                             currentUserId={session?.user.id}
                             key={comment.id}
@@ -110,15 +112,22 @@ const CommentSection = ({
 export default CommentSection;
 
 interface SingleCommentProps {
-    comment: RouterOutputs["review"]["infiniteCommentFeed"]["reviewComments"][0];
+    comment: Comment;
     deleteComment: (variables: { id: string }) => void;
+    toggleLike: (variables: { id: string }) => void;
+    currentUserId?: string;
 }
 
 const SingleComment = ({
     comment,
     currentUserId,
     deleteComment,
-}: SingleCommentProps & { currentUserId?: string }) => {
+    toggleLike,
+}: SingleCommentProps) => {
+    const handleToggleLike = () => {
+        toggleLike({ id: comment.id });
+    };
+
     return (
         <div className="mt-2 rounded-lg  p-2">
             <div className="flex">
@@ -146,10 +155,25 @@ const SingleComment = ({
                     currentUserId={currentUserId}
                 />
             </div>
-            <p className="ml-10 mt-2 text-slate-700 dark:text-slate-300">
-                {comment.text}
-            </p>
-
+            <div className="flex">
+                <p className="my-4 ml-1 w-[90%] text-slate-700 dark:text-slate-300">
+                    {comment.text}
+                </p>
+            </div>
+            <div className="ml-2 flex space-x-2 text-sm font-semibold text-gray-600 dark:text-gray-300">
+                <BsHeartFill
+                    onClick={handleToggleLike}
+                    className={clxsm(
+                        comment.likedByMe
+                            ? "fill-crumble"
+                            : "fill-gray-600 dark:fill-gray-300",
+                        "mt-[5px] h-3 w-3 cursor-pointer hover:fill-crumble hover:dark:fill-crumble"
+                    )}
+                />
+                <div className="mt-[3px] flex space-x-1 text-xs">
+                    <p>{comment.likeCount}</p>
+                </div>
+            </div>
             <hr className="mt-5 border-gray-200 dark:border-gray-700" />
         </div>
     );

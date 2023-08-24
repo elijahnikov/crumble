@@ -1,5 +1,5 @@
 import Layout from "@/components/common/Layout/Layout";
-import CommentSection from "@/components/common/Pages/Reviews/SingleReviewPage/CommentSection";
+import CommentSection from "@/components/common/CommentSection/CommentSection";
 import SingleReviewView from "@/components/common/Pages/Reviews/SingleReviewPage/SingleReviewView";
 import { generateSSGHelper } from "@/server/helpers/ssgHelper";
 import { api } from "@/utils/api";
@@ -51,7 +51,11 @@ const SingleReviewPage: NextPage<PageProps> = ({ id }) => {
                 await trpcUtils.review.infiniteCommentFeed.invalidate();
             },
         });
-
+    const toggleLike = api.review.toggleReviewCommentLike.useMutation({
+        onSuccess: async () => {
+            await trpcUtils.review.infiniteCommentFeed.invalidate();
+        },
+    });
     if (isLoading) return <div>Loading...</div>;
 
     if (!data) return <div>404</div>;
@@ -75,6 +79,7 @@ const SingleReviewPage: NextPage<PageProps> = ({ id }) => {
                     fetchNewComments={fetchNextPage}
                     createNewComment={createReviewComment}
                     deleteComment={deleteReviewComment}
+                    toggleLike={toggleLike.mutate}
                 />
             </Layout>
         </>
