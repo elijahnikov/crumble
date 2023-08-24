@@ -15,6 +15,21 @@ type PageProps = InferGetStaticPropsType<typeof getStaticProps>;
 
 const SingleReviewPage: NextPage<PageProps> = ({ id }) => {
     const { data, isLoading } = api.review.review.useQuery({ id });
+    const {
+        data: reviewComments,
+        isLoading: isReviewCommentsLoading,
+        isError: isReviewCommentsError,
+        hasNextPage,
+        fetchNextPage,
+    } = api.review.infiniteCommentFeed.useInfiniteQuery(
+        {
+            limit: 10,
+            id: data!.review.id!,
+        },
+        {
+            getNextPageParam: (lastPage) => lastPage.nextCursor,
+        }
+    );
 
     if (isLoading) return <div>Loading...</div>;
 
@@ -30,6 +45,13 @@ const SingleReviewPage: NextPage<PageProps> = ({ id }) => {
                 <CommentSection
                     commentCount={data.review.commentCount}
                     reviewId={data.review.id}
+                    comments={reviewComments?.pages.flatMap(
+                        (page) => page.reviewComments
+                    )}
+                    isError={isReviewCommentsError}
+                    isLoading={isReviewCommentsLoading}
+                    hasMore={hasNextPage}
+                    fetchNewComments={fetchNextPage}
                 />
             </Layout>
         </>
