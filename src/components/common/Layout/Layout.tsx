@@ -29,7 +29,7 @@ const Layout = ({ children, title, fullWidth }: LayoutProps) => {
             <main className="mx-auto flex w-full flex-col items-center gap-6 px-4 py-8 dark:bg-brand sm:px-6 sm:pt-12 lg:px-8">
                 <div
                     className={clxsm(
-                        fullWidth ? "w-full" : "w-[45vw]",
+                        fullWidth ? "w-full" : "w-[80vw] lg:w-[45vw]",
                         "flex flex-col gap-6 lg:gap-8"
                     )}
                 >
