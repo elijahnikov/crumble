@@ -1,6 +1,6 @@
 import Button from "@/components/ui/Button/Button";
 import InputArea from "@/components/ui/InputArea/InputArea";
-import { api, type RouterOutputs } from "@/utils/api";
+import { type RouterOutputs } from "@/utils/api";
 import { useSession } from "next-auth/react";
 import React, { Fragment, useState } from "react";
 import Image from "next/image";
@@ -8,7 +8,6 @@ import { fromNow } from "@/utils/general/dateFormat";
 import { BsThreeDots } from "react-icons/bs";
 import { Menu, Transition } from "@headlessui/react";
 import clxsm from "@/utils/clsxm";
-import toast from "react-hot-toast";
 import InfiniteScroll from "react-infinite-scroll-component";
 
 interface Comment {
@@ -34,6 +33,7 @@ interface CommentSectionProps {
     hasMore?: boolean;
     fetchNewComments: () => Promise<unknown>;
     createNewComment: (variables: { text: string; linkedToId: string }) => void;
+    deleteComment: (variables: { id: string }) => void;
     comments?: Comment[];
 }
 
@@ -45,6 +45,7 @@ const CommentSection = ({
     hasMore,
     fetchNewComments,
     createNewComment,
+    deleteComment,
     comments,
 }: CommentSectionProps) => {
     const [commentText, setCommentText] = useState<string>("");
@@ -94,6 +95,7 @@ const CommentSection = ({
                 >
                     {comments.map((comment) => (
                         <SingleComment
+                            deleteComment={deleteComment}
                             comment={comment}
                             currentUserId={session?.user.id}
                             key={comment.id}
@@ -109,11 +111,13 @@ export default CommentSection;
 
 interface SingleCommentProps {
     comment: RouterOutputs["review"]["infiniteCommentFeed"]["reviewComments"][0];
+    deleteComment: (variables: { id: string }) => void;
 }
 
 const SingleComment = ({
     comment,
     currentUserId,
+    deleteComment,
 }: SingleCommentProps & { currentUserId?: string }) => {
     return (
         <div className="mt-2 rounded-lg  p-2">
@@ -136,6 +140,7 @@ const SingleComment = ({
                     </p>
                 </div>
                 <CommentActionPopover
+                    deleteComment={deleteComment}
                     commentId={comment.id}
                     commentAuthorId={comment.user.id}
                     currentUserId={currentUserId}
@@ -154,29 +159,17 @@ const CommentActionPopover = ({
     commentId,
     commentAuthorId,
     currentUserId,
+    deleteComment,
 }: {
     commentId: string;
     commentAuthorId: string;
     currentUserId?: string;
+    deleteComment: (variables: { id: string }) => void;
 }) => {
     const matchingUserId = commentAuthorId === currentUserId;
 
-    const trpcUtils = api.useContext();
-    const { mutate } = api.review.deleteReviewComment.useMutation({
-        onSuccess: async () => {
-            toast.success(`Deleted your comment.`, {
-                position: "bottom-center",
-                duration: 4000,
-                className: "dark:bg-brand-light dark:text-white text-black",
-            });
-            await trpcUtils.review.review.invalidate();
-        },
-    });
-
     const handleDeleteComment = () => {
-        mutate({
-            id: commentId,
-        });
+        deleteComment({ id: commentId });
     };
 
     return (

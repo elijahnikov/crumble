@@ -10,6 +10,7 @@ import type {
     NextPage,
 } from "next";
 import Head from "next/head";
+import toast from "react-hot-toast";
 
 type PageProps = InferGetStaticPropsType<typeof getStaticProps>;
 
@@ -33,11 +34,20 @@ const SingleReviewPage: NextPage<PageProps> = ({ id }) => {
         }
     );
 
-    const { mutate } = api.review.createReviewComment.useMutation();
-
     const { mutate: createReviewComment } =
         api.review.createReviewComment.useMutation({
             onSuccess: async () => {
+                await trpcUtils.review.infiniteCommentFeed.invalidate();
+            },
+        });
+    const { mutate: deleteReviewComment } =
+        api.review.deleteReviewComment.useMutation({
+            onSuccess: async () => {
+                toast.success(`Deleted your comment.`, {
+                    position: "bottom-center",
+                    duration: 4000,
+                    className: "dark:bg-brand-light dark:text-white text-black",
+                });
                 await trpcUtils.review.infiniteCommentFeed.invalidate();
             },
         });
@@ -64,6 +74,7 @@ const SingleReviewPage: NextPage<PageProps> = ({ id }) => {
                     hasMore={hasNextPage}
                     fetchNewComments={fetchNextPage}
                     createNewComment={createReviewComment}
+                    deleteComment={deleteReviewComment}
                 />
             </Layout>
         </>
