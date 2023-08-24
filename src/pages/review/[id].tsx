@@ -14,6 +14,8 @@ import Head from "next/head";
 type PageProps = InferGetStaticPropsType<typeof getStaticProps>;
 
 const SingleReviewPage: NextPage<PageProps> = ({ id }) => {
+    const trpcUtils = api.useContext();
+
     const { data, isLoading } = api.review.review.useQuery({ id });
     const {
         data: reviewComments,
@@ -31,6 +33,15 @@ const SingleReviewPage: NextPage<PageProps> = ({ id }) => {
         }
     );
 
+    const { mutate } = api.review.createReviewComment.useMutation();
+
+    const { mutate: createReviewComment } =
+        api.review.createReviewComment.useMutation({
+            onSuccess: async () => {
+                await trpcUtils.review.infiniteCommentFeed.invalidate();
+            },
+        });
+
     if (isLoading) return <div>Loading...</div>;
 
     if (!data) return <div>404</div>;
@@ -44,7 +55,7 @@ const SingleReviewPage: NextPage<PageProps> = ({ id }) => {
                 <SingleReviewView review={data} />
                 <CommentSection
                     commentCount={data.review.commentCount}
-                    reviewId={data.review.id}
+                    linkedToId={data.review.id}
                     comments={reviewComments?.pages.flatMap(
                         (page) => page.reviewComments
                     )}
@@ -52,6 +63,7 @@ const SingleReviewPage: NextPage<PageProps> = ({ id }) => {
                     isLoading={isReviewCommentsLoading}
                     hasMore={hasNextPage}
                     fetchNewComments={fetchNextPage}
+                    createNewComment={createReviewComment}
                 />
             </Layout>
         </>

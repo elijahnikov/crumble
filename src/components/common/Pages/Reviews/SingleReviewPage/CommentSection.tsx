@@ -14,7 +14,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 interface Comment {
     id: string;
     text: string;
-    reviewId: string;
+    linkedToId: string;
     user: {
         name: string | null;
         displayName: string | null;
@@ -27,22 +27,24 @@ interface Comment {
 }
 
 interface CommentSectionProps {
-    reviewId: string;
+    linkedToId: string;
     commentCount: number;
     isLoading: boolean;
     isError: boolean;
     hasMore?: boolean;
     fetchNewComments: () => Promise<unknown>;
+    createNewComment: (variables: { text: string; linkedToId: string }) => void;
     comments?: Comment[];
 }
 
 const CommentSection = ({
-    reviewId,
+    linkedToId,
     commentCount,
     isLoading,
     isError,
     hasMore,
     fetchNewComments,
+    createNewComment,
     comments,
 }: CommentSectionProps) => {
     const [commentText, setCommentText] = useState<string>("");
@@ -50,19 +52,9 @@ const CommentSection = ({
     const { data: session } = useSession();
     const authenticated = !!session;
 
-    const trpcUtils = api.useContext();
-    const { mutate } = api.review.createReviewComment.useMutation({
-        onSuccess: async () => {
-            await trpcUtils.review.infiniteCommentFeed.invalidate();
-        },
-    });
-
     const handlePostComment = () => {
         if (commentText !== "")
-            mutate({
-                reviewId,
-                text: commentText,
-            });
+            createNewComment({ linkedToId, text: commentText });
         setCommentText("");
     };
 
@@ -94,13 +86,6 @@ const CommentSection = ({
                     </>
                 )}
                 <hr className="mt-12 border-gray-200 dark:border-gray-700" />
-                {/* {reviewComments.pages.map((comment) => (
-                    <SingleComment
-                        comment={comment.reviewComments[index]}
-                        currentUserId={session?.user.id}
-                        key={comment.reviewComments.}
-                    />
-                ))} */}
                 <InfiniteScroll
                     dataLength={comments.length}
                     next={fetchNewComments}
