@@ -44,8 +44,12 @@ const NavigationBar = () => {
                             key={item.name}
                             href={item.href}
                             className={clxsm(
-                                currentPath === item.href
-                                    ? "bg-gray-100 text-gray-900 hover:bg-gray-100 hover:text-gray-900"
+                                currentPath === item.href ||
+                                    (item.includeUrls &&
+                                        item.includeUrls?.includes(
+                                            currentPath.split("/")[1] ?? ""
+                                        ))
+                                    ? "bg-gray-100 text-gray-900 hover:bg-gray-100 hover:text-gray-900 dark:bg-brand dark:text-white"
                                     : "text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-white dark:hover:bg-brand",
                                 "group flex items-center rounded-md px-2 py-2 text-sm font-medium"
                             )}
