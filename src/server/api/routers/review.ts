@@ -269,7 +269,7 @@ export const reviewRouter = createTRPCRouter({
                     return {
                         id: comment.id,
                         text: comment.text,
-                        reviewId: comment.reviewId,
+                        linkedToId: comment.reviewId,
                         user: comment.user,
                         likeCount: comment._count.reviewCommentLikes,
                         likedByMe: comment.reviewCommentLikes?.length > 0,
@@ -285,14 +285,18 @@ export const reviewRouter = createTRPCRouter({
     createReviewComment: protectedProcedure
         .input(
             z.object({
-                reviewId: z.string(),
+                linkedToId: z.string(),
                 text: z.string(),
             })
         )
         .mutation(async ({ ctx, input }) => {
             const currentUserId = ctx.session.user.id;
             const reviewComment = await ctx.prisma.reviewComment.create({
-                data: { ...input, userId: currentUserId },
+                data: {
+                    text: input.text,
+                    reviewId: input.linkedToId,
+                    userId: currentUserId,
+                },
             });
             return reviewComment;
         }),
