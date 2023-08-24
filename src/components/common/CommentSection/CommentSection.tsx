@@ -1,41 +1,71 @@
 import Button from "@/components/ui/Button/Button";
 import InputArea from "@/components/ui/InputArea/InputArea";
-import { api, type RouterOutputs } from "@/utils/api";
 import { useSession } from "next-auth/react";
 import React, { Fragment, useState } from "react";
 import Image from "next/image";
 import { fromNow } from "@/utils/general/dateFormat";
-import { BsThreeDots } from "react-icons/bs";
+import { BsHeartFill, BsThreeDots } from "react-icons/bs";
 import { Menu, Transition } from "@headlessui/react";
 import clxsm from "@/utils/clsxm";
-import toast from "react-hot-toast";
-interface CommentSectionProps {
-    review: RouterOutputs["review"]["review"];
-    comment: RouterOutputs["review"]["review"]["review"]["comments"][0];
+import InfiniteScroll from "react-infinite-scroll-component";
+
+interface Comment {
+    id: string;
+    text: string;
+    linkedToId: string;
+    user: {
+        name: string | null;
+        displayName: string | null;
+        id: string;
+        image: string | null;
+    };
+    likeCount: number;
+    likedByMe: boolean;
+    createdAt: Date;
 }
 
-const CommentSection = ({ review }: Pick<CommentSectionProps, "review">) => {
+interface CommentSectionProps {
+    linkedToId: string;
+    commentCount: number;
+    isLoading: boolean;
+    isError: boolean;
+    hasMore?: boolean;
+    fetchNewComments: () => Promise<unknown>;
+    createNewComment: (variables: { text: string; linkedToId: string }) => void;
+    deleteComment: (variables: { id: string }) => void;
+    toggleLike: (variables: { id: string }) => void;
+    comments?: Comment[];
+}
+
+const CommentSection = ({
+    linkedToId,
+    commentCount,
+    isLoading,
+    isError,
+    hasMore,
+    fetchNewComments,
+    createNewComment,
+    deleteComment,
+    toggleLike,
+    comments,
+}: CommentSectionProps) => {
     const [commentText, setCommentText] = useState<string>("");
 
-    const { commentCount, reviewComments } = review.review;
     const { data: session } = useSession();
     const authenticated = !!session;
 
-    const trpcUtils = api.useContext();
-    const { mutate } = api.review.createReviewComment.useMutation({
-        onSuccess: async () => {
-            await trpcUtils.review.review.invalidate();
-        },
-    });
-
     const handlePostComment = () => {
         if (commentText !== "")
-            mutate({
-                reviewId: review.review.id,
-                text: commentText,
-            });
+            createNewComment({ linkedToId, text: commentText });
         setCommentText("");
     };
+
+    if (isLoading) return <div>Loading...</div>;
+
+    if (isError) return <div>Error...</div>;
+
+    if (comments === null || typeof comments === "undefined") return null;
+
     return (
         <>
             <div className="rounded-md border-[1px] border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-brand-light">
@@ -58,13 +88,22 @@ const CommentSection = ({ review }: Pick<CommentSectionProps, "review">) => {
                     </>
                 )}
                 <hr className="mt-12 border-gray-200 dark:border-gray-700" />
-                {reviewComments.map((comment) => (
-                    <SingleComment
-                        comment={comment}
-                        currentUserId={session?.user.id}
-                        key={comment.id}
-                    />
-                ))}
+                <InfiniteScroll
+                    dataLength={comments.length}
+                    next={fetchNewComments}
+                    hasMore={hasMore!}
+                    loader={"Loading..."}
+                >
+                    {comments.map((comment) => (
+                        <SingleComment
+                            deleteComment={deleteComment}
+                            toggleLike={toggleLike}
+                            comment={comment}
+                            currentUserId={session?.user.id}
+                            key={comment.id}
+                        />
+                    ))}
+                </InfiniteScroll>
             </div>
         </>
     );
@@ -72,10 +111,23 @@ const CommentSection = ({ review }: Pick<CommentSectionProps, "review">) => {
 
 export default CommentSection;
 
+interface SingleCommentProps {
+    comment: Comment;
+    deleteComment: (variables: { id: string }) => void;
+    toggleLike: (variables: { id: string }) => void;
+    currentUserId?: string;
+}
+
 const SingleComment = ({
     comment,
     currentUserId,
-}: Pick<CommentSectionProps, "comment"> & { currentUserId?: string }) => {
+    deleteComment,
+    toggleLike,
+}: SingleCommentProps) => {
+    const handleToggleLike = () => {
+        toggleLike({ id: comment.id });
+    };
+
     return (
         <div className="mt-2 rounded-lg  p-2">
             <div className="flex">
@@ -97,15 +149,31 @@ const SingleComment = ({
                     </p>
                 </div>
                 <CommentActionPopover
+                    deleteComment={deleteComment}
                     commentId={comment.id}
                     commentAuthorId={comment.user.id}
                     currentUserId={currentUserId}
                 />
             </div>
-            <p className="ml-10 mt-2 text-slate-700 dark:text-slate-300">
-                {comment.text}
-            </p>
-
+            <div className="flex">
+                <p className="my-4 ml-1 w-[90%] text-slate-700 dark:text-slate-300">
+                    {comment.text}
+                </p>
+            </div>
+            <div className="ml-2 flex space-x-2 text-sm font-semibold text-gray-600 dark:text-gray-300">
+                <BsHeartFill
+                    onClick={handleToggleLike}
+                    className={clxsm(
+                        comment.likedByMe
+                            ? "fill-crumble"
+                            : "fill-gray-600 dark:fill-gray-300",
+                        "mt-[5px] h-3 w-3 cursor-pointer hover:fill-crumble hover:dark:fill-crumble"
+                    )}
+                />
+                <div className="mt-[3px] flex space-x-1 text-xs">
+                    <p>{comment.likeCount}</p>
+                </div>
+            </div>
             <hr className="mt-5 border-gray-200 dark:border-gray-700" />
         </div>
     );
@@ -115,29 +183,17 @@ const CommentActionPopover = ({
     commentId,
     commentAuthorId,
     currentUserId,
+    deleteComment,
 }: {
     commentId: string;
     commentAuthorId: string;
     currentUserId?: string;
+    deleteComment: (variables: { id: string }) => void;
 }) => {
     const matchingUserId = commentAuthorId === currentUserId;
 
-    const trpcUtils = api.useContext();
-    const { mutate } = api.review.deleteReviewComment.useMutation({
-        onSuccess: async () => {
-            toast.success(`Deleted your comment.`, {
-                position: "bottom-center",
-                duration: 4000,
-                className: "dark:bg-brand-light dark:text-white text-black",
-            });
-            await trpcUtils.review.review.invalidate();
-        },
-    });
-
     const handleDeleteComment = () => {
-        mutate({
-            id: commentId,
-        });
+        deleteComment({ id: commentId });
     };
 
     return (

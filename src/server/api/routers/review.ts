@@ -85,18 +85,6 @@ export const reviewRouter = createTRPCRouter({
                         currentUserId === null
                             ? false
                             : { where: { userId: currentUserId } },
-                    reviewComments: {
-                        select: {
-                            id: true,
-                            text: true,
-                            reviewId: true,
-                            user: true,
-                            createdAt: true,
-                        },
-                        orderBy: {
-                            createdAt: "desc",
-                        },
-                    },
                     user: {
                         select: {
                             id: true,
@@ -120,7 +108,6 @@ export const reviewRouter = createTRPCRouter({
                     commentCount: data._count.reviewComments,
                     user: { ...data.user },
                     likedByMe: data.reviewLikes.length > 0,
-                    comments: { ...data.reviewComments },
                 },
             };
         }),
@@ -225,19 +212,91 @@ export const reviewRouter = createTRPCRouter({
     // -------------------------------- Comments -----------------------------------//
     // -----------------------------------------------------------------------------//
     //
+    // Infinite feed of review comments
+    //
+    infiniteCommentFeed: publicProcedure
+        .input(
+            z.object({
+                id: z.string(),
+                limit: z.number().optional(),
+                cursor: z
+                    .object({ id: z.string(), createdAt: z.date() })
+                    .optional(),
+            })
+        )
+        .query(async ({ input: { limit = 10, cursor }, ctx }) => {
+            const currentUserId = ctx.session?.user.id;
+
+            const reviewComments = await ctx.prisma.reviewComment.findMany({
+                take: limit + 1,
+                cursor: cursor ? { createdAt_id: cursor } : undefined,
+                orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+                select: {
+                    id: true,
+                    text: true,
+                    reviewId: true,
+                    user: {
+                        select: {
+                            name: true,
+                            displayName: true,
+                            id: true,
+                            image: true,
+                        },
+                    },
+                    createdAt: true,
+                    _count: {
+                        select: { reviewCommentLikes: true },
+                    },
+                    reviewCommentLikes:
+                        currentUserId === null
+                            ? false
+                            : { where: { userId: currentUserId } },
+                },
+            });
+
+            let nextCursor: typeof cursor | undefined;
+            if (reviewComments.length > limit) {
+                const nextItem = reviewComments.pop();
+                if (nextItem != null) {
+                    nextCursor = {
+                        id: nextItem.id,
+                        createdAt: nextItem.createdAt,
+                    };
+                }
+            }
+            return {
+                reviewComments: reviewComments.map((comment) => {
+                    return {
+                        id: comment.id,
+                        text: comment.text,
+                        linkedToId: comment.reviewId,
+                        user: comment.user,
+                        likeCount: comment._count.reviewCommentLikes,
+                        likedByMe: comment.reviewCommentLikes?.length > 0,
+                        createdAt: comment.createdAt,
+                    };
+                }),
+                nextCursor,
+            };
+        }),
+    //
     // Create review comment
     //
     createReviewComment: protectedProcedure
         .input(
             z.object({
-                reviewId: z.string(),
+                linkedToId: z.string(),
                 text: z.string(),
             })
         )
         .mutation(async ({ ctx, input }) => {
             const currentUserId = ctx.session.user.id;
             const reviewComment = await ctx.prisma.reviewComment.create({
-                data: { ...input, userId: currentUserId },
+                data: {
+                    text: input.text,
+                    reviewId: input.linkedToId,
+                    userId: currentUserId,
+                },
             });
             return reviewComment;
         }),
@@ -257,34 +316,6 @@ export const reviewRouter = createTRPCRouter({
                 },
             });
         }),
-    //
-    // Update review comment
-    //
-    updateReviewComment: protectedProcedure
-        .input(
-            z.object({
-                id: z.string(),
-                text: z.string(),
-            })
-        )
-        .mutation(async ({ ctx, input }) => {
-            const updatedComment = await ctx.prisma.reviewComment.update({
-                where: {
-                    id: input.id,
-                },
-                data: {
-                    text: input.text,
-                },
-            });
-            if (!updatedComment) {
-                throw new TRPCError({
-                    code: "BAD_REQUEST",
-                    message: "Could not update review comment.",
-                });
-            }
-            return updatedComment;
-        }),
-    //
     // Toggle like for review comment
     //
     toggleReviewCommentLike: protectedProcedure
