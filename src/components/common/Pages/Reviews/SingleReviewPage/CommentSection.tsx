@@ -9,31 +9,51 @@ import { BsThreeDots } from "react-icons/bs";
 import { Menu, Transition } from "@headlessui/react";
 import clxsm from "@/utils/clsxm";
 import toast from "react-hot-toast";
+import InfiniteScroll from "react-infinite-scroll-component";
+
+interface Comment {
+    id: string;
+    text: string;
+    reviewId: string;
+    user: {
+        name: string | null;
+        displayName: string | null;
+        id: string;
+        image: string | null;
+    };
+    likeCount: number;
+    likedByMe: boolean;
+    createdAt: Date;
+}
 
 interface CommentSectionProps {
     reviewId: string;
     commentCount: number;
+    isLoading: boolean;
+    isError: boolean;
+    hasMore?: boolean;
+    fetchNewComments: () => Promise<unknown>;
+    comments?: Comment[];
 }
 
-const CommentSection = ({ reviewId, commentCount }: CommentSectionProps) => {
+const CommentSection = ({
+    reviewId,
+    commentCount,
+    isLoading,
+    isError,
+    hasMore,
+    fetchNewComments,
+    comments,
+}: CommentSectionProps) => {
     const [commentText, setCommentText] = useState<string>("");
 
-    const { data: reviewComments, isLoading } =
-        api.review.infiniteCommentFeed.useInfiniteQuery(
-            {
-                id: reviewId,
-            },
-            {
-                getNextPageParam: (lastPage) => lastPage.nextCursor,
-            }
-        );
     const { data: session } = useSession();
     const authenticated = !!session;
 
     const trpcUtils = api.useContext();
     const { mutate } = api.review.createReviewComment.useMutation({
         onSuccess: async () => {
-            await trpcUtils.review.review.invalidate();
+            await trpcUtils.review.infiniteCommentFeed.invalidate();
         },
     });
 
@@ -45,11 +65,12 @@ const CommentSection = ({ reviewId, commentCount }: CommentSectionProps) => {
             });
         setCommentText("");
     };
-    console.log(reviewComments);
 
     if (isLoading) return <div>Loading...</div>;
 
-    if (!reviewComments) return <div>404</div>;
+    if (isError) return <div>Error...</div>;
+
+    if (comments === null || typeof comments === "undefined") return null;
 
     return (
         <>
@@ -80,6 +101,20 @@ const CommentSection = ({ reviewId, commentCount }: CommentSectionProps) => {
                         key={comment.reviewComments.}
                     />
                 ))} */}
+                <InfiniteScroll
+                    dataLength={comments.length}
+                    next={fetchNewComments}
+                    hasMore={hasMore!}
+                    loader={"Loading..."}
+                >
+                    {comments.map((comment) => (
+                        <SingleComment
+                            comment={comment}
+                            currentUserId={session?.user.id}
+                            key={comment.id}
+                        />
+                    ))}
+                </InfiniteScroll>
             </div>
         </>
     );

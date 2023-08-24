@@ -235,7 +235,14 @@ export const reviewRouter = createTRPCRouter({
                     id: true,
                     text: true,
                     reviewId: true,
-                    user: true,
+                    user: {
+                        select: {
+                            name: true,
+                            displayName: true,
+                            id: true,
+                            image: true,
+                        },
+                    },
                     createdAt: true,
                     _count: {
                         select: { reviewCommentLikes: true },
