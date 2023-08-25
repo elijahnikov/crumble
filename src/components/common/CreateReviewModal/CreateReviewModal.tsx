@@ -8,7 +8,7 @@ import {
     type IMovieFetch,
     movieFetchSchema,
 } from "@/server/api/schemas/movie";
-import { zodFetch } from "@/utils/fetch/zodFetch";
+import { fetchWithZod } from "@/utils/fetch/zodFetch";
 import { type SetStateType } from "@/utils/types/helpers";
 import Image from "next/image";
 // import { useRouter } from "next/router";
@@ -20,6 +20,7 @@ import DatePicker from "@/components/ui/DatePicker/DatePicker";
 import { api } from "@/utils/api";
 import toast from "react-hot-toast";
 import Link from "next/link";
+import { ZodType } from "zod";
 
 interface CreateReviewModalProps {
     movie?: IMovie;
@@ -66,12 +67,11 @@ const CreateReviewModal = ({}: CreateReviewModalProps) => {
 
     const fetchMoviesFromSearchTerm = useCallback(async () => {
         if (searchedMovieName !== "") {
-            setMovieFetchData(
-                await zodFetch<typeof movieFetchSchema>(
-                    `https://api.themoviedb.org/3/search/movie?query=${searchedMovieName}&include_adult=false&language=en-US'`,
-                    movieFetchSchema
-                )
+            const data = await fetchWithZod(
+                `https://api.themoviedb.org/3/search/movie?query=${searchedMovieName}&include_adult=false&language=en-US'`,
+                movieFetchSchema as ZodType
             );
+            setMovieFetchData(data);
         } else setMovieFetchData([]);
     }, [searchedMovieName]);
 
