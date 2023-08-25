@@ -7,6 +7,7 @@ import React from "react";
 import { BsHeartFill } from "react-icons/bs";
 import { Rating } from "react-simple-star-rating";
 import Tags from "../../../Tags/Tags";
+import Link from "next/link";
 
 interface SingleReviewViewProps {
     review: RouterOutputs["review"]["review"];
@@ -76,9 +77,18 @@ const SingleReviewView = ({ review }: SingleReviewViewProps) => {
                         </div>
                         {reviewData.tags && <Tags tags={reviewData.tags} />}
                     </div>
-                    <div className="ml-10 w-[80%]">
+                    <div className="ml-5 w-[80%]">
                         <div className="flex space-x-2">
-                            <h2>{reviewData.movieTitle}</h2>
+                            <Link
+                                href={{
+                                    pathname: "/film/[id]",
+                                    query: {
+                                        id: reviewData.movieId,
+                                    },
+                                }}
+                            >
+                                <h2>{reviewData.movieTitle}</h2>
+                            </Link>
                             <p className="mt-[7px] text-lg text-slate-500 dark:text-slate-400">
                                 {reviewData.movieReleaseYear.slice(0, 4)}
                             </p>
