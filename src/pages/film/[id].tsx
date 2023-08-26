@@ -1,4 +1,5 @@
 import Layout from "@/components/common/Layout/Layout";
+import { LoadingPage } from "@/components/common/LoadingSpinner/LoadingSpinner";
 import SingleFilmView from "@/components/common/Pages/Films/SingleFilmPage/SingleFilmView";
 import { fetchWithZod } from "@/utils/fetch/zodFetch";
 import { movieDetailsFetchSchema } from "@/utils/types/schemas";
@@ -9,10 +10,21 @@ import type {
     GetStaticPaths,
 } from "next";
 import Head from "next/head";
+import { useRouter } from "next/router";
 
 type PageProps = InferGetStaticPropsType<typeof getStaticProps>;
 
 const SingleFilmPage: NextPage<PageProps> = ({ movieData }) => {
+    const router = useRouter();
+
+    if (router.isFallback) {
+        return (
+            <Layout>
+                <LoadingPage />
+            </Layout>
+        );
+    }
+
     return (
         <>
             <Head>
@@ -48,7 +60,7 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
 };
 
 export const getStaticPaths: GetStaticPaths = () => {
-    return { paths: [], fallback: "blocking" };
+    return { paths: [], fallback: true };
 };
 
 export default SingleFilmPage;

@@ -7,6 +7,7 @@ export const movieSchema = z.object({
     poster: z.string().optional(),
     overview: z.string().nullable(),
     backdrop: z.string().optional(),
+    fromReview: z.boolean().optional(),
 });
 export type IMovie = z.infer<typeof movieSchema>;
 
