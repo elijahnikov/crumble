@@ -20,7 +20,7 @@ import DatePicker from "@/components/ui/DatePicker/DatePicker";
 import { api } from "@/utils/api";
 import toast from "react-hot-toast";
 import Link from "next/link";
-import { ZodType } from "zod";
+import { type ZodType } from "zod";
 import clxsm from "@/utils/clsxm";
 
 interface CreateReviewModalProps {
@@ -56,13 +56,13 @@ const CreateReviewModal = ({ movie, size }: CreateReviewModalProps) => {
         mutate: reviewMutate,
         isLoading: reviewLoading,
         isSuccess: reviewSuccess,
-        isError: reviewError,
+        isError: __,
     } = api.review.createReview.useMutation();
     const {
         mutate: watchedMutate,
         isLoading: watchedLoading,
         isSuccess: watchedSuccess,
-        isError: watchedError,
+        isError: _,
     } = api.watched.createWatched.useMutation();
 
     const fetchMoviesFromSearchTerm = useCallback(async () => {

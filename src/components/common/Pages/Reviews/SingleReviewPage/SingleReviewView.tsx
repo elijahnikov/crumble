@@ -24,7 +24,6 @@ const SingleReviewView = ({ review }: SingleReviewViewProps) => {
             await trpcUtils.review.review.invalidate();
         },
     });
-    const isAuthed = useIsAuthenticated();
 
     const handleToggleLike = () => {
         toggleLike.mutate({ id: review.review.id });

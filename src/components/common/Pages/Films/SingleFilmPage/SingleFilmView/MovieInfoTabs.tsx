@@ -4,9 +4,9 @@ import {
     TabsContent,
     TabsTrigger,
 } from "@/components/ui/Tabs/Tabs";
-import { movieDetailsFetchSchema } from "@/utils/types/schemas";
+import { type movieDetailsFetchSchema } from "@/utils/types/schemas";
 import { useState } from "react";
-import { z } from "zod";
+import { type z } from "zod";
 import Image from "next/image";
 import Button from "@/components/ui/Button/Button";
 import { showJobs } from "@/utils/constants";
@@ -72,31 +72,32 @@ const Cast = ({
         <div className="mt-[20px]">
             <h3 className="ml-2">Cast</h3>
             <div className="mb-[15px] mt-[10px] grid w-full grid-cols-6 gap-2">
-                {cast &&
-                    cast
-                        .filter((obj) => {
-                            return obj.profile_path;
-                        })
-                        .slice(0, amountShowed)
-                        .map((d) => (
-                            <div
-                                key={d.id}
-                                className="inline-block cursor-pointer"
-                            >
-                                <Image
-                                    alt={d.name}
-                                    src={`https://image.tmdb.org/t/p/w500/${d.profile_path}`}
-                                    width={0}
-                                    height={0}
-                                    sizes="100vw"
-                                    className="rounded-md border-t-[1px] opacity-0 duration-[0.5s] dark:border-gray-800"
-                                    style={{ width: "100%", height: "100%" }}
-                                    onLoadingComplete={(image) =>
-                                        image.classList.remove("opacity-0")
-                                    }
-                                />
-                            </div>
-                        ))}
+                {cast
+                    ? cast
+                          .filter((obj) => {
+                              return obj.profile_path;
+                          })
+                          .slice(0, amountShowed)
+                          .map((d) => (
+                              <div
+                                  key={d.id}
+                                  className="inline-block cursor-pointer"
+                              >
+                                  <Image
+                                      alt={d.name}
+                                      src={`https://image.tmdb.org/t/p/w500/${d.profile_path}`}
+                                      width={0}
+                                      height={0}
+                                      sizes="100vw"
+                                      className="rounded-md border-t-[1px] opacity-0 duration-[0.5s] dark:border-gray-800"
+                                      style={{ width: "100%", height: "100%" }}
+                                      onLoadingComplete={(image) =>
+                                          image.classList.remove("opacity-0")
+                                      }
+                                  />
+                              </div>
+                          ))
+                    : null}
             </div>
             <div className="flex space-x-2">
                 {cast.length > amountShowed && (
@@ -123,14 +124,20 @@ const Crew = ({
 }: {
     crew: MovieInfoTabsProps["movieInfo"]["credits"]["crew"];
 }) => {
+    console.log({ crew });
     const groupJobs = (): { [job: string]: typeof crew } => {
-        return crew.reduce(function (memo: any, x: any) {
+        return crew.reduce(function (
+            memo: Record<string, typeof crew>,
+            x: (typeof crew)[0]
+        ) {
+            console.log({ memo, x });
             if (!memo[x["job"]]) {
                 memo[x["job"]] = [];
             }
-            memo[x["job"]].push(x);
+            memo[x["job"]]!.push(x);
             return memo;
-        }, {});
+        },
+        {});
     };
 
     const groupedJobs = groupJobs();
