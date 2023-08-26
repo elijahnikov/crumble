@@ -21,8 +21,8 @@ export const buttonVariants = cva(
                     "hover:bg-crumble-dark active:bg-crumble-darker",
                 ],
                 secondary: [
-                    "bg-crumble-lightest text-crumble-base hover:bg-crumble-lighter active:bg-white active:text-crumble-darker",
-                    "dark:bg-crumble-lighter dark:text-crumble-darker dark:hover:bg-crumble-light dark:active:bg-white",
+                    "bg-gray-700 text-white hover:bg-gray-600 active:bg-gray-500",
+                    "dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600 dark:active:bg-gray-500",
                 ],
                 outline: [
                     "bg-none text-crumble-base border-[1px] border-crumble-base hover:border-crumble-dark hover:text-crumble-dark active:bg-crumble-lightest dark:active:bg-crumble-light",

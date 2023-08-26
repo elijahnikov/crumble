@@ -8,7 +8,7 @@ import {
     type IMovieFetch,
     movieFetchSchema,
 } from "@/server/api/schemas/movie";
-import { zodFetch } from "@/utils/fetch/zodFetch";
+import { fetchWithZod } from "@/utils/fetch/zodFetch";
 import { type SetStateType } from "@/utils/types/helpers";
 import Image from "next/image";
 // import { useRouter } from "next/router";
@@ -20,14 +20,15 @@ import DatePicker from "@/components/ui/DatePicker/DatePicker";
 import { api } from "@/utils/api";
 import toast from "react-hot-toast";
 import Link from "next/link";
+import { ZodType } from "zod";
+import clxsm from "@/utils/clsxm";
 
 interface CreateReviewModalProps {
     movie?: IMovie;
+    size?: string;
 }
 
-const CreateReviewModal = ({}: CreateReviewModalProps) => {
-    // const router = useRouter();
-
+const CreateReviewModal = ({ movie, size }: CreateReviewModalProps) => {
     const [searchedMovieName, setSearchedMovieName] = useState<string>("");
     const [chosenMovieDetails, setChosenMovieDetails] = useState<IMovie | null>(
         null
@@ -66,12 +67,11 @@ const CreateReviewModal = ({}: CreateReviewModalProps) => {
 
     const fetchMoviesFromSearchTerm = useCallback(async () => {
         if (searchedMovieName !== "") {
-            setMovieFetchData(
-                await zodFetch<typeof movieFetchSchema>(
-                    `https://api.themoviedb.org/3/search/movie?query=${searchedMovieName}&include_adult=false&language=en-US'`,
-                    movieFetchSchema
-                )
+            const data = await fetchWithZod(
+                `https://api.themoviedb.org/3/search/movie?query=${searchedMovieName}&include_adult=false&language=en-US'`,
+                movieFetchSchema as ZodType
             );
+            setMovieFetchData(data);
         } else setMovieFetchData([]);
     }, [searchedMovieName]);
 
@@ -102,7 +102,7 @@ const CreateReviewModal = ({}: CreateReviewModalProps) => {
 
     const handleCreateReview = () => {
         if (chosenMovieDetails) {
-            filmMutate(chosenMovieDetails);
+            filmMutate({ ...chosenMovieDetails, fromReview: true });
             watchedMutate({
                 ratingGiven: ratingValue,
                 movieTitle: chosenMovieDetails.title,
@@ -165,10 +165,19 @@ const CreateReviewModal = ({}: CreateReviewModalProps) => {
         else setReviewStarted(false);
     }, [reviewText]);
 
+    useEffect(() => {
+        if (movie) setChosenMovieDetails(movie);
+        setBlockInput(true);
+    }, [movie]);
+
     return (
         <>
             <Modal open={modalOpen} onOpenChange={setModalOpen}>
-                <Modal.Trigger>Create a review</Modal.Trigger>
+                <Modal.Trigger>
+                    <p className={clxsm(size ? `text-${size}` : "")}>
+                        Create a review
+                    </p>
+                </Modal.Trigger>
                 <Modal.Content title="Create a review">
                     {!blockInput ? (
                         <Input
