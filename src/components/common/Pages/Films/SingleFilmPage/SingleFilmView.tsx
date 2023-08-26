@@ -131,6 +131,7 @@ const SingleFilmView = ({ movieData }: SingleFilmViewProps) => {
                         production_companies: movieData.production_companies,
                         production_countries: movieData.production_countries,
                         spoken_languages: movieData.spoken_languages,
+                        genres: movieData.genres,
                     }}
                 />
             </div>
