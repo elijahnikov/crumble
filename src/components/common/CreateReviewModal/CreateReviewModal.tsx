@@ -56,13 +56,11 @@ const CreateReviewModal = ({ movie, size }: CreateReviewModalProps) => {
         mutate: reviewMutate,
         isLoading: reviewLoading,
         isSuccess: reviewSuccess,
-        isError: __,
     } = api.review.createReview.useMutation();
     const {
         mutate: watchedMutate,
         isLoading: watchedLoading,
         isSuccess: watchedSuccess,
-        isError: _,
     } = api.watched.createWatched.useMutation();
 
     const fetchMoviesFromSearchTerm = useCallback(async () => {

@@ -1,10 +1,10 @@
 import React from "react";
 
-interface ReviewSectionProps {
-    movieId: number;
-}
+// interface ReviewSectionProps {
+//     movieId: number;
+// }
 
-const ReviewSection = ({ movieId }: ReviewSectionProps) => {
+const ReviewSection = () => {
     return <></>;
 };
 

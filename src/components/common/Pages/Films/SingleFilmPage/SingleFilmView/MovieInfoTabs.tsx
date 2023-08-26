@@ -125,16 +125,16 @@ const Crew = ({
     crew: MovieInfoTabsProps["movieInfo"]["credits"]["crew"];
 }) => {
     console.log({ crew });
-    const groupJobs = (): { [job: string]: typeof crew } => {
+    const groupJobs = (): Record<string, typeof crew> => {
         return crew.reduce(function (
             memo: Record<string, typeof crew>,
             x: (typeof crew)[0]
         ) {
             console.log({ memo, x });
-            if (!memo[x["job"]]) {
-                memo[x["job"]] = [];
+            if (!memo[x.job]) {
+                memo[x.job] = [];
             }
-            memo[x["job"]]!.push(x);
+            memo[x.job]!.push(x);
             return memo;
         },
         {});
