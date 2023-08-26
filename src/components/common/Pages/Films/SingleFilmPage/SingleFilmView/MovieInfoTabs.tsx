@@ -25,7 +25,7 @@ interface MovieInfoTabsProps {
 
 const MovieInfoTabs = ({ movieInfo }: MovieInfoTabsProps) => {
     return (
-        <div className="float-right mr-5 mt-10 w-[94%]">
+        <div className="float-right mr-5 mt-10 w-[93%]">
             <Tabs defaultValue="cast" className="w-[100%]">
                 <TabsList className="grid w-full grid-cols-4">
                     <TabsTrigger value="cast">Cast</TabsTrigger>
@@ -138,11 +138,11 @@ const Crew = ({
     return (
         <div className="mt-[20px] w-[98%]">
             <h3 className="ml-2">Crew</h3>
-            <div className="mt-5">
+            <div className="mt-6">
                 {showJobs.map((job: { title: string; label: string }) => (
                     <div className="mt-2" key={job.title}>
                         {groupedJobs[job.title as keyof typeof groupedJobs] && (
-                            <div className="flex border-b-[1px] border-gray-300 dark:border-gray-800">
+                            <div className="mb-[25px] mt-[-10px] flex  border-b-[1px] border-gray-300 dark:border-gray-800">
                                 <p className="text-sm text-slate-700 dark:text-slate-400">
                                     {job.label.toLocaleUpperCase()}
                                 </p>
@@ -187,7 +187,7 @@ const Details = ({
             <h3 className="ml-2">Details</h3>
             <div className="mt-4 w-[100%]">
                 <div>
-                    <div className="mb-[25px] flex border-b-[1px] border-gray-800">
+                    <div className="mb-[25px] flex  border-b-[1px] border-gray-300 dark:border-gray-800">
                         <p className="text-sm text-slate-700 dark:text-slate-400">
                             STUDIOS
                         </p>
@@ -208,7 +208,7 @@ const Details = ({
                     </div>
                 </div>
                 <div>
-                    <div className="mb-[25px] mt-[-10px] flex border-b-[1px] border-gray-800">
+                    <div className="mb-[25px] mt-[-10px] flex  border-b-[1px] border-gray-300 dark:border-gray-800">
                         <p className="text-sm text-slate-700 dark:text-slate-400">
                             COUNTRIES
                         </p>
@@ -229,7 +229,7 @@ const Details = ({
                     </div>
                 </div>
                 <div>
-                    <div className="mb-[25px] mt-[-10px] flex border-b-[1px] border-gray-800">
+                    <div className="mb-[25px] mt-[-10px] flex  border-b-[1px] border-gray-300 dark:border-gray-800">
                         <p className="text-sm text-slate-700 dark:text-slate-400">
                             LANGUAGES
                         </p>
@@ -250,7 +250,7 @@ const Details = ({
                     </div>
                 </div>
                 <div>
-                    <div className="mb-[25px] mt-[-10px] flex border-b-[1px] border-gray-800">
+                    <div className="mb-[25px] mt-[-10px] flex  border-b-[1px] border-gray-300 dark:border-gray-800">
                         <p className="text-sm text-slate-700 dark:text-slate-400">
                             ALTERNATIVE TITLES
                         </p>
@@ -288,7 +288,7 @@ const Genres = ({
             <h3 className="ml-2">Genres</h3>
             <div className="mt-4 w-[100%]">
                 <div>
-                    <div className="mb-[25px] flex border-b-[1px] border-gray-800">
+                    <div className="mb-[25px] flex  border-b-[1px] border-gray-300 dark:border-gray-800">
                         <p className="text-sm text-slate-700 dark:text-slate-400">
                             GENRES
                         </p>
