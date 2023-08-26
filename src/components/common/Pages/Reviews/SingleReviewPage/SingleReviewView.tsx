@@ -8,6 +8,7 @@ import { BsHeartFill } from "react-icons/bs";
 import { Rating } from "react-simple-star-rating";
 import Tags from "../../../Tags/Tags";
 import Link from "next/link";
+import { Container } from "@/components/common/Layout/Layout";
 
 interface SingleReviewViewProps {
     review: RouterOutputs["review"]["review"];
@@ -30,25 +31,23 @@ const SingleReviewView = ({ review }: SingleReviewViewProps) => {
     };
     return (
         <>
-            <div className="rounded-md border-[1px] border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-brand-light">
-                <div className="w-[100%] pb-5">
-                    <span className="flex w-[100%] text-sm dark:text-slate-200">
-                        Review by{" "}
-                        <p className="ml-1 font-semibold dark:text-slate-300">
-                            {" "}
-                            {author.name}
-                        </p>
-                        {author.image && (
-                            <Image
-                                className="ml-1 rounded-full"
-                                src={author.image}
-                                alt={author.name!}
-                                width={20}
-                                height={20}
-                            />
-                        )}
-                    </span>
-                </div>
+            <Container>
+                <span className="mb-5 flex w-[100%] text-sm dark:text-slate-200">
+                    Review by{" "}
+                    <p className="ml-1 font-semibold dark:text-slate-300">
+                        {" "}
+                        {author.name}
+                    </p>
+                    {author.image && (
+                        <Image
+                            className="ml-1 rounded-full"
+                            src={author.image}
+                            alt={author.name!}
+                            width={20}
+                            height={20}
+                        />
+                    )}
+                </span>
                 <div className="flex">
                     <div className="w-[25%]">
                         {reviewData.moviePoster && (
@@ -114,7 +113,7 @@ const SingleReviewView = ({ review }: SingleReviewViewProps) => {
                         </p>
                     </div>
                 </div>
-            </div>
+            </Container>
         </>
     );
 };

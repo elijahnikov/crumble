@@ -43,3 +43,11 @@ const Layout = ({ children, title, fullWidth }: LayoutProps) => {
 };
 
 export default Layout;
+
+export const Container = ({ children }: { children: React.ReactNode }) => {
+    return (
+        <div className="rounded-md border-[1px] border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-brand-light">
+            <div className="w-[100%] pb-5">{children}</div>
+        </div>
+    );
+};

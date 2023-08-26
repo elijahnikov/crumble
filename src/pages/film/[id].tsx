@@ -1,6 +1,6 @@
 import Layout from "@/components/common/Layout/Layout";
 import { LoadingPage } from "@/components/common/LoadingSpinner/LoadingSpinner";
-import SingleFilmView from "@/components/common/Pages/Films/SingleFilmPage/SingleFilmView";
+import SingleFilmView from "@/components/common/Pages/Films/SingleFilmPage/SingleFilmView/SingleFilmView";
 import { fetchWithZod } from "@/utils/fetch/zodFetch";
 import { movieDetailsFetchSchema } from "@/utils/types/schemas";
 import type {
