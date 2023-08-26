@@ -2,6 +2,7 @@ import { z } from "zod";
 import { movieSchema } from "../schemas/movie";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import { TRPCError } from "@trpc/server";
+import { prisma } from "@/server/db";
 
 export const movieRouter = createTRPCRouter({
     //
@@ -17,12 +18,22 @@ export const movieRouter = createTRPCRouter({
             });
 
             if (film) {
-                return;
+                await prisma.movie.update({
+                    where: {
+                        id: film.id,
+                    },
+                    data: {
+                        watchedCount: {
+                            increment: 1,
+                        },
+                    },
+                });
             }
 
             await ctx.prisma.movie.create({
                 data: {
                     ...input,
+                    watchedCount: input.fromReview ? 1 : 0,
                 },
             });
         }),

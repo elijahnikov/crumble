@@ -21,14 +21,14 @@ import { api } from "@/utils/api";
 import toast from "react-hot-toast";
 import Link from "next/link";
 import { ZodType } from "zod";
+import clxsm from "@/utils/clsxm";
 
 interface CreateReviewModalProps {
     movie?: IMovie;
+    size?: string;
 }
 
-const CreateReviewModal = ({}: CreateReviewModalProps) => {
-    // const router = useRouter();
-
+const CreateReviewModal = ({ movie, size }: CreateReviewModalProps) => {
     const [searchedMovieName, setSearchedMovieName] = useState<string>("");
     const [chosenMovieDetails, setChosenMovieDetails] = useState<IMovie | null>(
         null
@@ -102,7 +102,7 @@ const CreateReviewModal = ({}: CreateReviewModalProps) => {
 
     const handleCreateReview = () => {
         if (chosenMovieDetails) {
-            filmMutate(chosenMovieDetails);
+            filmMutate({ ...chosenMovieDetails, fromReview: true });
             watchedMutate({
                 ratingGiven: ratingValue,
                 movieTitle: chosenMovieDetails.title,
@@ -165,10 +165,19 @@ const CreateReviewModal = ({}: CreateReviewModalProps) => {
         else setReviewStarted(false);
     }, [reviewText]);
 
+    useEffect(() => {
+        if (movie) setChosenMovieDetails(movie);
+        setBlockInput(true);
+    }, [movie]);
+
     return (
         <>
             <Modal open={modalOpen} onOpenChange={setModalOpen}>
-                <Modal.Trigger>Create a review</Modal.Trigger>
+                <Modal.Trigger>
+                    <p className={clxsm(size ? `text-${size}` : "")}>
+                        Create a review
+                    </p>
+                </Modal.Trigger>
                 <Modal.Content title="Create a review">
                     {!blockInput ? (
                         <Input
