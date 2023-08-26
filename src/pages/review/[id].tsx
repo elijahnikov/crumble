@@ -63,7 +63,12 @@ const SingleReviewPage: NextPage<PageProps> = ({ id }) => {
     return (
         <>
             <Head>
-                <title>{`@${data.review.user.name} - ${data.review.movieTitle}`}</title>
+                <title>{`@${data.review.user.name}'s ${
+                    data.review.movieTitle
+                } (${data.review.movieReleaseYear.slice(
+                    0,
+                    4
+                )}) Review • Crumble`}</title>
             </Head>
             <Layout>
                 <SingleReviewView review={data} />
