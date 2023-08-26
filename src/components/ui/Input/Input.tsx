@@ -101,7 +101,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             kbd: Kbd,
             ...props
         },
-        ref
+        _
     ) => {
         const inputRef = useRef<HTMLInputElement | null>(null);
 

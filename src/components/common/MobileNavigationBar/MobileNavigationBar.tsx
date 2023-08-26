@@ -10,9 +10,9 @@ import navigation from "@/utils/data/navLinks";
 const MobileNavigationBar = () => {
     const [currentPath, setCurrentPath] = useState("");
 
-    const router = useRouter();
+    // const router = useRouter();
     const { data: session } = useSession();
-    const authenticated = !!session;
+    // const authenticated = !!session;
 
     useEffect(() => {
         setCurrentPath(window.location.pathname);
@@ -22,7 +22,7 @@ const MobileNavigationBar = () => {
             as="nav"
             className="border-b border-gray-200 bg-white dark:border-gray-700 dark:bg-brand-light"
         >
-            {({ open }) => (
+            {() => (
                 <>
                     <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
                         <div className="relative flex h-16 items-center justify-between">

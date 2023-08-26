@@ -1,16 +1,16 @@
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import { newReviewSchema, reviewsSchema } from "../schemas/review";
-import { Ratelimit } from "@upstash/ratelimit";
-import { Redis } from "@upstash/redis";
+// import { Ratelimit } from "@upstash/ratelimit";
+// import { Redis } from "@upstash/redis";
 import { TRPCError } from "@trpc/server";
 
-const ratelimit = new Ratelimit({
-    redis: Redis.fromEnv(),
-    limiter: Ratelimit.slidingWindow(1, "30 s"),
-    analytics: true,
-    prefix: "@upstash/ratelimit",
-});
+// const ratelimit = new Ratelimit({
+//     redis: Redis.fromEnv(),
+//     limiter: Ratelimit.slidingWindow(1, "30 s"),
+//     analytics: true,
+//     prefix: "@upstash/ratelimit",
+// });
 
 export const reviewRouter = createTRPCRouter({
     //

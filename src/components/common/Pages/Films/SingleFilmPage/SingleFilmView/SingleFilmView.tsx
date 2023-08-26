@@ -1,18 +1,7 @@
 import CreateReviewModal from "@/components/common/CreateReviewModal/CreateReviewModal";
-import LoadingSpinner from "@/components/common/LoadingSpinner/LoadingSpinner";
-import {
-    Tabs,
-    TabsContent,
-    TabsList,
-    TabsTrigger,
-} from "@/components/ui/Tabs/Tabs";
-import { RouterOutputs, api } from "@/utils/api";
-import clxsm from "@/utils/clsxm";
-import { numberFormatWithSuffix } from "@/utils/general/numberFormat";
 import type { movieDetailsFetchSchema } from "@/utils/types/schemas";
 import Image from "next/image";
 import React from "react";
-import { BsFillEyeFill, BsFillGridFill, BsFillHeartFill } from "react-icons/bs";
 import { Rating } from "react-simple-star-rating";
 import type { z } from "zod";
 import MovieStats from "./MovieStats";
