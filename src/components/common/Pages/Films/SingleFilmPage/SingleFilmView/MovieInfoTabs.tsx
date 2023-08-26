@@ -148,24 +148,25 @@ const Crew = ({
             <div className="mt-6">
                 {showJobs.map((job: { title: string; label: string }) => (
                     <div className="mt-2" key={job.title}>
-                        {groupedJobs[job.title as keyof typeof groupedJobs] && (
+                        {groupedJobs[job.title] && (
                             <div className="mb-[25px] mt-[-10px] flex  border-b-[1px] border-gray-300 dark:border-gray-800">
                                 <p className="text-sm text-slate-700 dark:text-slate-400">
                                     {job.label.toLocaleUpperCase()}
                                 </p>
                                 <div className="align-right float-right ml-auto inline w-[200px] text-right">
-                                    {groupedJobs[job.title] &&
-                                        groupedJobs[job.title]?.map((j) => (
-                                            <div
-                                                key={j.id}
-                                                className="mb-2 ml-2 inline-block 
+                                    {groupedJobs[job.title]
+                                        ? groupedJobs[job.title]?.map((j) => (
+                                              <div
+                                                  key={j.id}
+                                                  className="mb-2 ml-2 inline-block 
                                             cursor-pointer rounded-[5px] border-t-[1px] 
                                             border-gray-200 bg-brand-white p-[5px] text-xs 
                                             text-slate-700 hover:bg-gray-200 dark:border-gray-800 dark:bg-brand dark:text-white dark:hover:bg-gray-800"
-                                            >
-                                                {j.name}
-                                            </div>
-                                        ))}
+                                              >
+                                                  {j.name}
+                                              </div>
+                                          ))
+                                        : null}
                                 </div>
                             </div>
                         )}
