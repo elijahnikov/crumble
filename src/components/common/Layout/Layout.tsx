@@ -5,11 +5,10 @@ import clxsm from "@/utils/clsxm";
 
 interface LayoutProps {
     children: React.ReactNode;
-    title?: string;
     fullWidth?: boolean;
 }
 
-const Layout = ({ children, title, fullWidth }: LayoutProps) => {
+const Layout = ({ children, fullWidth }: LayoutProps) => {
     const { data: session } = useSession();
     const authenticated = !!session;
 

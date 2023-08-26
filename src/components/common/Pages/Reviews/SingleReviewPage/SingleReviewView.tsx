@@ -1,7 +1,6 @@
 import { api, type RouterOutputs } from "@/utils/api";
 import clxsm from "@/utils/clsxm";
 import { shortMonthDateFormat } from "@/utils/general/dateFormat";
-import useIsAuthenticated from "@/utils/hooks/useIsAuthenticated";
 import Image from "next/image";
 import React from "react";
 import { BsHeartFill } from "react-icons/bs";
