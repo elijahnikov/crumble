@@ -19,25 +19,36 @@ interface MovieInfoTabsProps {
         | "production_countries"
         | "spoken_languages"
         | "alternative_titles"
+        | "genres"
     >;
 }
 
 const MovieInfoTabs = ({ movieInfo }: MovieInfoTabsProps) => {
     return (
-        <div className="float-right mr-5 mt-10 w-[65%]">
+        <div className="float-right mr-5 mt-10 w-[94%]">
             <Tabs defaultValue="cast" className="w-[100%]">
-                <TabsList className="grid w-full grid-cols-5">
+                <TabsList className="grid w-full grid-cols-4">
                     <TabsTrigger value="cast">Cast</TabsTrigger>
                     <TabsTrigger value="crew">Crew</TabsTrigger>
                     <TabsTrigger value="details">Details</TabsTrigger>
                     <TabsTrigger value="genres">Genres</TabsTrigger>
-                    <TabsTrigger value="releases">Releases</TabsTrigger>
                 </TabsList>
                 <TabsContent value="cast" className="mr-2">
                     <Cast cast={movieInfo.credits.cast} />
                 </TabsContent>
                 <TabsContent value="crew">
                     <Crew crew={movieInfo.credits.crew} />
+                </TabsContent>
+                <TabsContent value="details">
+                    <Details
+                        companies={movieInfo.production_companies}
+                        countries={movieInfo.production_countries}
+                        languages={movieInfo.spoken_languages}
+                        alternativeTitles={movieInfo.alternative_titles}
+                    />
+                </TabsContent>
+                <TabsContent value="genres">
+                    <Genres genres={movieInfo.genres} />
                 </TabsContent>
             </Tabs>
         </div>
@@ -58,7 +69,7 @@ const Cast = ({
     };
 
     return (
-        <div className="ml-2 mt-[10px]">
+        <div className="mt-[20px]">
             <h3 className="ml-2">Cast</h3>
             <div className="mb-[15px] mt-[10px] grid w-full grid-cols-6 gap-2">
                 {cast &&
@@ -78,8 +89,11 @@ const Cast = ({
                                     width={0}
                                     height={0}
                                     sizes="100vw"
-                                    className="rounded-md border-t-[1px] dark:border-gray-800"
+                                    className="rounded-md border-t-[1px] opacity-0 duration-[0.5s] dark:border-gray-800"
                                     style={{ width: "100%", height: "100%" }}
+                                    onLoadingComplete={(image) =>
+                                        image.classList.remove("opacity-0")
+                                    }
                                 />
                             </div>
                         ))}
@@ -120,10 +134,9 @@ const Crew = ({
     };
 
     const groupedJobs = groupJobs();
-    console.log({ groupedJobs: groupedJobs["Screenplay"] });
 
     return (
-        <div className="ml-2 mt-[10px] w-[98%]">
+        <div className="mt-[20px] w-[98%]">
             <h3 className="ml-2">Crew</h3>
             <div className="mt-5">
                 {showJobs.map((job: { title: string; label: string }) => (
@@ -151,6 +164,150 @@ const Crew = ({
                         )}
                     </div>
                 ))}
+            </div>
+        </div>
+    );
+};
+
+interface DetailsProps {
+    companies: MovieInfoTabsProps["movieInfo"]["production_companies"];
+    countries: MovieInfoTabsProps["movieInfo"]["production_countries"];
+    languages: MovieInfoTabsProps["movieInfo"]["spoken_languages"];
+    alternativeTitles: MovieInfoTabsProps["movieInfo"]["alternative_titles"];
+}
+
+const Details = ({
+    companies,
+    countries,
+    languages,
+    alternativeTitles,
+}: DetailsProps) => {
+    return (
+        <div className="mt-[20px]">
+            <h3 className="ml-2">Details</h3>
+            <div className="mt-4 w-[100%]">
+                <div>
+                    <div className="mb-[25px] flex border-b-[1px] border-gray-800">
+                        <p className="text-sm text-slate-700 dark:text-slate-400">
+                            STUDIOS
+                        </p>
+
+                        <div className="align-right float-right ml-auto inline w-[400px] text-right">
+                            {companies.map((company) => (
+                                <span
+                                    key={company.id}
+                                    className="mb-2 ml-2 inline-block 
+                                            cursor-pointer rounded-[5px] border-t-[1px] 
+                                            border-gray-200 bg-brand-white p-[5px] text-xs 
+                                            text-slate-700 hover:bg-gray-200 dark:border-gray-800 dark:bg-brand dark:text-white dark:hover:bg-gray-800"
+                                >
+                                    {company.name}
+                                </span>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div className="mb-[25px] mt-[-10px] flex border-b-[1px] border-gray-800">
+                        <p className="text-sm text-slate-700 dark:text-slate-400">
+                            COUNTRIES
+                        </p>
+
+                        <div className="align-right float-right ml-auto inline w-[400px] text-right">
+                            {countries.map((country) => (
+                                <span
+                                    key={country.iso_3166_1}
+                                    className="mb-2 ml-2 inline-block 
+                                            cursor-pointer rounded-[5px] border-t-[1px] 
+                                            border-gray-200 bg-brand-white p-[5px] text-xs 
+                                            text-slate-700 hover:bg-gray-200 dark:border-gray-800 dark:bg-brand dark:text-white dark:hover:bg-gray-800"
+                                >
+                                    {country.name}
+                                </span>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div className="mb-[25px] mt-[-10px] flex border-b-[1px] border-gray-800">
+                        <p className="text-sm text-slate-700 dark:text-slate-400">
+                            LANGUAGES
+                        </p>
+
+                        <div className="align-right float-right ml-auto inline w-[400px] text-right">
+                            {languages.map((language) => (
+                                <span
+                                    key={language.iso_639_1}
+                                    className="mb-2 ml-2 inline-block 
+                                            cursor-pointer rounded-[5px] border-t-[1px] 
+                                            border-gray-200 bg-brand-white p-[5px] text-xs 
+                                            text-slate-700 hover:bg-gray-200 dark:border-gray-800 dark:bg-brand dark:text-white dark:hover:bg-gray-800"
+                                >
+                                    {language.name}
+                                </span>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div className="mb-[25px] mt-[-10px] flex border-b-[1px] border-gray-800">
+                        <p className="text-sm text-slate-700 dark:text-slate-400">
+                            ALTERNATIVE TITLES
+                        </p>
+
+                        <div className="align-right float-right ml-auto inline w-[400px] text-right">
+                            {alternativeTitles.titles.map((title) => (
+                                <span
+                                    key={title.iso_3166_1}
+                                    className="mb-2 ml-2 inline-block 
+                                            cursor-pointer rounded-[5px] border-t-[1px] 
+                                            border-gray-200 bg-brand-white p-[5px] text-xs 
+                                            text-slate-700 hover:bg-gray-200 dark:border-gray-800 dark:bg-brand dark:text-white dark:hover:bg-gray-800"
+                                >
+                                    {title.title}
+                                </span>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+const Genres = ({
+    genres,
+}: {
+    genres: Array<{
+        id: number;
+        name: string;
+    }>;
+}) => {
+    return (
+        <div className="mt-[20px]">
+            <h3 className="ml-2">Genres</h3>
+            <div className="mt-4 w-[100%]">
+                <div>
+                    <div className="mb-[25px] flex border-b-[1px] border-gray-800">
+                        <p className="text-sm text-slate-700 dark:text-slate-400">
+                            GENRES
+                        </p>
+
+                        <div className="align-right float-right ml-auto inline w-[400px] text-right">
+                            {genres.map((genre) => (
+                                <span
+                                    key={genre.id}
+                                    className="mb-2 ml-2 inline-block 
+                                    cursor-pointer rounded-[5px] border-t-[1px] 
+                                    border-gray-200 bg-brand-white p-[5px] text-xs 
+                                    text-slate-700 hover:bg-gray-200 dark:border-gray-800 dark:bg-brand dark:text-white dark:hover:bg-gray-800"
+                                >
+                                    {genre.name}
+                                </span>
+                            ))}
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     );
