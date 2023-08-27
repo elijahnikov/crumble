@@ -18,10 +18,13 @@ export const reviewRouter = createTRPCRouter({
     //
     reviews: publicProcedure
         .input(reviewsSchema)
-        .query(async ({ ctx, input: { limit = 10, cursor } }) => {
+        .query(async ({ ctx, input: { limit = 10, cursor, movieId } }) => {
             const currentUserId = ctx.session?.user.id;
             const data = await ctx.prisma.review.findMany({
                 take: limit + 1,
+                where: {
+                    ...(movieId ? { movieId } : {}),
+                },
                 cursor: cursor ? { createdAt_id: cursor } : undefined,
                 orderBy: [{ createdAt: "desc" }, { id: "desc" }],
                 include: {

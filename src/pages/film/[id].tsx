@@ -1,5 +1,6 @@
 import Layout, { Container } from "@/components/common/Layout/Layout";
 import { LoadingPage } from "@/components/common/LoadingSpinner/LoadingSpinner";
+import ReviewSection from "@/components/common/Pages/Films/SingleFilmPage/ReviewSection/ReviewSection";
 import SingleFilmView from "@/components/common/Pages/Films/SingleFilmPage/SingleFilmView/SingleFilmView";
 import { fetchWithZod } from "@/utils/fetch/zodFetch";
 import { movieDetailsFetchSchema } from "@/utils/types/schemas";
@@ -39,6 +40,7 @@ const SingleFilmPage: NextPage<PageProps> = ({ movieData }) => {
             </Head>
             <Layout>
                 <SingleFilmView movieData={movieData} />
+                <ReviewSection movieId={movieData.id} />
             </Layout>
         </>
     );
