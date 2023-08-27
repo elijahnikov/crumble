@@ -10,6 +10,7 @@ import { type z } from "zod";
 import Image from "next/image";
 import Button from "@/components/ui/Button/Button";
 import { showJobs } from "@/utils/constants";
+import Tooltip from "@/components/ui/Tooltip/Tooltip";
 
 interface MovieInfoTabsProps {
     movieInfo: Pick<
@@ -83,18 +84,30 @@ const Cast = ({
                                   key={d.id}
                                   className="inline-block cursor-pointer"
                               >
-                                  <Image
-                                      alt={d.name}
-                                      src={`https://image.tmdb.org/t/p/w500/${d.profile_path}`}
-                                      width={0}
-                                      height={0}
-                                      sizes="100vw"
-                                      className="rounded-md border-t-[1px] opacity-0 duration-[0.5s] dark:border-gray-800"
-                                      style={{ width: "100%", height: "100%" }}
-                                      onLoadingComplete={(image) =>
-                                          image.classList.remove("opacity-0")
-                                      }
-                                  />
+                                  <Tooltip>
+                                      <Tooltip.Trigger>
+                                          <Image
+                                              alt={d.name}
+                                              src={`https://image.tmdb.org/t/p/w500/${d.profile_path}`}
+                                              width={0}
+                                              height={0}
+                                              sizes="100vw"
+                                              className="rounded-md border-t-[1px] opacity-0 duration-[0.5s] dark:border-gray-800"
+                                              style={{
+                                                  width: "100%",
+                                                  height: "100%",
+                                              }}
+                                              onLoadingComplete={(image) =>
+                                                  image.classList.remove(
+                                                      "opacity-0"
+                                                  )
+                                              }
+                                          />
+                                      </Tooltip.Trigger>
+                                      <Tooltip.Content>
+                                          {d.name}
+                                      </Tooltip.Content>
+                                  </Tooltip>
                               </div>
                           ))
                     : null}
@@ -124,7 +137,6 @@ const Crew = ({
 }: {
     crew: MovieInfoTabsProps["movieInfo"]["credits"]["crew"];
 }) => {
-    console.log({ crew });
     const groupJobs = (): Record<string, typeof crew> => {
         return crew.reduce(function (
             memo: Record<string, typeof crew>,

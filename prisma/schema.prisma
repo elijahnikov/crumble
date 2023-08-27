@@ -161,6 +161,7 @@ model Movie {
   poster       String?
   backdrop     String?
   releaseDate  String
+  rating       Int      @default(0)
   watchedCount Int      @default(0)
   listCount    Int      @default(0)
   likeCount    Int      @default(0)

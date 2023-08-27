@@ -8,6 +8,7 @@ import MovieStats from "./MovieStats";
 import MovieInfoTabs from "./MovieInfoTabs";
 import TertiaryInfo from "./TertiaryInfo";
 import { Container } from "@/components/common/Layout/Layout";
+import { api } from "@/utils/api";
 
 interface SingleFilmViewProps {
     movieData: z.infer<typeof movieDetailsFetchSchema>;
@@ -17,6 +18,11 @@ const SingleFilmView = ({ movieData }: SingleFilmViewProps) => {
     const directors = movieData.credits.crew.filter((crew) => {
         return crew.job === "Director";
     });
+
+    const { data: extraMovieData, isLoading: isExtraMovieDataLoading } =
+        api.movie.film.useQuery({
+            id: movieData.id,
+        });
 
     return (
         <>
@@ -65,7 +71,7 @@ const SingleFilmView = ({ movieData }: SingleFilmViewProps) => {
                                         display: "-webkit-inline-box",
                                     }}
                                     allowFraction={true}
-                                    initialValue={3.5}
+                                    initialValue={extraMovieData?.data.rating}
                                     size={15}
                                     fillColor="#EF4444"
                                 />
@@ -89,7 +95,11 @@ const SingleFilmView = ({ movieData }: SingleFilmViewProps) => {
                 {/* DESCRIPTION AND STATS */}
                 <div className="mb-[20px] flex">
                     <div className="ml-5 mt-[60px] w-[30%] space-y-5 text-center">
-                        <MovieStats movieId={movieData.id} />
+                        <MovieStats
+                            likeCount={extraMovieData?.data.likeCount}
+                            listCount={extraMovieData?.data.listCount}
+                            watchedCount={extraMovieData?.data.watchedCount}
+                        />
                         <div>
                             <CreateReviewModal
                                 size="sm"
