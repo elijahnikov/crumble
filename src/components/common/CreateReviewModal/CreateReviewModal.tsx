@@ -20,7 +20,7 @@ import DatePicker from "@/components/ui/DatePicker/DatePicker";
 import { api } from "@/utils/api";
 import toast from "react-hot-toast";
 import Link from "next/link";
-import { type ZodType } from "zod";
+import z, { type ZodType } from "zod";
 import clxsm from "@/utils/clsxm";
 
 interface CreateReviewModalProps {
@@ -50,6 +50,7 @@ const CreateReviewModal = ({ movie, size }: CreateReviewModalProps) => {
         new Date()
     );
 
+    const trpcUtils = api.useContext();
     const { mutate: filmMutate, isLoading: filmLoading } =
         api.movie.createFilm.useMutation();
     const {
@@ -61,7 +62,11 @@ const CreateReviewModal = ({ movie, size }: CreateReviewModalProps) => {
         mutate: watchedMutate,
         isLoading: watchedLoading,
         isSuccess: watchedSuccess,
-    } = api.watched.createWatched.useMutation();
+    } = api.watched.createWatched.useMutation({
+        onSuccess: () => {
+            void trpcUtils.movie.film.invalidate();
+        },
+    });
 
     const fetchMoviesFromSearchTerm = useCallback(async () => {
         if (searchedMovieName !== "") {
@@ -100,7 +105,11 @@ const CreateReviewModal = ({ movie, size }: CreateReviewModalProps) => {
 
     const handleCreateReview = () => {
         if (chosenMovieDetails) {
-            filmMutate({ ...chosenMovieDetails, fromReview: true });
+            filmMutate({
+                ...chosenMovieDetails,
+                fromReview: true,
+                rating: parseFloat(ratingValue.toString()),
+            });
             watchedMutate({
                 ratingGiven: ratingValue,
                 movieTitle: chosenMovieDetails.title,
