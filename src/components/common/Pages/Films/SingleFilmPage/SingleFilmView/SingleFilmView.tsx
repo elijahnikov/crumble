@@ -68,8 +68,10 @@ const SingleFilmView = ({ movieData }: SingleFilmViewProps) => {
                                 <Tooltip>
                                     <Tooltip.Trigger>
                                         <p className="font-semibold">
-                                            {extraMovieData?.data.rating.toFixed(
-                                                2
+                                            {Number(
+                                                extraMovieData?.data.rating.toFixed(
+                                                    2
+                                                )
                                             )}
                                         </p>
                                     </Tooltip.Trigger>
