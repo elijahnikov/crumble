@@ -1,4 +1,4 @@
-import Layout from "@/components/common/Layout/Layout";
+import Layout, { Container } from "@/components/common/Layout/Layout";
 import { LoadingPage } from "@/components/common/LoadingSpinner/LoadingSpinner";
 import SingleFilmView from "@/components/common/Pages/Films/SingleFilmPage/SingleFilmView/SingleFilmView";
 import { fetchWithZod } from "@/utils/fetch/zodFetch";
@@ -20,7 +20,9 @@ const SingleFilmPage: NextPage<PageProps> = ({ movieData }) => {
     if (router.isFallback) {
         return (
             <Layout>
-                <LoadingPage />
+                <Container>
+                    <LoadingPage />
+                </Container>
             </Layout>
         );
     }
