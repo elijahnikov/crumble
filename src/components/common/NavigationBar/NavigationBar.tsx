@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import CreateReviewModal from "../CreateReviewModal/CreateReviewModal";
 import DarkModeSwitch from "../DarkModeSwitch/DarkModeSwitch";
 import navigation from "@/utils/data/navLinks";
+import DiscordSignIn from "../DiscordSignIn/DiscordSignIn";
 
 const NavigationBar = () => {
     const [currentPath, setCurrentPath] = useState("");
@@ -74,7 +75,7 @@ const NavigationBar = () => {
             <div className="mb-5 text-center">
                 <CreateReviewModal />
             </div>
-            {authenticated && (
+            {authenticated ? (
                 <div className="flex flex-shrink-0 border-t border-gray-200 p-4 dark:border-gray-700">
                     <div className="group block w-full flex-shrink-0">
                         <div className="flex items-center">
@@ -96,6 +97,8 @@ const NavigationBar = () => {
                         </div>
                     </div>
                 </div>
+            ) : (
+                <DiscordSignIn callbackUrl={"/"} />
             )}
         </div>
     );

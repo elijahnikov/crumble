@@ -44,22 +44,6 @@ export const watchedRouter = createTRPCRouter({
         .mutation(async ({ ctx, input }) => {
             const userId = ctx.session.user.id;
 
-            const check = await ctx.prisma.watched.findUnique({
-                where: {
-                    userId_movieId: {
-                        userId,
-                        movieId: input.movieId,
-                    },
-                },
-            });
-
-            if (check) {
-                throw new TRPCError({
-                    code: "BAD_REQUEST",
-                    message: "Movie is already watched.",
-                });
-            }
-
             const watched = await ctx.prisma.watched.upsert({
                 where: {
                     userId_movieId: {
