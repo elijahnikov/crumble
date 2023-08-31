@@ -16,27 +16,18 @@ export const movieRouter = createTRPCRouter({
                     movieId: input.movieId,
                 },
             });
-            console.log({ input });
             if (movie) {
-                let newAverageRating: number | undefined;
-                let newNumberOfRatings: number | undefined;
-                if (input.rating) {
-                    const currentNumberOfRatings = movie.numberOfRatings;
-                    const currentAverageRating = movie.rating;
-                    console.log({
-                        currentAverageRating,
-                        currentNumberOfRatings,
-                    });
+                const currentNumberOfRatings = movie.numberOfRatings;
+                const currentAverageRating = movie.rating;
 
-                    const userRating = input.rating;
+                const userRating = input.rating;
 
-                    newNumberOfRatings = currentNumberOfRatings + 1;
-                    newAverageRating =
-                        (currentAverageRating * currentNumberOfRatings +
-                            userRating) /
-                        newNumberOfRatings;
-                    console.log({ newNumberOfRatings, newAverageRating });
-                }
+                const newNumberOfRatings = currentNumberOfRatings + 1;
+                const newAverageRating =
+                    (currentAverageRating * currentNumberOfRatings +
+                        userRating) /
+                    newNumberOfRatings;
+
                 await prisma.movie.update({
                     where: {
                         id: movie.id,

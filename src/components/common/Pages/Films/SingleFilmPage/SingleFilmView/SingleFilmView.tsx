@@ -70,37 +70,39 @@ const SingleFilmView = ({ movieData }: SingleFilmViewProps) => {
                                 <Tooltip>
                                     <Tooltip.Trigger>
                                         <p className="font-semibold">
-                                            {Number(
-                                                extraMovieData?.data.rating.toFixed(
-                                                    2
-                                                )
-                                            )}
+                                            {extraMovieData?.data.rating
+                                                ? Number(
+                                                      extraMovieData?.data.rating.toFixed(
+                                                          2
+                                                      )
+                                                  )
+                                                : "No ratings"}
                                         </p>
                                     </Tooltip.Trigger>
                                     <Tooltip.Content>
                                         <p>
                                             From{" "}
-                                            {
-                                                extraMovieData?.data
-                                                    .numberOfRatings
-                                            }{" "}
+                                            {extraMovieData?.data
+                                                .numberOfRatings
+                                                ? extraMovieData.data
+                                                      .numberOfRatings
+                                                : 0}{" "}
                                             ratings
                                         </p>
                                     </Tooltip.Content>
-                                    <Rating
-                                        emptyStyle={{ display: "flex" }}
-                                        fillStyle={{
-                                            display: "-webkit-inline-box",
-                                        }}
-                                        allowFraction={true}
-                                        initialValue={
-                                            extraMovieData?.data.rating
-                                        }
-                                        size={15}
-                                        readonly
-                                        fillColor="#EF4444"
-                                    />
                                 </Tooltip>
+
+                                <Rating
+                                    emptyStyle={{ display: "flex" }}
+                                    fillStyle={{
+                                        display: "-webkit-inline-box",
+                                    }}
+                                    allowFraction={true}
+                                    initialValue={extraMovieData?.data.rating}
+                                    size={15}
+                                    readonly
+                                    fillColor="#EF4444"
+                                />
                             </div>
                         </div>
                         <p className="mr-1 mt-2 text-sm text-gray-600 dark:text-gray-300">
