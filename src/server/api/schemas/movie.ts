@@ -17,7 +17,7 @@ export const createMovieSchema = z.object({
     overview: z.string().nullable(),
     backdrop: z.string().optional(),
     fromReview: z.boolean().default(false),
-    rating: z.number().optional(),
+    rating: z.number().default(0),
 });
 
 export type IMovie = z.infer<typeof movieSchema>;

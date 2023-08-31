@@ -16,7 +16,7 @@ const Tooltip = ({ children }: TooltipProps) => {
 const Trigger = ({ children }: { children: React.ReactNode }) => {
     return (
         <TooltipPrimitive.Trigger
-            className="inline-flex items-center justify-center"
+            className="items-center justify-center"
             asChild
         >
             {children}

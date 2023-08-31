@@ -48,7 +48,7 @@ const SingleFilmView = ({ movieData }: SingleFilmViewProps) => {
                     <Image
                         width={170}
                         height={170}
-                        className="absolute bottom-0 left-0 -mb-[64px] ml-4 rounded-md opacity-0 drop-shadow-[0_2px_2px_rgba(0,0,0,0.5)] duration-[0.5s]"
+                        className="absolute bottom-0 left-0 -mb-[50px] ml-4 rounded-md opacity-0 drop-shadow-[0_2px_2px_rgba(0,0,0,0.5)] duration-[0.5s]"
                         src={`https://image.tmdb.org/t/p/original${movieData.poster_path}`}
                         priority
                         alt="Profile picture"
@@ -57,60 +57,63 @@ const SingleFilmView = ({ movieData }: SingleFilmViewProps) => {
                         }
                     />
                     <div className="ml-[230px] mt-[22px]">
-                        <div className="flex ">
-                            <div className="flex w-[80%] space-x-2">
-                                <h2>{movieData.title}</h2>
-                                <p className="mt-[7px] text-lg text-crumble">
-                                    {movieData.release_date.slice(0, 4)}
-                                </p>
+                        <div className="flex">
+                            <div className="flex w-[80%] space-x-2 ">
+                                <h2>
+                                    {movieData.title}{" "}
+                                    <span className="mt-[7px] text-lg text-crumble">
+                                        {movieData.release_date.slice(0, 4)}
+                                    </span>
+                                </h2>
                             </div>
                             <div className="relative top-5 text-center">
                                 <Tooltip>
                                     <Tooltip.Trigger>
                                         <p className="font-semibold">
-                                            {Number(
-                                                extraMovieData?.data.rating.toFixed(
-                                                    2
-                                                )
-                                            )}
+                                            {extraMovieData?.data.rating
+                                                ? Number(
+                                                      extraMovieData?.data.rating.toFixed(
+                                                          2
+                                                      )
+                                                  )
+                                                : "No ratings"}
                                         </p>
                                     </Tooltip.Trigger>
                                     <Tooltip.Content>
                                         <p>
                                             From{" "}
-                                            {
-                                                extraMovieData?.data
-                                                    .numberOfRatings
-                                            }{" "}
+                                            {extraMovieData?.data
+                                                .numberOfRatings
+                                                ? extraMovieData.data
+                                                      .numberOfRatings
+                                                : 0}{" "}
                                             ratings
                                         </p>
                                     </Tooltip.Content>
-                                    <Rating
-                                        emptyStyle={{ display: "flex" }}
-                                        fillStyle={{
-                                            display: "-webkit-inline-box",
-                                        }}
-                                        allowFraction={true}
-                                        initialValue={
-                                            extraMovieData?.data.rating
-                                        }
-                                        size={15}
-                                        readonly
-                                        fillColor="#EF4444"
-                                    />
                                 </Tooltip>
+
+                                <Rating
+                                    emptyStyle={{ display: "flex" }}
+                                    fillStyle={{
+                                        display: "-webkit-inline-box",
+                                    }}
+                                    allowFraction={true}
+                                    initialValue={extraMovieData?.data.rating}
+                                    size={15}
+                                    readonly
+                                    fillColor="#EF4444"
+                                />
                             </div>
                         </div>
-                        <span className="flex text-sm text-gray-600 dark:text-gray-300">
-                            <p className="mr-1">Directed by </p>
+                        <p className="mr-1 mt-2 text-sm text-gray-600 dark:text-gray-300">
+                            Directed by{" "}
+                        </p>
+                        <span className="flex w-[400px] space-x-4  break-words text-sm text-gray-600 dark:text-gray-300">
                             {directors.map((director, index) => (
                                 <p key={index}>
                                     <span className="text-crumble underline">
                                         {director.name}
                                     </span>
-                                    {index !== directors.length - 1 && (
-                                        <span className="mx-1">and</span>
-                                    )}
                                 </p>
                             ))}
                         </span>

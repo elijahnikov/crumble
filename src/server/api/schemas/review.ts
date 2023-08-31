@@ -18,5 +18,6 @@ export const reviewsSchema = z.object({
     limit: z.number().optional(),
     cursor: z.object({ id: z.string(), createdAt: z.date() }).optional(),
     movieId: z.number().optional(),
+    orderBy: z.string().optional()
 });
 export type IReviewsSchema = z.infer<typeof reviewsSchema>;
