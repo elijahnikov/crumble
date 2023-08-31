@@ -47,7 +47,7 @@ const SingleFilmView = ({ movieData }: SingleFilmViewProps) => {
                     <Image
                         width={170}
                         height={170}
-                        className="absolute bottom-0 left-0 -mb-[64px] ml-4 rounded-md opacity-0 drop-shadow-[0_2px_2px_rgba(0,0,0,0.5)] duration-[0.5s]"
+                        className="absolute bottom-0 left-0 -mb-[50px] ml-4 rounded-md opacity-0 drop-shadow-[0_2px_2px_rgba(0,0,0,0.5)] duration-[0.5s]"
                         src={`https://image.tmdb.org/t/p/original${movieData.poster_path}`}
                         priority
                         alt="Profile picture"
@@ -56,15 +56,21 @@ const SingleFilmView = ({ movieData }: SingleFilmViewProps) => {
                         }
                     />
                     <div className="ml-[230px] mt-[22px]">
-                        <div className="flex ">
-                            <div className="flex w-[80%] space-x-2">
-                                <h2>{movieData.title}</h2>
-                                <p className="mt-[7px] text-lg text-crumble">
-                                    {movieData.release_date.slice(0, 4)}
-                                </p>
+                        <div className="flex">
+                            <div className="flex w-[80%] space-x-2 ">
+                                <h2>
+                                    {movieData.title}{" "}
+                                    <span className="mt-[7px] text-lg text-crumble">
+                                        {movieData.release_date.slice(0, 4)}
+                                    </span>
+                                </h2>
                             </div>
                             <div className="relative top-5 text-center">
-                                <p className="font-semibold">{3.2}</p>
+                                <p className="font-semibold">
+                                    {extraMovieData?.data.rating
+                                        ? extraMovieData.data.rating
+                                        : "No ratings"}
+                                </p>
                                 <Rating
                                     emptyStyle={{ display: "flex" }}
                                     fillStyle={{
@@ -77,16 +83,15 @@ const SingleFilmView = ({ movieData }: SingleFilmViewProps) => {
                                 />
                             </div>
                         </div>
-                        <span className="flex text-sm text-gray-600 dark:text-gray-300">
-                            <p className="mr-1">Directed by </p>
+                        <p className="mr-1 mt-2 text-sm text-gray-600 dark:text-gray-300">
+                            Directed by{" "}
+                        </p>
+                        <span className="flex w-[400px] space-x-4  break-words text-sm text-gray-600 dark:text-gray-300">
                             {directors.map((director, index) => (
                                 <p key={index}>
                                     <span className="text-crumble underline">
                                         {director.name}
                                     </span>
-                                    {index !== directors.length - 1 && (
-                                        <span className="mx-1">and</span>
-                                    )}
                                 </p>
                             ))}
                         </span>
