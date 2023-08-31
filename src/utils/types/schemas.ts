@@ -24,7 +24,7 @@ export const movieDetailsFetchSchema = z.object({
     production_companies: z.array(
         z.object({
             id: z.number(),
-            logo_path: z.string(),
+            logo_path: z.string().nullable(),
             name: z.string(),
             origin_country: z.string(),
         })
@@ -143,3 +143,5 @@ export const movieDetailsFetchSchema = z.object({
         ),
     }),
 });
+
+export type IMovieDetailsFetchSchema = z.infer<typeof movieDetailsFetchSchema>;
