@@ -7,8 +7,19 @@ export const movieSchema = z.object({
     poster: z.string().optional(),
     overview: z.string().nullable(),
     backdrop: z.string().optional(),
-    fromReview: z.boolean().optional(),
 });
+
+export const createMovieSchema = z.object({
+    movieId: z.number(),
+    title: z.string(),
+    releaseDate: z.string(),
+    poster: z.string().optional(),
+    overview: z.string().nullable(),
+    backdrop: z.string().optional(),
+    fromReview: z.boolean().default(false),
+    rating: z.number().optional(),
+});
+
 export type IMovie = z.infer<typeof movieSchema>;
 
 export const movieFetchSchema = z

@@ -9,6 +9,7 @@ import MovieInfoTabs from "./MovieInfoTabs";
 import TertiaryInfo from "./TertiaryInfo";
 import { Container } from "@/components/common/Layout/Layout";
 import { api } from "@/utils/api";
+import Tooltip from "@/components/ui/Tooltip/Tooltip";
 
 interface SingleFilmViewProps {
     movieData: z.infer<typeof movieDetailsFetchSchema>;
@@ -66,21 +67,40 @@ const SingleFilmView = ({ movieData }: SingleFilmViewProps) => {
                                 </h2>
                             </div>
                             <div className="relative top-5 text-center">
-                                <p className="font-semibold">
-                                    {extraMovieData?.data.rating
-                                        ? extraMovieData.data.rating
-                                        : "No ratings"}
-                                </p>
-                                <Rating
-                                    emptyStyle={{ display: "flex" }}
-                                    fillStyle={{
-                                        display: "-webkit-inline-box",
-                                    }}
-                                    allowFraction={true}
-                                    initialValue={extraMovieData?.data.rating}
-                                    size={15}
-                                    fillColor="#EF4444"
-                                />
+                                <Tooltip>
+                                    <Tooltip.Trigger>
+                                        <p className="font-semibold">
+                                            {Number(
+                                                extraMovieData?.data.rating.toFixed(
+                                                    2
+                                                )
+                                            )}
+                                        </p>
+                                    </Tooltip.Trigger>
+                                    <Tooltip.Content>
+                                        <p>
+                                            From{" "}
+                                            {
+                                                extraMovieData?.data
+                                                    .numberOfRatings
+                                            }{" "}
+                                            ratings
+                                        </p>
+                                    </Tooltip.Content>
+                                    <Rating
+                                        emptyStyle={{ display: "flex" }}
+                                        fillStyle={{
+                                            display: "-webkit-inline-box",
+                                        }}
+                                        allowFraction={true}
+                                        initialValue={
+                                            extraMovieData?.data.rating
+                                        }
+                                        size={15}
+                                        readonly
+                                        fillColor="#EF4444"
+                                    />
+                                </Tooltip>
                             </div>
                         </div>
                         <p className="mr-1 mt-2 text-sm text-gray-600 dark:text-gray-300">

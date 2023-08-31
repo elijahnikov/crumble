@@ -154,19 +154,20 @@ model MovieList {
 }
 
 model Movie {
-  id           String   @id @default(cuid())
-  movieId      Int      @unique
-  title        String
-  overview     String?  @db.Text
-  poster       String?
-  backdrop     String?
-  releaseDate  String
-  rating       Int      @default(0)
-  watchedCount Int      @default(0)
-  listCount    Int      @default(0)
-  likeCount    Int      @default(0)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id              String   @id @default(cuid())
+  movieId         Int      @unique
+  title           String
+  overview        String?  @db.Text
+  poster          String?
+  backdrop        String?
+  releaseDate     String
+  numberOfRatings Int      @default(0)
+  rating          Float    @default(0.0) @db.Float
+  watchedCount    Int      @default(0)
+  listCount       Int      @default(0)
+  likeCount       Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }
 
 model Watched {
