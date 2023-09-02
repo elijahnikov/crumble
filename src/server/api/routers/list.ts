@@ -264,4 +264,61 @@ export const listRouter = createTRPCRouter({
                 nextCursor,
             };
         }),
+    //
+    // Create list comment
+    //
+    createListComment: protectedProcedure
+        .input(z.object({ linkedToId: z.string(), text: z.string() }))
+        .mutation(async ({ ctx, input }) => {
+            const currentUserId = ctx.session.user.id;
+            const listComment = await ctx.prisma.listComment.create({
+                data: {
+                    text: input.text,
+                    listId: input.linkedToId,
+                    userId: currentUserId,
+                },
+            });
+            return listComment;
+        }),
+    //
+    // Delete list comment
+    //
+    deleteListComment: protectedProcedure
+        .input(
+            z.object({
+                id: z.string(),
+            })
+        )
+        .mutation(async ({ ctx, input }) => {
+            await ctx.prisma.listComment.delete({
+                where: {
+                    id: input.id,
+                },
+            });
+        }),
+    //
+    // Toggle like for list comment
+    //
+    toggleListCommentLike: protectedProcedure
+        .input(z.object({ id: z.string() }))
+        .mutation(async ({ input: { id }, ctx }) => {
+            const data = { listCommentId: id, userId: ctx.session.user.id };
+
+            const existingLike = await ctx.prisma.listCommentLike.findUnique({
+                where: {
+                    userId_listCommentId: data,
+                },
+            });
+            if (!existingLike) {
+                await ctx.prisma.listCommentLike.create({ data });
+                return { addedLike: true };
+            } else {
+                await ctx.prisma.listCommentLike.delete({
+                    where: {
+                        userId_listCommentId: data,
+                    },
+                });
+                return { addedLike: false };
+            }
+        }),
 });
