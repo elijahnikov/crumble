@@ -94,6 +94,7 @@ export const listRouter = createTRPCRouter({
                                     movieId: true,
                                     poster: true,
                                     rating: true,
+                                    releaseDate: true,
                                 },
                             },
                         },
@@ -124,6 +125,31 @@ export const listRouter = createTRPCRouter({
                 },
             };
         }),
+    //
+    // Like/Unlike list
+    //
+    toggleListLike: protectedProcedure
+        .input(z.object({ id: z.string() }))
+        .mutation(async ({ input: { id }, ctx }) => {
+            const data = { listId: id, userId: ctx.session.user.id };
+
+            const existingLike = await ctx.prisma.listLike.findUnique({
+                where: { userId_listId: data },
+            });
+            if (!existingLike) {
+                await ctx.prisma.listLike.create({ data });
+                return { addedLike: true };
+            }
+            {
+                await ctx.prisma.listLike.delete({
+                    where: { userId_listId: data },
+                });
+                return { addedLike: false };
+            }
+        }),
+    //
+    // Create list
+    //
     createList: protectedProcedure
         .input(createListSchema)
         .mutation(async ({ ctx, input }) => {
@@ -189,5 +215,135 @@ export const listRouter = createTRPCRouter({
             return {
                 list,
             };
+        }),
+    // -----------------------------------------------------------------------------//
+    // -------------------------------- Comments -----------------------------------//
+    // -----------------------------------------------------------------------------//
+    //
+    // Infinite feed of list comments
+    //
+    infiniteCommentFeed: publicProcedure
+        .input(
+            z.object({
+                id: z.string(),
+                limit: z.number().optional(),
+                cursor: z
+                    .object({ id: z.string(), createdAt: z.date() })
+                    .optional(),
+            })
+        )
+        .query(async ({ input: { limit = 10, cursor, id }, ctx }) => {
+            const currentUserId = ctx.session?.user.id;
+
+            const listComments = await ctx.prisma.listComment.findMany({
+                where: {
+                    listId: id,
+                },
+                take: limit + 1,
+                cursor: cursor ? { createdAt_id: cursor } : undefined,
+                orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+                select: {
+                    id: true,
+                    text: true,
+                    listId: true,
+                    user: {
+                        select: {
+                            name: true,
+                            displayName: true,
+                            id: true,
+                            image: true,
+                        },
+                    },
+                    createdAt: true,
+                    _count: {
+                        select: { listCommentLikes: true },
+                    },
+                    listCommentLikes:
+                        currentUserId === null
+                            ? false
+                            : { where: { userId: currentUserId } },
+                },
+            });
+            let nextCursor: typeof cursor | undefined;
+            if (listComments.length > limit) {
+                const nextItem = listComments.pop();
+                if (nextItem != null) {
+                    nextCursor = {
+                        id: nextItem.id,
+                        createdAt: nextItem.createdAt,
+                    };
+                }
+            }
+            return {
+                listComments: listComments.map((comment) => {
+                    return {
+                        id: comment.id,
+                        text: comment.text,
+                        linkedToId: comment.listId,
+                        user: comment.user,
+                        likeCount: comment._count.listCommentLikes,
+                        likedByMe: comment.listCommentLikes?.length > 0,
+                        createdAt: comment.createdAt,
+                    };
+                }),
+                nextCursor,
+            };
+        }),
+    //
+    // Create list comment
+    //
+    createListComment: protectedProcedure
+        .input(z.object({ linkedToId: z.string(), text: z.string() }))
+        .mutation(async ({ ctx, input }) => {
+            const currentUserId = ctx.session.user.id;
+            const listComment = await ctx.prisma.listComment.create({
+                data: {
+                    text: input.text,
+                    listId: input.linkedToId,
+                    userId: currentUserId,
+                },
+            });
+            return listComment;
+        }),
+    //
+    // Delete list comment
+    //
+    deleteListComment: protectedProcedure
+        .input(
+            z.object({
+                id: z.string(),
+            })
+        )
+        .mutation(async ({ ctx, input }) => {
+            await ctx.prisma.listComment.delete({
+                where: {
+                    id: input.id,
+                },
+            });
+        }),
+    //
+    // Toggle like for list comment
+    //
+    toggleListCommentLike: protectedProcedure
+        .input(z.object({ id: z.string() }))
+        .mutation(async ({ input: { id }, ctx }) => {
+            const data = { listCommentId: id, userId: ctx.session.user.id };
+
+            const existingLike = await ctx.prisma.listCommentLike.findUnique({
+                where: {
+                    userId_listCommentId: data,
+                },
+            });
+            if (!existingLike) {
+                await ctx.prisma.listCommentLike.create({ data });
+                return { addedLike: true };
+            } else {
+                await ctx.prisma.listCommentLike.delete({
+                    where: {
+                        userId_listCommentId: data,
+                    },
+                });
+                return { addedLike: false };
+            }
         }),
 });
