@@ -1,6 +1,6 @@
 import { Container } from "@/components/common/Layout/Layout";
 import { LoadingPage } from "@/components/common/LoadingSpinner/LoadingSpinner";
-import { RouterOutputs, api } from "@/utils/api";
+import { type RouterOutputs, api } from "@/utils/api";
 import clxsm from "@/utils/clsxm";
 import Image from "next/image";
 import React from "react";

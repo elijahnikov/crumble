@@ -1,5 +1,3 @@
-import { api } from "@/utils/api";
-import clxsm from "@/utils/clsxm";
 import { numberFormatWithSuffix } from "@/utils/general/numberFormat";
 import { BsFillEyeFill, BsFillGridFill, BsFillHeartFill } from "react-icons/bs";
 

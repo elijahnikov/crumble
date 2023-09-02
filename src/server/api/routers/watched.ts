@@ -1,4 +1,3 @@
-import { TRPCError } from "@trpc/server";
 import { createWatchedSchema, watchedSchema } from "../schemas/watched";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
