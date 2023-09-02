@@ -124,6 +124,9 @@ export const listRouter = createTRPCRouter({
                 },
             };
         }),
+    //
+    // Create list
+    //
     createList: protectedProcedure
         .input(createListSchema)
         .mutation(async ({ ctx, input }) => {
@@ -188,6 +191,77 @@ export const listRouter = createTRPCRouter({
 
             return {
                 list,
+            };
+        }),
+    // -----------------------------------------------------------------------------//
+    // -------------------------------- Comments -----------------------------------//
+    // -----------------------------------------------------------------------------//
+    //
+    // Infinite feed of list comments
+    //
+    infiniteCommentFeed: publicProcedure
+        .input(
+            z.object({
+                id: z.string(),
+                limit: z.number().optional(),
+                cursor: z.object({ id: z.string(), createdAt: z.date() }),
+            })
+        )
+        .query(async ({ input: { limit = 10, cursor, id }, ctx }) => {
+            const currentUserId = ctx.session?.user.id;
+
+            const listComments = await ctx.prisma.listComment.findMany({
+                where: {
+                    listId: id,
+                },
+                take: limit + 1,
+                cursor: cursor ? { createdAt_id: cursor } : undefined,
+                orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+                select: {
+                    id: true,
+                    text: true,
+                    listId: true,
+                    user: {
+                        select: {
+                            name: true,
+                            displayName: true,
+                            id: true,
+                            image: true,
+                        },
+                    },
+                    createdAt: true,
+                    _count: {
+                        select: { listCommentLikes: true },
+                    },
+                    listCommentLikes:
+                        currentUserId === null
+                            ? false
+                            : { where: { userId: currentUserId } },
+                },
+            });
+            let nextCursor: typeof cursor | undefined;
+            if (listComments.length > limit) {
+                const nextItem = listComments.pop();
+                if (nextItem != null) {
+                    nextCursor = {
+                        id: nextItem.id,
+                        createdAt: nextItem.createdAt,
+                    };
+                }
+            }
+            return {
+                listComments: listComments.map((comment) => {
+                    return {
+                        id: comment.id,
+                        text: comment.text,
+                        linkedToId: comment.listId,
+                        user: comment.user,
+                        likeCount: comment._count.listCommentLikes,
+                        likedByMe: comment.listCommentLikes?.length > 0,
+                        createdAt: comment.createdAt,
+                    };
+                }),
+                nextCursor,
             };
         }),
 });
