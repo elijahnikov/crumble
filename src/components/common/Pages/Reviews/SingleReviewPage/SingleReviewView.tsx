@@ -5,7 +5,7 @@ import Image from "next/image";
 import React from "react";
 import { BsHeartFill } from "react-icons/bs";
 import { Rating } from "react-simple-star-rating";
-import Tags from "../../../Tags/Tags";
+import ShowTags from "../../../Tags/ShowTags";
 import Link from "next/link";
 import { Container } from "@/components/common/Layout/Layout";
 
@@ -72,7 +72,7 @@ const SingleReviewView = ({ review }: SingleReviewViewProps) => {
                                 <p>likes</p>
                             </div>
                         </div>
-                        {reviewData.tags && <Tags tags={reviewData.tags} />}
+                        {reviewData.tags && <ShowTags tags={reviewData.tags} />}
                     </div>
                     <div className="ml-5 w-[80%]">
                         <div className="flex space-x-2">

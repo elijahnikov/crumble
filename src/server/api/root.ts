@@ -7,12 +7,15 @@ import { movieRouter } from "./routers/movie";
 import { reviewRouter } from "./routers/review";
 // Watched
 import { watchedRouter } from "./routers/watched";
+// List
+import { listRouter } from "./routers/list";
 
 export const appRouter = createTRPCRouter({
     user: userRouter,
     movie: movieRouter,
     review: reviewRouter,
     watched: watchedRouter,
+    list: listRouter,
 });
 
 export type AppRouter = typeof appRouter;

@@ -11,24 +11,32 @@ import {
 import { fetchWithZod } from "@/utils/fetch/zodFetch";
 import { type SetStateType } from "@/utils/types/helpers";
 import Image from "next/image";
-// import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 import { BsArrowLeft, BsFillXCircleFill } from "react-icons/bs";
-import { BiX } from "react-icons/bi";
 import { Rating } from "react-simple-star-rating";
 import DatePicker from "@/components/ui/DatePicker/DatePicker";
 import { api } from "@/utils/api";
 import toast from "react-hot-toast";
 import Link from "next/link";
-import z, { type ZodType } from "zod";
+import { type ZodType } from "zod";
 import clxsm from "@/utils/clsxm";
+import InputTags from "../Tags/InputTags";
 
 interface CreateReviewModalProps {
     movie?: IMovie;
     size?: string;
+    fromMenu?: boolean;
+    open: boolean;
+    setOpen: (value: boolean) => void;
 }
 
-const CreateReviewModal = ({ movie, size }: CreateReviewModalProps) => {
+const CreateReviewModal = ({
+    movie,
+    size,
+    fromMenu,
+    open,
+    setOpen,
+}: CreateReviewModalProps) => {
     const [searchedMovieName, setSearchedMovieName] = useState<string>("");
     const [chosenMovieDetails, setChosenMovieDetails] = useState<IMovie | null>(
         null
@@ -158,7 +166,7 @@ const CreateReviewModal = ({ movie, size }: CreateReviewModalProps) => {
                 {
                     position: "bottom-center",
                     duration: 4000,
-                    className: "dark:bg-brand-light dark:text-white text-black",
+                    className: "dark:bg-brand dark:text-white text-black",
                 }
             );
         }
@@ -173,18 +181,24 @@ const CreateReviewModal = ({ movie, size }: CreateReviewModalProps) => {
     }, [reviewText]);
 
     useEffect(() => {
-        if (movie) setChosenMovieDetails(movie);
-        setBlockInput(true);
+        if (movie) {
+            setChosenMovieDetails(movie);
+            setBlockInput(true);
+        } else {
+            setBlockInput(false);
+        }
     }, [movie]);
 
     return (
         <>
-            <Modal open={modalOpen} onOpenChange={setModalOpen}>
-                <Modal.Trigger>
-                    <p className={clxsm(size ? `text-${size}` : "")}>
-                        Create a review
-                    </p>
-                </Modal.Trigger>
+            <Modal open={open} onOpenChange={setOpen}>
+                {!fromMenu && (
+                    <Modal.Trigger>
+                        <p className={clxsm(size ? `text-${size}` : "")}>
+                            Create a review
+                        </p>
+                    </Modal.Trigger>
+                )}
                 <Modal.Content title="Create a review">
                     {!blockInput ? (
                         <Input
@@ -370,10 +384,12 @@ const SelectedFilmForm = ({
                 />
                 <div className="ml-5 w-[100%] text-left">
                     <div className="mb-5 flex h-max w-[100%]">
-                        <h2 className="text-white">{movie.title}</h2>
-                        <h3 className="ml-2 mt-1 text-crumble">
-                            {movie.releaseDate.slice(0, 4)}
-                        </h3>
+                        <h2>
+                            {movie.title}{" "}
+                            <span className="mt-[7px] text-lg text-crumble">
+                                {movie.releaseDate.slice(0, 4)}
+                            </span>
+                        </h2>
                     </div>
                     {watchedOnChecked ? (
                         <div className="flex space-x-5">
@@ -428,10 +444,11 @@ const SelectedFilmForm = ({
                         />
                     </div>
                     <div className="flex space-x-10">
-                        <Tags
+                        <InputTags
                             reviewStarted={reviewStarted}
                             tags={tags}
                             setTags={setTags}
+                            placeholder="Review tags (press enter)"
                         />
                         <div>
                             <p className="text-sm">Rating</p>
@@ -466,66 +483,6 @@ const SelectedFilmForm = ({
                         />
                     </div>
                 </div>
-            </div>
-        </div>
-    );
-};
-
-interface TagsProps {
-    tags: string[];
-    setTags: SetStateType<string[]>;
-    reviewStarted: boolean;
-}
-
-const Tags = ({ tags, setTags, reviewStarted }: TagsProps) => {
-    const [tag, setTag] = useState<string>("");
-    const [disabled, setDisabled] = useState<boolean>(false);
-
-    const handleKeyDown = (event: React.KeyboardEvent<HTMLElement>) => {
-        if (event.key === "Enter") {
-            if (!tags.includes(tag) && tags.length < 4 && tag !== "") {
-                setTags([...tags, tag]);
-                setTag("");
-            } else {
-                setTag("");
-            }
-        }
-    };
-
-    useEffect(() => {
-        if (tags.length >= 4) setDisabled(true);
-        else setDisabled(false);
-    }, [tags]);
-
-    const removeTag = (tag: string) => {
-        setTags(tags.filter((item) => item !== tag));
-    };
-
-    return (
-        <div>
-            <p className="mb-2 text-sm">Tags</p>
-            <div>
-                <Input
-                    value={tag}
-                    disabled={disabled || !reviewStarted}
-                    placeholder="Review tags (hit enter)"
-                    type="text"
-                    onKeyDown={handleKeyDown}
-                    change={setTag}
-                />
-            </div>
-            <div className="mt-3 flex w-[100%]">
-                {tags.length > 0 &&
-                    tags.map((tag: string, i: number) => (
-                        <div
-                            key={i}
-                            className="mr-4 flex cursor-pointer rounded-lg border-[1px] border-ink-darker bg-ink-darkest p-2"
-                            onClick={() => removeTag(tag)}
-                        >
-                            <p className="flex text-xs">{tag}</p>
-                            <BiX className="ml-1 inline fill-crumble" />
-                        </div>
-                    ))}
             </div>
         </div>
     );

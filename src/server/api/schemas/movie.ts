@@ -20,6 +20,10 @@ export const createMovieSchema = z.object({
     rating: z.number().default(0),
 });
 
+export const createManyMoviesSchema = createMovieSchema
+    .omit({ fromReview: true })
+    .array();
+
 export type IMovie = z.infer<typeof movieSchema>;
 
 export const movieFetchSchema = z
