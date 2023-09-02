@@ -1,7 +1,7 @@
 import CreateReviewModal from "@/components/common/CreateReviewModal/CreateReviewModal";
 import type { movieDetailsFetchSchema } from "@/utils/types/schemas";
 import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
 import { Rating } from "react-simple-star-rating";
 import type { z } from "zod";
 import MovieStats from "./MovieStats";
@@ -16,14 +16,15 @@ interface SingleFilmViewProps {
 }
 
 const SingleFilmView = ({ movieData }: SingleFilmViewProps) => {
+    const [open, setOpen] = useState<boolean>(false);
+
     const directors = movieData.credits.crew.filter((crew) => {
         return crew.job === "Director";
     });
 
-    const { data: extraMovieData, isLoading: isExtraMovieDataLoading } =
-        api.movie.film.useQuery({
-            id: movieData.id,
-        });
+    const { data: extraMovieData } = api.movie.film.useQuery({
+        id: movieData.id,
+    });
 
     return (
         <>
@@ -66,7 +67,7 @@ const SingleFilmView = ({ movieData }: SingleFilmViewProps) => {
                                     </span>
                                 </h2>
                             </div>
-                            <div className="relative top-5 text-center">
+                            <div className="relative top-6 text-center">
                                 <Tooltip>
                                     <Tooltip.Trigger>
                                         <p className="font-semibold">
@@ -129,6 +130,9 @@ const SingleFilmView = ({ movieData }: SingleFilmViewProps) => {
                         />
                         <div>
                             <CreateReviewModal
+                                fromMenu={false}
+                                open={open}
+                                setOpen={setOpen}
                                 size="sm"
                                 movie={{
                                     movieId: movieData.id,

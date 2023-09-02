@@ -46,7 +46,7 @@ const SingleReviewPage: NextPage<PageProps> = ({ id }) => {
                 toast.success(`Deleted your comment.`, {
                     position: "bottom-center",
                     duration: 4000,
-                    className: "dark:bg-brand-light dark:text-white text-black",
+                    className: "dark:bg-brand dark:text-white text-black",
                 });
                 await trpcUtils.review.infiniteCommentFeed.invalidate();
             },
