@@ -1,10 +1,10 @@
-import Button from "@/components/ui/Button/Button";
 import { Menu, Transition } from "@headlessui/react";
 import { Fragment, useState } from "react";
 import { BiCommentDetail } from "react-icons/bi";
 import { BsCardList, BsPlus } from "react-icons/bs";
 import CreateListModal from "../CreateListModal/CreateListModal";
 import CreateReviewModal from "../CreateReviewModal/CreateReviewModal";
+import clxsm from "@/utils/clsxm";
 
 const CreateModalMenu = () => {
     const [reviewOpen, setReviewOpen] = useState<boolean>(false);
@@ -14,7 +14,20 @@ const CreateModalMenu = () => {
         <>
             <Menu as="div">
                 <Menu.Button>
-                    <Button rightIcon={BsPlus}>Add</Button>
+                    <div
+                        className={clxsm([
+                            "inline-flex items-center justify-center rounded-lg font-medium",
+                            "focus-visible:ring-crumble-500 focus:outline-none focus-visible:ring",
+                            "shadow-sm",
+                            "transition-colors duration-75",
+                            "bg-crumble-base text-white",
+                            "hover:bg-crumble-dark active:bg-crumble-darker",
+                            "px-3 py-1.5 text-sm md:text-base",
+                        ])}
+                    >
+                        Add
+                        <BsPlus />
+                    </div>
                 </Menu.Button>
                 <Transition
                     as={Fragment}
