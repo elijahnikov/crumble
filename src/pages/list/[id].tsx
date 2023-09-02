@@ -1,7 +1,9 @@
+import CommentSection from "@/components/common/CommentSection/CommentSection";
 import Layout from "@/components/common/Layout/Layout";
+import SingleListView from "@/components/common/Pages/Lists/SingleListPage/SingleListView";
 import { generateSSGHelper } from "@/server/helpers/ssgHelper";
 import { api } from "@/utils/api";
-import {
+import type {
     GetStaticPaths,
     GetStaticPropsContext,
     InferGetStaticPropsType,
@@ -65,7 +67,21 @@ const SingleListPage: NextPage<PageProps> = ({ id }) => {
                 <title>{`@${data.list.title} - List by @${data.list.user.name} • Crumble`}</title>
             </Head>
             <Layout>
-                <h1>test</h1>
+                <SingleListView list={data} />
+                <CommentSection
+                    commentCount={data.list.commentCount}
+                    linkedToId={data.list.id}
+                    comments={listComments?.pages.flatMap(
+                        (page) => page.listComments
+                    )}
+                    isError={isListCommentsError}
+                    isLoading={isListCommentsLoading}
+                    hasMore={hasNextPage}
+                    fetchNewComments={fetchNextPage}
+                    createNewComment={createListComment}
+                    deleteComment={deleteListComment}
+                    toggleLike={toggleLike.mutate}
+                />
             </Layout>
         </>
     );

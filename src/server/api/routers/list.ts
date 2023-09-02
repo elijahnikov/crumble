@@ -204,7 +204,9 @@ export const listRouter = createTRPCRouter({
             z.object({
                 id: z.string(),
                 limit: z.number().optional(),
-                cursor: z.object({ id: z.string(), createdAt: z.date() }),
+                cursor: z
+                    .object({ id: z.string(), createdAt: z.date() })
+                    .optional(),
             })
         )
         .query(async ({ input: { limit = 10, cursor, id }, ctx }) => {
