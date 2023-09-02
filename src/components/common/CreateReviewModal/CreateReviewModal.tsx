@@ -53,7 +53,6 @@ const CreateReviewModal = ({
     const [spoilerChecked, setSpoilerChecked] = useState<boolean>(false);
     const [reviewStarted, setReviewStarted] = useState<boolean>(false);
 
-    const [modalOpen, setModalOpen] = useState<boolean>(false);
     const [watchedOnDate, setWatchedOnDate] = useState<Date | undefined>(
         new Date()
     );
@@ -171,7 +170,7 @@ const CreateReviewModal = ({
             );
         }
         handleCancel();
-        setModalOpen(false);
+        setOpen(false);
         return;
     };
 
@@ -260,7 +259,7 @@ const CreateReviewModal = ({
                                 intent="outline"
                                 onClick={() => {
                                     handleCancel();
-                                    setModalOpen(false);
+                                    setOpen(false);
                                 }}
                             >
                                 Cancel

@@ -1,4 +1,3 @@
-import { useSession } from "next-auth/react";
 import NavigationBar from "../NavigationBar/NavigationBar";
 import MobileNavigationBar from "../MobileNavigationBar/MobileNavigationBar";
 import clxsm from "@/utils/clsxm";
@@ -9,8 +8,8 @@ interface LayoutProps {
 }
 
 const Layout = ({ children, fullWidth }: LayoutProps) => {
-    const { data: session } = useSession();
-    const authenticated = !!session;
+    // const { data: session } = useSession();
+    // const authenticated = !!session;
 
     return (
         <div className="flex flex-col lg:flex-row">

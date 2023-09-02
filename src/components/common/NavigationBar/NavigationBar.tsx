@@ -3,11 +3,9 @@ import Image from "next/image";
 import { useSession } from "next-auth/react";
 import clxsm from "@/utils/clsxm";
 import { useEffect, useState } from "react";
-import CreateReviewModal from "../CreateReviewModal/CreateReviewModal";
 import DarkModeSwitch from "../DarkModeSwitch/DarkModeSwitch";
 import navigation from "@/utils/data/navLinks";
 import DiscordSignIn from "../DiscordSignIn/DiscordSignIn";
-import CreateListModal from "../CreateListModal/CreateListModal";
 import CreateModalMenu from "../CreateModalMenu/CreateModalMenu";
 
 const NavigationBar = () => {
@@ -75,8 +73,6 @@ const NavigationBar = () => {
                 </nav>
             </div>
             <div className="mb-5 text-center">
-                {/* <CreateListModal /> */}
-                {/* <CreateReviewModal /> */}
                 <CreateModalMenu />
             </div>
             {authenticated ? (
