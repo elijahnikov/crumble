@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { createMovieSchema } from "../schemas/movie";
+import { createManyMoviesSchema, createMovieSchema } from "../schemas/movie";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import { TRPCError } from "@trpc/server";
 import { prisma } from "@/server/db";
@@ -51,6 +51,38 @@ export const movieRouter = createTRPCRouter({
                     numberOfRatings: input.rating ? 1 : 0,
                     watchedCount: fromReview ? 1 : 0,
                 },
+            });
+        }),
+    //
+    // Insert many movies at one time
+    //
+    createManyMovie: protectedProcedure
+        .input(createManyMoviesSchema)
+        .mutation(async ({ ctx, input }) => {
+            const movieIds = input.map((movie) => movie.movieId);
+            const checkMovies = await ctx.prisma.movie.findMany({
+                where: {
+                    movieId: {
+                        in: movieIds,
+                    },
+                },
+            });
+
+            const existingIds = checkMovies.map((row) => row.movieId);
+            const missingIds = movieIds.filter(
+                (id) => !existingIds.includes(id)
+            );
+            if (missingIds.length === 0) {
+                throw new TRPCError({
+                    code: "BAD_REQUEST",
+                    message: "All movies passed are already present.",
+                });
+            }
+            const missingMovies = input.filter((movie) =>
+                missingIds.includes(movie.movieId)
+            );
+            await ctx.prisma.movie.createMany({
+                data: missingMovies,
             });
         }),
     //

@@ -4,7 +4,7 @@ interface TagsProps {
     tags: string;
 }
 
-const Tags = ({ tags }: TagsProps) => {
+const ShowTags = ({ tags }: TagsProps) => {
     return (
         <div className="float-left mt-[2vh] flex">
             {tags.split(",").map((tag) => (
@@ -19,4 +19,4 @@ const Tags = ({ tags }: TagsProps) => {
     );
 };
 
-export default Tags;
+export default ShowTags;

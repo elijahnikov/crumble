@@ -7,6 +7,8 @@ import CreateReviewModal from "../CreateReviewModal/CreateReviewModal";
 import DarkModeSwitch from "../DarkModeSwitch/DarkModeSwitch";
 import navigation from "@/utils/data/navLinks";
 import DiscordSignIn from "../DiscordSignIn/DiscordSignIn";
+import CreateListModal from "../CreateListModal/CreateListModal";
+import CreateModalMenu from "../CreateModalMenu/CreateModalMenu";
 
 const NavigationBar = () => {
     const [currentPath, setCurrentPath] = useState("");
@@ -73,7 +75,9 @@ const NavigationBar = () => {
                 </nav>
             </div>
             <div className="mb-5 text-center">
-                <CreateReviewModal />
+                {/* <CreateListModal /> */}
+                {/* <CreateReviewModal /> */}
+                <CreateModalMenu />
             </div>
             {authenticated ? (
                 <div className="flex flex-shrink-0 border-t border-gray-200 p-4 dark:border-gray-700">
