@@ -18,60 +18,67 @@ export const reviewRouter = createTRPCRouter({
     //
     reviews: publicProcedure
         .input(reviewsSchema)
-        .query(async ({ ctx, input: { limit = 10, cursor, movieId, orderBy } }) => {
-            const currentUserId = ctx.session?.user.id;
-            const data = await ctx.prisma.review.findMany({
-                take: limit + 1,
-                where: {
-                    ...(movieId ? { movieId } : {}),
-                },
-                cursor: cursor ? { createdAt_id: cursor } : undefined,
-                orderBy: orderBy ? {
-                    [orderBy]: {
-                        _count: 'desc'
-                    }
-                } : [{createdAt: 'desc'}, {id: 'desc'}],
-                include: {
-                    _count: {
-                        select: { reviewLikes: true, reviewComments: true },
+        .query(
+            async ({
+                ctx,
+                input: { limit = 10, cursor, movieId, orderBy },
+            }) => {
+                const currentUserId = ctx.session?.user.id;
+                const data = await ctx.prisma.review.findMany({
+                    take: limit + 1,
+                    where: {
+                        ...(movieId ? { movieId } : {}),
                     },
-                    reviewLikes:
-                        currentUserId === null
-                            ? false
-                            : { where: { userId: currentUserId } },
-                    user: {
-                        select: {
-                            id: true,
-                            name: true,
-                            displayName: true,
-                            image: true,
+                    cursor: cursor ? { createdAt_id: cursor } : undefined,
+                    orderBy: orderBy
+                        ? {
+                              [orderBy]: {
+                                  _count: "desc",
+                              },
+                          }
+                        : [{ createdAt: "desc" }, { id: "desc" }],
+                    include: {
+                        _count: {
+                            select: { reviewLikes: true, reviewComments: true },
+                        },
+                        reviewLikes:
+                            currentUserId === null
+                                ? false
+                                : { where: { userId: currentUserId } },
+                        user: {
+                            select: {
+                                id: true,
+                                name: true,
+                                displayName: true,
+                                image: true,
+                            },
                         },
                     },
-                },
-            });
-            let nextCursor: typeof cursor | undefined;
-            if (data.length > limit) {
-                const nextItem = data.pop();
-                if (nextItem != null) {
-                    nextCursor = {
-                        id: nextItem.id,
-                        createdAt: nextItem.createdAt,
-                    };
+                });
+                let nextCursor: typeof cursor | undefined;
+                if (data.length > limit) {
+                    const nextItem = data.pop();
+                    if (nextItem != null) {
+                        nextCursor = {
+                            id: nextItem.id,
+                            createdAt: nextItem.createdAt,
+                        };
+                    }
                 }
+                return {
+                    reviews: data.map((review) => {
+                        return {
+                            ...review,
+                            likeCount: review._count.reviewLikes,
+                            commentCount: review._count.reviewComments,
+                            user: { ...review.user },
+                            likedByMe: review.reviewLikes.length > 0,
+                        };
+                    }),
+                    nextCursor,
+                };
             }
-            return {
-                reviews: data.map((review) => {
-                    return {
-                        ...review,
-                        likeCount: review._count.reviewLikes,
-                        commentCount: review._count.reviewComments,
-                        user: { ...review.user },
-                        likedByMe: review.reviewLikes.length > 0,
-                    };
-                }),
-                nextCursor,
-            };
-        }),
+        ),
     //
     // Get specific review by id
     //
@@ -327,6 +334,7 @@ export const reviewRouter = createTRPCRouter({
                 },
             });
         }),
+    //
     // Toggle like for review comment
     //
     toggleReviewCommentLike: protectedProcedure
