@@ -112,7 +112,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         const kbdPadding = Kbd && Object.keys(Kbd.props).length;
 
         return (
-            <>
+            <div>
                 {/* if label is passed */}
                 {label && (
                     <div className="relative top-[-2px] ml-1">
@@ -218,7 +218,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
                         </p>
                     )}
                 </div>
-            </>
+            </div>
         );
     }
 );

@@ -96,7 +96,7 @@ const InputArea = React.forwardRef<HTMLTextAreaElement, InputAreaProps>(
         const inputAreaRef = useRef<HTMLTextAreaElement | null>(null);
 
         return (
-            <>
+            <div>
                 {/* if label is passed */}
                 {label && (
                     <div className="relative top-[-5px] ml-1">
@@ -137,7 +137,7 @@ const InputArea = React.forwardRef<HTMLTextAreaElement, InputAreaProps>(
                         </div>
                     )}
                 </div>
-            </>
+            </div>
         );
     }
 );
