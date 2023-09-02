@@ -1,8 +1,10 @@
 import { Container } from "@/components/common/Layout/Layout";
 import Tooltip from "@/components/ui/Tooltip/Tooltip";
-import { RouterOutputs, api } from "@/utils/api";
+import { type RouterOutputs, api } from "@/utils/api";
+import clxsm from "@/utils/clsxm";
 import { fromNow } from "@/utils/general/dateFormat";
 import Image from "next/image";
+import { BsHeartFill } from "react-icons/bs";
 
 interface SingleListViewProps {
     list: RouterOutputs["list"]["list"];
@@ -13,6 +15,16 @@ const SingleListView = ({ list }: SingleListViewProps) => {
     const { user: author } = listData;
 
     const trpcUtils = api.useContext();
+
+    const toggleLike = api.list.toggleListLike.useMutation({
+        onSuccess: async () => {
+            await trpcUtils.list.list.invalidate();
+        },
+    });
+
+    const handleToggleLike = () => {
+        toggleLike.mutate({ id: list.list.id });
+    };
 
     return (
         <>
@@ -81,6 +93,21 @@ const SingleListView = ({ list }: SingleListViewProps) => {
                                 </div>
                             </div>
                         ))}
+                    </div>
+                    <div className="mt-4 flex space-x-2 text-sm font-semibold text-gray-600 dark:text-gray-300">
+                        <BsHeartFill
+                            onClick={handleToggleLike}
+                            className={clxsm(
+                                list.list.likedByMe
+                                    ? "fill-crumble"
+                                    : "fill-gray-600 dark:fill-gray-300",
+                                "mt-[5px] h-4 w-4 cursor-pointer hover:fill-crumble hover:dark:fill-crumble"
+                            )}
+                        />
+                        <div className="mt-[3px] flex space-x-1">
+                            <p>{list.list.likeCount}</p>
+                            <p>likes</p>
+                        </div>
                     </div>
                 </div>
             </Container>
