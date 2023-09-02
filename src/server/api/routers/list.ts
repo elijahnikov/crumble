@@ -94,6 +94,7 @@ export const listRouter = createTRPCRouter({
                                     movieId: true,
                                     poster: true,
                                     rating: true,
+                                    releaseDate: true,
                                 },
                             },
                         },
@@ -123,6 +124,28 @@ export const listRouter = createTRPCRouter({
                     likedByMe: data.listLikes.length > 0,
                 },
             };
+        }),
+    //
+    // Like/Unlike list
+    //
+    toggleListLike: protectedProcedure
+        .input(z.object({ id: z.string() }))
+        .mutation(async ({ input: { id }, ctx }) => {
+            const data = { listId: id, userId: ctx.session.user.id };
+
+            const existingLike = await ctx.prisma.listLike.findUnique({
+                where: { userId_listId: data },
+            });
+            if (!existingLike) {
+                await ctx.prisma.listLike.create({ data });
+                return { addedLike: true };
+            }
+            {
+                await ctx.prisma.listLike.delete({
+                    where: { userId_listId: data },
+                });
+                return { addedLike: false };
+            }
         }),
     //
     // Create list
