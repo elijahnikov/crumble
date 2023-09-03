@@ -8,16 +8,9 @@ import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import toast from "react-hot-toast";
-import {
-    BsCheck,
-    BsCheck2,
-    BsHeartFill,
-    BsPencilFill,
-    BsX,
-} from "react-icons/bs";
+import { BsHeartFill, BsX } from "react-icons/bs";
 import AddMovieToList from "./AddMovieToList";
 import { useState } from "react";
-import IconButton from "@/components/ui/IconButton/IconButton";
 import Button from "@/components/ui/Button/Button";
 
 interface SingleListViewProps {
@@ -26,6 +19,7 @@ interface SingleListViewProps {
 
 const SingleListView = ({ list }: SingleListViewProps) => {
     const [editingMode, setEditingMode] = useState<boolean>(false);
+    const [idsToRemove, setIdsToRemove] = useState<Array<string>>([]);
 
     const { list: listData } = list;
     const { user: author } = listData;
@@ -44,6 +38,11 @@ const SingleListView = ({ list }: SingleListViewProps) => {
     const { mutate: removeEntryMutate } =
         api.list.removeEntryFromList.useMutation({
             onSuccess: async () => {
+                toast.success("Successfully removed from your list", {
+                    position: "bottom-center",
+                    duration: 4000,
+                    className: "dark:bg-brand dark:text-white text-black",
+                });
                 await trpcUtils.list.list.invalidate();
             },
         });
@@ -59,11 +58,13 @@ const SingleListView = ({ list }: SingleListViewProps) => {
         }
     };
 
-    const handleSaveEditing = () => {
+    const handleSaveEditing = (listId: string) => {
+        removeEntryMutate({ listId, entryIds: idsToRemove });
         setEditingMode(false);
     };
 
     const handleCancelEditing = () => {
+        setIdsToRemove([]);
         setEditingMode(false);
     };
 
@@ -105,7 +106,9 @@ const SingleListView = ({ list }: SingleListViewProps) => {
                                 ) : (
                                     <div className="flex space-x-2">
                                         <Button
-                                            onClick={() => handleSaveEditing()}
+                                            onClick={() =>
+                                                handleSaveEditing(listData.id)
+                                            }
                                             intent={"primary"}
                                             size="sm"
                                         >
@@ -120,6 +123,9 @@ const SingleListView = ({ list }: SingleListViewProps) => {
                                         >
                                             Discard
                                         </Button>
+                                        {idsToRemove.length > 0 ? (
+                                            <p className="ml-2 mt-[5px] text-xs text-crumble">{`Removing ${idsToRemove.length} films`}</p>
+                                        ) : null}
                                     </div>
                                 )}
                             </div>
@@ -132,105 +138,119 @@ const SingleListView = ({ list }: SingleListViewProps) => {
                         ) : null}
                     </div>
                     <div className="mt-5 grid w-full grid-cols-5 gap-2">
-                        {listData.listEntries.map(({ movie, id }) => (
-                            <div
-                                className=" break-inside-avoid-column"
-                                key={movie.movieId}
-                            >
-                                <div className="column group flow-root cursor-pointer rounded-md border-[1px] border-gray-300 dark:border-brand-light">
-                                    {movie.poster ? (
-                                        <Tooltip>
-                                            <Tooltip.Trigger>
-                                                <div className="relative">
-                                                    {!editingMode ? (
-                                                        <Link
-                                                            href={{
-                                                                pathname:
-                                                                    "/film/[id]",
-                                                                query: {
-                                                                    id: movie.movieId,
-                                                                },
-                                                            }}
-                                                        >
-                                                            <div>
-                                                                <Image
-                                                                    alt={
-                                                                        movie.title
-                                                                    }
-                                                                    src={`https://image.tmdb.org/t/p/w500${movie.poster}`}
-                                                                    className={clxsm(
-                                                                        editingMode &&
-                                                                            "opacity-40",
-                                                                        "rounded-md"
-                                                                    )}
-                                                                    width={0}
-                                                                    height={0}
-                                                                    sizes="100vw"
-                                                                    style={{
-                                                                        width: "100%",
-                                                                        height: "auto",
-                                                                    }}
-                                                                />
-                                                            </div>
-                                                        </Link>
-                                                    ) : (
-                                                        <div>
+                        {listData.listEntries
+                            .filter((entry) => !idsToRemove.includes(entry.id))
+                            .map(({ movie, id }) => (
+                                <div
+                                    className=" break-inside-avoid-column"
+                                    key={movie.movieId}
+                                >
+                                    <div className="column group flow-root cursor-pointer rounded-md border-[1px] border-gray-300 dark:border-brand-light">
+                                        {movie.poster ? (
+                                            <Tooltip>
+                                                <Tooltip.Trigger>
+                                                    <div className="relative">
+                                                        {!editingMode ? (
+                                                            <Link
+                                                                href={{
+                                                                    pathname:
+                                                                        "/film/[id]",
+                                                                    query: {
+                                                                        id: movie.movieId,
+                                                                    },
+                                                                }}
+                                                            >
+                                                                <div>
+                                                                    <Image
+                                                                        alt={
+                                                                            movie.title
+                                                                        }
+                                                                        src={`https://image.tmdb.org/t/p/w500${movie.poster}`}
+                                                                        className={clxsm(
+                                                                            editingMode &&
+                                                                                "opacity-40",
+                                                                            "rounded-md"
+                                                                        )}
+                                                                        width={
+                                                                            0
+                                                                        }
+                                                                        height={
+                                                                            0
+                                                                        }
+                                                                        sizes="100vw"
+                                                                        style={{
+                                                                            width: "100%",
+                                                                            height: "auto",
+                                                                        }}
+                                                                    />
+                                                                </div>
+                                                            </Link>
+                                                        ) : (
                                                             <div
                                                                 onClick={() =>
-                                                                    console.log(
-                                                                        1
+                                                                    setIdsToRemove(
+                                                                        [
+                                                                            ...idsToRemove,
+                                                                            id,
+                                                                        ]
                                                                     )
                                                                 }
-                                                                className="pointer-events-none absolute 
+                                                            >
+                                                                <div
+                                                                    className="pointer-events-none absolute 
                                                             left-[50%] top-[50%]
                                                             z-50 h-full
                                                             w-full -translate-x-1/2 -translate-y-1/2 
                                                             text-center text-red-400"
-                                                            >
-                                                                <BsX className="h-full w-full" />
+                                                                >
+                                                                    <BsX className="h-full w-full" />
+                                                                </div>
+                                                                <div>
+                                                                    <Image
+                                                                        alt={
+                                                                            movie.title
+                                                                        }
+                                                                        src={`https://image.tmdb.org/t/p/w500${movie.poster}`}
+                                                                        className={clxsm(
+                                                                            editingMode &&
+                                                                                "opacity-40",
+                                                                            "rounded-md"
+                                                                        )}
+                                                                        width={
+                                                                            0
+                                                                        }
+                                                                        height={
+                                                                            0
+                                                                        }
+                                                                        sizes="100vw"
+                                                                        style={{
+                                                                            width: "100%",
+                                                                            height: "auto",
+                                                                        }}
+                                                                    />
+                                                                </div>
                                                             </div>
-                                                            <div>
-                                                                <Image
-                                                                    alt={
-                                                                        movie.title
-                                                                    }
-                                                                    src={`https://image.tmdb.org/t/p/w500${movie.poster}`}
-                                                                    className={clxsm(
-                                                                        editingMode &&
-                                                                            "opacity-40",
-                                                                        "rounded-md"
-                                                                    )}
-                                                                    width={0}
-                                                                    height={0}
-                                                                    sizes="100vw"
-                                                                    style={{
-                                                                        width: "100%",
-                                                                        height: "auto",
-                                                                    }}
-                                                                />
-                                                            </div>
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            </Tooltip.Trigger>
-                                            <Tooltip.Content>
-                                                <div className="flex space-x-2">
-                                                    <p className="overflow-hidden text-ellipsis text-xs font-semibold text-crumble-base group-hover:text-crumble-base">
-                                                        {movie.releaseDate.slice(
-                                                            0,
-                                                            4
                                                         )}
-                                                    </p>
-                                                    <p className="overflow-hidden text-ellipsis text-xs text-sky-lighter group-hover:text-crumble-base">
-                                                        {movie.title}
-                                                    </p>
-                                                </div>
-                                            </Tooltip.Content>
-                                        </Tooltip>
-                                    ) : null}
+                                                    </div>
+                                                </Tooltip.Trigger>
+                                                <Tooltip.Content>
+                                                    <div className="flex space-x-2">
+                                                        <p className="overflow-hidden text-ellipsis text-xs font-semibold text-crumble-base group-hover:text-crumble-base">
+                                                            {movie.releaseDate.slice(
+                                                                0,
+                                                                4
+                                                            )}
+                                                        </p>
+                                                        <p className="overflow-hidden text-ellipsis text-xs text-sky-lighter group-hover:text-crumble-base">
+                                                            {movie.title}
+                                                        </p>
+                                                    </div>
+                                                </Tooltip.Content>
+                                            </Tooltip>
+                                        ) : null}
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
+                            ))}
                         {session?.user.id === author.id && !editingMode ? (
                             <AddMovieToList listId={listData.id} />
                         ) : null}

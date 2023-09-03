@@ -273,36 +273,36 @@ export const listRouter = createTRPCRouter({
     // Delete movie from list
     //
     removeEntryFromList: protectedProcedure
-        .input(z.object({ listId: z.string(), entryId: z.string() }))
+        .input(z.object({ listId: z.string(), entryIds: z.string().array() }))
         .mutation(async ({ ctx, input }) => {
-            const { listId, entryId } = input;
+            const entries = input.entryIds.map((entryId) => {
+                return {
+                    listId: input.listId,
+                    id: entryId,
+                };
+            });
+            // const { listId, entryId } = input;
             const list = await ctx.prisma.list.findFirst({
                 where: {
-                    id: listId,
-                },
-            });
-            const listEntry = await ctx.prisma.listEntry.findFirst({
-                where: {
-                    id: entryId,
+                    id: input.listId,
                 },
             });
 
-            if (!list || !listEntry) {
+            if (!list) {
                 throw new TRPCError({
                     code: "BAD_REQUEST",
                     message: "List or list entry do not exist",
                 });
             }
 
-            await ctx.prisma.listEntry.delete({
+            const deleted = await ctx.prisma.listEntry.deleteMany({
                 where: {
-                    id: entryId,
-                    listId: listId,
+                    OR: entries,
                 },
             });
 
             return {
-                entryDeleted: true,
+                entryDeleted: deleted,
             };
         }),
     // -----------------------------------------------------------------------------//
