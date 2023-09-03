@@ -86,7 +86,7 @@ const SingleListView = ({ list }: SingleListViewProps) => {
                                         className="float-right ml-4 mt-4 fill-crumble"
                                         onClick={() => setEditingMode(false)}
                                     >
-                                        {/* test commit */}
+                                        {/*  */}
                                         <BsCheck />
                                     </IconButton>
                                 </div>
