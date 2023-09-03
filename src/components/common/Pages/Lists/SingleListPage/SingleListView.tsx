@@ -12,6 +12,8 @@ import { BsHeartFill, BsX } from "react-icons/bs";
 import AddMovieToList from "./AddMovieToList";
 import { useState } from "react";
 import Button from "@/components/ui/Button/Button";
+import Input from "@/components/ui/Input/Input";
+import InputArea from "@/components/ui/InputArea/InputArea";
 
 interface SingleListViewProps {
     list: RouterOutputs["list"]["list"];
@@ -29,6 +31,11 @@ const SingleListView = ({ list }: SingleListViewProps) => {
 
     const trpcUtils = api.useContext();
 
+    const [title, setTitle] = useState<string>(listData.title);
+    const [description, setDescription] = useState<string | undefined>(
+        listData.description ? listData.description : ""
+    );
+
     const toggleLike = api.list.toggleListLike.useMutation({
         onSuccess: async () => {
             await trpcUtils.list.list.invalidate();
@@ -37,15 +44,25 @@ const SingleListView = ({ list }: SingleListViewProps) => {
 
     const { mutate: removeEntryMutate } =
         api.list.removeEntryFromList.useMutation({
-            onSuccess: async () => {
+            onSuccess: () => {
                 toast.success("Successfully removed from your list", {
                     position: "bottom-center",
                     duration: 4000,
                     className: "dark:bg-brand dark:text-white text-black",
                 });
-                await trpcUtils.list.list.invalidate();
             },
         });
+
+    const { mutate: editListMutate } = api.list.updateList.useMutation({
+        onSuccess: async () => {
+            toast.success("Successfully updated your list!", {
+                position: "bottom-center",
+                duration: 4000,
+                className: "dark:bg-brand dark:text-white text-black",
+            });
+            await trpcUtils.list.list.invalidate();
+        },
+    });
 
     const handleToggleLike = () => {
         if (authenticated) toggleLike.mutate({ id: list.list.id });
@@ -58,9 +75,11 @@ const SingleListView = ({ list }: SingleListViewProps) => {
         }
     };
 
-    const handleSaveEditing = (listId: string) => {
+    const handleSaveEditing = async (listId: string) => {
         removeEntryMutate({ listId, entryIds: idsToRemove });
+        editListMutate({ id: listData.id, title, description });
         setEditingMode(false);
+        await trpcUtils.list.invalidate();
     };
 
     const handleCancelEditing = () => {
@@ -91,7 +110,15 @@ const SingleListView = ({ list }: SingleListViewProps) => {
                     </div>
                     <div>
                         <div className="flex">
-                            <h3 className="mt-4">{listData.title}</h3>
+                            {!editingMode ? (
+                                <h3 className="mt-4">{listData.title}</h3>
+                            ) : (
+                                <Input
+                                    value={title}
+                                    change={setTitle}
+                                    className="mt-3 w-max"
+                                />
+                            )}
                             <div className="ml-5 mt-[20px]">
                                 {!editingMode ? (
                                     <div>
@@ -107,7 +134,9 @@ const SingleListView = ({ list }: SingleListViewProps) => {
                                     <div className="flex space-x-2">
                                         <Button
                                             onClick={() =>
-                                                handleSaveEditing(listData.id)
+                                                void handleSaveEditing(
+                                                    listData.id
+                                                )
                                             }
                                             intent={"primary"}
                                             size="sm"
@@ -124,15 +153,25 @@ const SingleListView = ({ list }: SingleListViewProps) => {
                                             Discard
                                         </Button>
                                         {idsToRemove.length > 0 ? (
-                                            <p className="ml-2 mt-[5px] text-xs text-crumble">{`Removing ${idsToRemove.length} films`}</p>
+                                            <p className="ml-2 mt-[5px] text-xs text-crumble">
+                                                {`Removing ${idsToRemove.length} films`}
+                                            </p>
                                         ) : null}
                                     </div>
                                 )}
                             </div>
                         </div>
-                        <p className="mb-2 mt-1 text-slate-600 dark:text-slate-300">
-                            {listData.description}
-                        </p>
+                        {!editingMode ? (
+                            <p className="mb-2 mt-1 text-slate-600 dark:text-slate-300">
+                                {listData.description}
+                            </p>
+                        ) : (
+                            <InputArea
+                                value={description ? description : ""}
+                                change={setDescription}
+                                className="mt-2 w-full"
+                            />
+                        )}
                         {listData.tags ? (
                             <ShowTags tags={listData.tags} />
                         ) : null}
@@ -145,7 +184,10 @@ const SingleListView = ({ list }: SingleListViewProps) => {
                                     className=" break-inside-avoid-column"
                                     key={movie.movieId}
                                 >
-                                    <div className="column group flow-root cursor-pointer rounded-md border-[1px] border-gray-300 dark:border-brand-light">
+                                    <div
+                                        className="column group flow-root cursor-pointer rounded-md
+                                        border-[1px] border-gray-300 dark:border-brand-light"
+                                    >
                                         {movie.poster ? (
                                             <Tooltip>
                                                 <Tooltip.Trigger>
@@ -235,13 +277,21 @@ const SingleListView = ({ list }: SingleListViewProps) => {
                                                 </Tooltip.Trigger>
                                                 <Tooltip.Content>
                                                     <div className="flex space-x-2">
-                                                        <p className="overflow-hidden text-ellipsis text-xs font-semibold text-crumble-base group-hover:text-crumble-base">
+                                                        <p
+                                                            className={clxsm([
+                                                                "overflow-hidden text-ellipsis text-xs",
+                                                                "font-semibold text-crumble-base group-hover:text-crumble-base",
+                                                            ])}
+                                                        >
                                                             {movie.releaseDate.slice(
                                                                 0,
                                                                 4
                                                             )}
                                                         </p>
-                                                        <p className="overflow-hidden text-ellipsis text-xs text-sky-lighter group-hover:text-crumble-base">
+                                                        <p
+                                                            className="overflow-hidden text-ellipsis text-xs 
+                                                                    text-sky-lighter group-hover:text-crumble-base"
+                                                        >
                                                             {movie.title}
                                                         </p>
                                                     </div>
