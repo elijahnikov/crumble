@@ -247,7 +247,7 @@ export const listRouter = createTRPCRouter({
 
             const listEntry = await ctx.prisma.listEntry.findFirst({
                 where: {
-                    id: listId,
+                    listId,
                     movieId: movieId,
                 },
             });

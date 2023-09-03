@@ -279,7 +279,7 @@ interface MovieSearchResultsProps {
     handleMovieClick: (film: IMovie) => void;
 }
 
-const MovieSearchResults = ({
+export const MovieSearchResults = ({
     filmSearchResults,
     handleMovieClick,
 }: MovieSearchResultsProps) => {
