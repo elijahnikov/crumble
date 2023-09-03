@@ -88,23 +88,24 @@ const CommentSection = ({
                         </Button>
                     </>
                 )}
-                <hr className="mt-12 border-gray-200 dark:border-gray-700" />
+
                 <InfiniteScroll
                     dataLength={comments.length}
                     next={fetchNewComments}
                     hasMore={hasMore!}
                     loader={"Loading..."}
                 >
-                    {comments.map((comment) => (
-                        <SingleComment
-                            deleteComment={deleteComment}
-                            toggleLike={toggleLike}
-                            comment={comment}
-                            currentUserId={session?.user.id}
-                            key={comment.id}
-                            authenticated={authenticated}
-                        />
-                    ))}
+                    {comments.length > 0 &&
+                        comments.map((comment) => (
+                            <SingleComment
+                                deleteComment={deleteComment}
+                                toggleLike={toggleLike}
+                                comment={comment}
+                                currentUserId={session?.user.id}
+                                key={comment.id}
+                                authenticated={authenticated}
+                            />
+                        ))}
                 </InfiniteScroll>
             </div>
         </>

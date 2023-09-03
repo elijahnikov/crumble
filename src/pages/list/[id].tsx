@@ -38,6 +38,7 @@ const SingleListPage: NextPage<PageProps> = ({ id }) => {
         api.list.createListComment.useMutation({
             onSuccess: async () => {
                 await trpcUtils.list.infiniteCommentFeed.invalidate();
+                await trpcUtils.list.list.invalidate();
             },
         });
     const { mutate: deleteListComment } =
@@ -49,6 +50,7 @@ const SingleListPage: NextPage<PageProps> = ({ id }) => {
                     className: "dark:bg-brand dark:text-white text-black",
                 });
                 await trpcUtils.list.infiniteCommentFeed.invalidate();
+                await trpcUtils.list.list.invalidate();
             },
         });
     const toggleLike = api.list.toggleListCommentLike.useMutation({
@@ -64,7 +66,7 @@ const SingleListPage: NextPage<PageProps> = ({ id }) => {
     return (
         <>
             <Head>
-                <title>{`@${data.list.title} - List by @${data.list.user.name} • Crumble`}</title>
+                <title>{`${data.list.title} - List by @${data.list.user.name} • Crumble`}</title>
             </Head>
             <Layout>
                 <SingleListView list={data} />

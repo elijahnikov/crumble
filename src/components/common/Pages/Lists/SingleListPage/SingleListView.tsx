@@ -1,10 +1,12 @@
 import { Container } from "@/components/common/Layout/Layout";
+import ShowTags from "@/components/common/Tags/ShowTags";
 import Tooltip from "@/components/ui/Tooltip/Tooltip";
 import { type RouterOutputs, api } from "@/utils/api";
 import clxsm from "@/utils/clsxm";
 import { fromNow } from "@/utils/general/dateFormat";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
+import Link from "next/link";
 import toast from "react-hot-toast";
 import { BsHeartFill } from "react-icons/bs";
 
@@ -52,19 +54,23 @@ const SingleListView = ({ list }: SingleListViewProps) => {
                                 height={30}
                             />
                         ) : null}
-                        <span>{author.name}</span>
+                        <span className="text-md ml-2 mt-1 font-semibold text-slate-700 dark:text-slate-200">
+                            {author.name}
+                        </span>
+                        <div className="ml-4 mt-[9px] text-xs uppercase dark:text-slate-400">
+                            Created {fromNow(listData.createdAt)}
+                        </div>
                     </div>
                     <div>
-                        <div>Created {fromNow(listData.createdAt)}</div>
-                        <h3>{listData.title}</h3>
-                        <p>{listData.description}</p>
-                        {listData.numberOfFilms === 0 ? (
-                            <p>No movies added yet.</p>
-                        ) : (
-                            <p>{listData.numberOfFilms} movies in this list.</p>
-                        )}
+                        <h3 className="mt-4">{listData.title}</h3>
+                        <p className="mb-2 mt-1 text-slate-600 dark:text-slate-300">
+                            {listData.description}
+                        </p>
+                        {listData.tags ? (
+                            <ShowTags tags={listData.tags} />
+                        ) : null}
                     </div>
-                    <div className="grid w-full grid-cols-5 gap-2">
+                    <div className="mt-5 grid w-full grid-cols-5 gap-2">
                         {listData.listEntries.map(({ movie }) => (
                             <div
                                 className=" break-inside-avoid-column"
@@ -74,18 +80,27 @@ const SingleListView = ({ list }: SingleListViewProps) => {
                                     {movie.poster ? (
                                         <Tooltip>
                                             <Tooltip.Trigger>
-                                                <Image
-                                                    alt={movie.title}
-                                                    src={`https://image.tmdb.org/t/p/w500${movie.poster}`}
-                                                    className="rounded-md"
-                                                    width={0}
-                                                    height={0}
-                                                    sizes="100vw"
-                                                    style={{
-                                                        width: "100%",
-                                                        height: "auto",
+                                                <Link
+                                                    href={{
+                                                        pathname: "/film/[id]",
+                                                        query: {
+                                                            id: movie.movieId,
+                                                        },
                                                     }}
-                                                />
+                                                >
+                                                    <Image
+                                                        alt={movie.title}
+                                                        src={`https://image.tmdb.org/t/p/w500${movie.poster}`}
+                                                        className="rounded-md"
+                                                        width={0}
+                                                        height={0}
+                                                        sizes="100vw"
+                                                        style={{
+                                                            width: "100%",
+                                                            height: "auto",
+                                                        }}
+                                                    />
+                                                </Link>
                                             </Tooltip.Trigger>
                                             <Tooltip.Content>
                                                 <div className="flex space-x-2">
