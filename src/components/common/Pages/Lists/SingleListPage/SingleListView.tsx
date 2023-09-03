@@ -1,24 +1,25 @@
 import { Container } from "@/components/common/Layout/Layout";
 import ShowTags from "@/components/common/Tags/ShowTags";
-import Modal from "@/components/ui/Modal/Modal";
 import Tooltip from "@/components/ui/Tooltip/Tooltip";
-import { IMovie } from "@/server/api/schemas/movie";
 import { type RouterOutputs, api } from "@/utils/api";
 import clxsm from "@/utils/clsxm";
 import { fromNow } from "@/utils/general/dateFormat";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
 import toast from "react-hot-toast";
-import { BsHeartFill, BsPlus } from "react-icons/bs";
+import { BsCheck, BsHeartFill, BsPencilFill } from "react-icons/bs";
 import AddMovieToList from "./AddMovieToList";
+import { useState } from "react";
+import IconButton from "@/components/ui/IconButton/IconButton";
 
 interface SingleListViewProps {
     list: RouterOutputs["list"]["list"];
 }
 
 const SingleListView = ({ list }: SingleListViewProps) => {
+    const [editingMode, setEditingMode] = useState<boolean>(false);
+
     const { list: listData } = list;
     const { user: author } = listData;
 
@@ -66,7 +67,30 @@ const SingleListView = ({ list }: SingleListViewProps) => {
                         </div>
                     </div>
                     <div>
-                        <h3 className="mt-4">{listData.title}</h3>
+                        <div className="flex">
+                            <h3 className="mt-4">{listData.title}</h3>
+                            {!editingMode ? (
+                                <IconButton
+                                    size={"sm"}
+                                    intent={"primary"}
+                                    className="float-right ml-4 mt-4 bg-none fill-crumble"
+                                    onClick={() => setEditingMode(true)}
+                                >
+                                    <BsPencilFill />
+                                </IconButton>
+                            ) : (
+                                <div>
+                                    <IconButton
+                                        size={"sm"}
+                                        intent={"primary"}
+                                        className="float-right ml-4 mt-4 fill-crumble"
+                                        onClick={() => setEditingMode(true)}
+                                    >
+                                        <BsCheck />
+                                    </IconButton>
+                                </div>
+                            )}
+                        </div>
                         <p className="mb-2 mt-1 text-slate-600 dark:text-slate-300">
                             {listData.description}
                         </p>

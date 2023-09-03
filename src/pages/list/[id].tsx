@@ -18,6 +18,9 @@ const SingleListPage: NextPage<PageProps> = ({ id }) => {
     const trpcUtils = api.useContext();
 
     const { data, isLoading } = api.list.list.useQuery({ id });
+
+    if (!data) return <div>404</div>;
+
     const {
         data: listComments,
         isLoading: isListCommentsLoading,
@@ -27,7 +30,7 @@ const SingleListPage: NextPage<PageProps> = ({ id }) => {
     } = api.list.infiniteCommentFeed.useInfiniteQuery(
         {
             limit: 10,
-            id: data!.list.id!,
+            id: data.list.id,
         },
         {
             getNextPageParam: (lastPage) => lastPage.nextCursor,
@@ -60,8 +63,6 @@ const SingleListPage: NextPage<PageProps> = ({ id }) => {
     });
 
     if (isLoading) return <div>Loading...</div>;
-
-    if (!data) return <div>404</div>;
 
     return (
         <>
