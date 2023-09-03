@@ -8,6 +8,7 @@ import { BsHeartFill, BsThreeDots } from "react-icons/bs";
 import { Menu, Transition } from "@headlessui/react";
 import clxsm from "@/utils/clsxm";
 import InfiniteScroll from "react-infinite-scroll-component";
+import toast from "react-hot-toast";
 
 interface Comment {
     id: string;
@@ -101,6 +102,7 @@ const CommentSection = ({
                             comment={comment}
                             currentUserId={session?.user.id}
                             key={comment.id}
+                            authenticated={authenticated}
                         />
                     ))}
                 </InfiniteScroll>
@@ -116,6 +118,7 @@ interface SingleCommentProps {
     deleteComment: (variables: { id: string }) => void;
     toggleLike: (variables: { id: string }) => void;
     currentUserId?: string;
+    authenticated: boolean;
 }
 
 const SingleComment = ({
@@ -123,9 +126,17 @@ const SingleComment = ({
     currentUserId,
     deleteComment,
     toggleLike,
+    authenticated,
 }: SingleCommentProps) => {
     const handleToggleLike = () => {
-        toggleLike({ id: comment.id });
+        if (authenticated) toggleLike({ id: comment.id });
+        else {
+            toast.error(`Please sign in to perform that action`, {
+                position: "bottom-center",
+                duration: 4000,
+                className: "dark:bg-brand dark:text-white text-black",
+            });
+        }
     };
 
     return (

@@ -72,9 +72,11 @@ const NavigationBar = () => {
                     ))}
                 </nav>
             </div>
-            <div className="mb-5 text-center">
-                <CreateModalMenu />
-            </div>
+            {authenticated ? (
+                <div className="mb-5 text-center">
+                    <CreateModalMenu />
+                </div>
+            ) : null}
             {authenticated ? (
                 <div className="flex flex-shrink-0 border-t border-gray-200 p-4 dark:border-gray-700">
                     <div className="group block w-full flex-shrink-0">
@@ -98,7 +100,9 @@ const NavigationBar = () => {
                     </div>
                 </div>
             ) : (
-                <DiscordSignIn callbackUrl={"/"} />
+                <div className="mb-5 text-center">
+                    <DiscordSignIn callbackUrl={"/"} />
+                </div>
             )}
         </div>
     );

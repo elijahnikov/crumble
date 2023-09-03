@@ -3,7 +3,9 @@ import Tooltip from "@/components/ui/Tooltip/Tooltip";
 import { type RouterOutputs, api } from "@/utils/api";
 import clxsm from "@/utils/clsxm";
 import { fromNow } from "@/utils/general/dateFormat";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
+import toast from "react-hot-toast";
 import { BsHeartFill } from "react-icons/bs";
 
 interface SingleListViewProps {
@@ -14,6 +16,9 @@ const SingleListView = ({ list }: SingleListViewProps) => {
     const { list: listData } = list;
     const { user: author } = listData;
 
+    const { data: session } = useSession();
+    const authenticated = !!session;
+
     const trpcUtils = api.useContext();
 
     const toggleLike = api.list.toggleListLike.useMutation({
@@ -23,7 +28,14 @@ const SingleListView = ({ list }: SingleListViewProps) => {
     });
 
     const handleToggleLike = () => {
-        toggleLike.mutate({ id: list.list.id });
+        if (authenticated) toggleLike.mutate({ id: list.list.id });
+        else {
+            toast.error(`Please sign in to perform that action`, {
+                position: "bottom-center",
+                duration: 4000,
+                className: "dark:bg-brand dark:text-white text-black",
+            });
+        }
     };
 
     return (
@@ -31,16 +43,16 @@ const SingleListView = ({ list }: SingleListViewProps) => {
             <Container>
                 <div>
                     <div className="flex">
-                        {listData.user.image ? (
+                        {author.image ? (
                             <Image
                                 className="rounded-full"
-                                alt={listData.user.name!}
-                                src={listData.user.image}
+                                alt={author.name!}
+                                src={author.image}
                                 width={30}
                                 height={30}
                             />
                         ) : null}
-                        <span>{listData.user.name}</span>
+                        <span>{author.name}</span>
                     </div>
                     <div>
                         <div>Created {fromNow(listData.createdAt)}</div>
