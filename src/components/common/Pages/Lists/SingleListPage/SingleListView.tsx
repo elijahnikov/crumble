@@ -8,7 +8,7 @@ import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import toast from "react-hot-toast";
-import { BsHeartFill } from "react-icons/bs";
+import { BsHeartFill, BsPlus } from "react-icons/bs";
 
 interface SingleListViewProps {
     list: RouterOutputs["list"]["list"];
@@ -120,6 +120,9 @@ const SingleListView = ({ list }: SingleListViewProps) => {
                                 </div>
                             </div>
                         ))}
+                        {session?.user.id === author.id ? (
+                            <AddMovieToList />
+                        ) : null}
                     </div>
                     <div className="mt-4 flex space-x-2 text-sm font-semibold text-gray-600 dark:text-gray-300">
                         <BsHeartFill
@@ -143,3 +146,17 @@ const SingleListView = ({ list }: SingleListViewProps) => {
 };
 
 export default SingleListView;
+
+const AddMovieToList = () => {
+    return (
+        <div
+            className={clxsm([
+                "flex h-full w-full items-center justify-center rounded-md border-[1px]",
+                "border-slate-400 bg-brand-white text-center dark:border-slate-700 dark:bg-brand",
+                "cursor-pointer hover:bg-slate-300 dark:hover:bg-slate-800",
+            ])}
+        >
+            <BsPlus className="mx-auto my-auto h-20 w-20 fill-slate-500 dark:fill-slate-400" />
+        </div>
+    );
+};

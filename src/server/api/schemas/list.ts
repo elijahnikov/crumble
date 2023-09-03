@@ -17,3 +17,9 @@ export const createListSchema = z.object({
     posterPathFive: z.string().optional(),
     movieIds: z.array(z.number()),
 });
+
+export const updateListSchema = z.object({
+    title: z.string().optional(),
+    description: z.string().optional(),
+    id: z.string(),
+});
