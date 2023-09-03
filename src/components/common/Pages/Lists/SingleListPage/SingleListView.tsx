@@ -8,10 +8,17 @@ import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import toast from "react-hot-toast";
-import { BsCheck, BsHeartFill, BsPencilFill } from "react-icons/bs";
+import {
+    BsCheck,
+    BsCheck2,
+    BsHeartFill,
+    BsPencilFill,
+    BsX,
+} from "react-icons/bs";
 import AddMovieToList from "./AddMovieToList";
 import { useState } from "react";
 import IconButton from "@/components/ui/IconButton/IconButton";
+import Button from "@/components/ui/Button/Button";
 
 interface SingleListViewProps {
     list: RouterOutputs["list"]["list"];
@@ -34,6 +41,13 @@ const SingleListView = ({ list }: SingleListViewProps) => {
         },
     });
 
+    const { mutate: removeEntryMutate } =
+        api.list.removeEntryFromList.useMutation({
+            onSuccess: async () => {
+                await trpcUtils.list.list.invalidate();
+            },
+        });
+
     const handleToggleLike = () => {
         if (authenticated) toggleLike.mutate({ id: list.list.id });
         else {
@@ -43,6 +57,14 @@ const SingleListView = ({ list }: SingleListViewProps) => {
                 className: "dark:bg-brand dark:text-white text-black",
             });
         }
+    };
+
+    const handleSaveEditing = () => {
+        setEditingMode(false);
+    };
+
+    const handleCancelEditing = () => {
+        setEditingMode(false);
     };
 
     return (
@@ -69,28 +91,38 @@ const SingleListView = ({ list }: SingleListViewProps) => {
                     <div>
                         <div className="flex">
                             <h3 className="mt-4">{listData.title}</h3>
-                            {!editingMode ? (
-                                <IconButton
-                                    size={"sm"}
-                                    intent={"primary"}
-                                    className="float-right ml-4 mt-4 bg-none fill-crumble"
-                                    onClick={() => setEditingMode(true)}
-                                >
-                                    <BsPencilFill />
-                                </IconButton>
-                            ) : (
-                                <div>
-                                    <IconButton
-                                        size={"sm"}
-                                        intent={"primary"}
-                                        className="float-right ml-4 mt-4 fill-crumble"
-                                        onClick={() => setEditingMode(false)}
-                                    >
-                                        {/*  */}
-                                        <BsCheck />
-                                    </IconButton>
-                                </div>
-                            )}
+                            <div className="ml-5 mt-[20px]">
+                                {!editingMode ? (
+                                    <div>
+                                        <Button
+                                            onClick={() => setEditingMode(true)}
+                                            size="sm"
+                                            intent={"secondary"}
+                                        >
+                                            Edit
+                                        </Button>
+                                    </div>
+                                ) : (
+                                    <div className="flex space-x-2">
+                                        <Button
+                                            onClick={() => handleSaveEditing()}
+                                            intent={"primary"}
+                                            size="sm"
+                                        >
+                                            Save
+                                        </Button>
+                                        <Button
+                                            onClick={() =>
+                                                handleCancelEditing()
+                                            }
+                                            intent={"secondary"}
+                                            size="sm"
+                                        >
+                                            Discard
+                                        </Button>
+                                    </div>
+                                )}
+                            </div>
                         </div>
                         <p className="mb-2 mt-1 text-slate-600 dark:text-slate-300">
                             {listData.description}
@@ -100,7 +132,7 @@ const SingleListView = ({ list }: SingleListViewProps) => {
                         ) : null}
                     </div>
                     <div className="mt-5 grid w-full grid-cols-5 gap-2">
-                        {listData.listEntries.map(({ movie }) => (
+                        {listData.listEntries.map(({ movie, id }) => (
                             <div
                                 className=" break-inside-avoid-column"
                                 key={movie.movieId}
@@ -109,27 +141,77 @@ const SingleListView = ({ list }: SingleListViewProps) => {
                                     {movie.poster ? (
                                         <Tooltip>
                                             <Tooltip.Trigger>
-                                                <Link
-                                                    href={{
-                                                        pathname: "/film/[id]",
-                                                        query: {
-                                                            id: movie.movieId,
-                                                        },
-                                                    }}
-                                                >
-                                                    <Image
-                                                        alt={movie.title}
-                                                        src={`https://image.tmdb.org/t/p/w500${movie.poster}`}
-                                                        className="rounded-md"
-                                                        width={0}
-                                                        height={0}
-                                                        sizes="100vw"
-                                                        style={{
-                                                            width: "100%",
-                                                            height: "auto",
-                                                        }}
-                                                    />
-                                                </Link>
+                                                <div className="relative">
+                                                    {!editingMode ? (
+                                                        <Link
+                                                            href={{
+                                                                pathname:
+                                                                    "/film/[id]",
+                                                                query: {
+                                                                    id: movie.movieId,
+                                                                },
+                                                            }}
+                                                        >
+                                                            <div>
+                                                                <Image
+                                                                    alt={
+                                                                        movie.title
+                                                                    }
+                                                                    src={`https://image.tmdb.org/t/p/w500${movie.poster}`}
+                                                                    className={clxsm(
+                                                                        editingMode &&
+                                                                            "opacity-40",
+                                                                        "rounded-md"
+                                                                    )}
+                                                                    width={0}
+                                                                    height={0}
+                                                                    sizes="100vw"
+                                                                    style={{
+                                                                        width: "100%",
+                                                                        height: "auto",
+                                                                    }}
+                                                                />
+                                                            </div>
+                                                        </Link>
+                                                    ) : (
+                                                        <div>
+                                                            <div
+                                                                onClick={() =>
+                                                                    console.log(
+                                                                        1
+                                                                    )
+                                                                }
+                                                                className="pointer-events-none absolute 
+                                                            left-[50%] top-[50%]
+                                                            z-50 h-full
+                                                            w-full -translate-x-1/2 -translate-y-1/2 
+                                                            text-center text-red-400"
+                                                            >
+                                                                <BsX className="h-full w-full" />
+                                                            </div>
+                                                            <div>
+                                                                <Image
+                                                                    alt={
+                                                                        movie.title
+                                                                    }
+                                                                    src={`https://image.tmdb.org/t/p/w500${movie.poster}`}
+                                                                    className={clxsm(
+                                                                        editingMode &&
+                                                                            "opacity-40",
+                                                                        "rounded-md"
+                                                                    )}
+                                                                    width={0}
+                                                                    height={0}
+                                                                    sizes="100vw"
+                                                                    style={{
+                                                                        width: "100%",
+                                                                        height: "auto",
+                                                                    }}
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                </div>
                                             </Tooltip.Trigger>
                                             <Tooltip.Content>
                                                 <div className="flex space-x-2">
@@ -149,7 +231,7 @@ const SingleListView = ({ list }: SingleListViewProps) => {
                                 </div>
                             </div>
                         ))}
-                        {session?.user.id === author.id ? (
+                        {session?.user.id === author.id && !editingMode ? (
                             <AddMovieToList listId={listData.id} />
                         ) : null}
                     </div>
