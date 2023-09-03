@@ -1,7 +1,11 @@
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import { TRPCError } from "@trpc/server";
-import { createListSchema, listsSchema } from "../schemas/list";
+import {
+    createListSchema,
+    listsSchema,
+    updateListSchema,
+} from "../schemas/list";
 
 export const listRouter = createTRPCRouter({
     //
@@ -214,6 +218,91 @@ export const listRouter = createTRPCRouter({
 
             return {
                 list,
+            };
+        }),
+    //
+    //  Update movie list
+    //
+    updateList: protectedProcedure
+        .input(updateListSchema)
+        .mutation(async ({ ctx, input }) => {
+            const listId = input.id;
+            await ctx.prisma.list.update({
+                where: {
+                    id: listId,
+                },
+                data: {
+                    title: input.title,
+                    description: input.description,
+                },
+            });
+        }),
+    //
+    // Add movie to list
+    //
+    addEntryToList: protectedProcedure
+        .input(z.object({ listId: z.string(), movieId: z.number() }))
+        .mutation(async ({ ctx, input }) => {
+            const { listId, movieId } = input;
+
+            const listEntry = await ctx.prisma.listEntry.findFirst({
+                where: {
+                    id: listId,
+                    movieId: movieId,
+                },
+            });
+
+            if (listEntry) {
+                throw new TRPCError({
+                    code: "BAD_REQUEST",
+                    message: "Movie is already present in list",
+                });
+            }
+
+            await ctx.prisma.listEntry.create({
+                data: {
+                    listId,
+                    movieId,
+                },
+            });
+            return {
+                entryCreated: true,
+            };
+        }),
+    //
+    // Delete movie from list
+    //
+    removeEntryFromList: protectedProcedure
+        .input(z.object({ listId: z.string(), entryId: z.string() }))
+        .mutation(async ({ ctx, input }) => {
+            const { listId, entryId } = input;
+            const list = await ctx.prisma.list.findFirst({
+                where: {
+                    id: listId,
+                },
+            });
+            const listEntry = await ctx.prisma.listEntry.findFirst({
+                where: {
+                    id: entryId,
+                },
+            });
+
+            if (!list || !listEntry) {
+                throw new TRPCError({
+                    code: "BAD_REQUEST",
+                    message: "List or list entry do not exist",
+                });
+            }
+
+            await ctx.prisma.listEntry.delete({
+                where: {
+                    id: entryId,
+                    listId: listId,
+                },
+            });
+
+            return {
+                entryDeleted: true,
             };
         }),
     // -----------------------------------------------------------------------------//
