@@ -25,6 +25,7 @@ const AddMovieToList = ({ listId }: { listId: string }) => {
     const [modalOpen, setModalOpen] = useState<boolean>(false);
     const trpcUtils = api.useContext();
 
+    const { mutate: createMovieMutate } = api.movie.createFilm.useMutation();
     const { mutate, isLoading: addingLoading } =
         api.list.addEntryToList.useMutation({
             onSuccess: async () => {
@@ -83,6 +84,9 @@ const AddMovieToList = ({ listId }: { listId: string }) => {
 
     const handleAddMovieToList = () => {
         if (chosenMovie) {
+            createMovieMutate({
+                ...chosenMovie,
+            });
             mutate({
                 listId,
                 movieId: chosenMovie.movieId,
