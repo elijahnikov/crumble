@@ -1,14 +1,18 @@
 import { Container } from "@/components/common/Layout/Layout";
 import ShowTags from "@/components/common/Tags/ShowTags";
+import Modal from "@/components/ui/Modal/Modal";
 import Tooltip from "@/components/ui/Tooltip/Tooltip";
+import { IMovie } from "@/server/api/schemas/movie";
 import { type RouterOutputs, api } from "@/utils/api";
 import clxsm from "@/utils/clsxm";
 import { fromNow } from "@/utils/general/dateFormat";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 import toast from "react-hot-toast";
 import { BsHeartFill, BsPlus } from "react-icons/bs";
+import AddMovieToList from "./AddMovieToList";
 
 interface SingleListViewProps {
     list: RouterOutputs["list"]["list"];
@@ -121,7 +125,7 @@ const SingleListView = ({ list }: SingleListViewProps) => {
                             </div>
                         ))}
                         {session?.user.id === author.id ? (
-                            <AddMovieToList />
+                            <AddMovieToList listId={listData.id} />
                         ) : null}
                     </div>
                     <div className="mt-4 flex space-x-2 text-sm font-semibold text-gray-600 dark:text-gray-300">
@@ -146,17 +150,3 @@ const SingleListView = ({ list }: SingleListViewProps) => {
 };
 
 export default SingleListView;
-
-const AddMovieToList = () => {
-    return (
-        <div
-            className={clxsm([
-                "flex h-full w-full items-center justify-center rounded-md border-[1px]",
-                "border-slate-400 bg-brand-white text-center dark:border-slate-700 dark:bg-brand",
-                "cursor-pointer hover:bg-slate-300 dark:hover:bg-slate-800",
-            ])}
-        >
-            <BsPlus className="mx-auto my-auto h-20 w-20 fill-slate-500 dark:fill-slate-400" />
-        </div>
-    );
-};

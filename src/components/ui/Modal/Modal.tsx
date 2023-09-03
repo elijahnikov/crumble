@@ -14,18 +14,26 @@ const Modal = ({
     return <DialogPrimitive.Root {...props}>{children}</DialogPrimitive.Root>;
 };
 
-const Trigger = ({ children }: { children: React.ReactNode }) => {
+const Trigger = ({
+    children,
+    styling = true,
+}: {
+    children: React.ReactNode;
+    styling?: boolean;
+}) => {
     return (
         <DialogPrimitive.Trigger
-            className={clxsm([
-                "inline-flex items-center justify-center rounded-lg font-medium",
-                "focus-visible:ring-crumble-500 focus:outline-none focus-visible:ring",
-                "shadow-sm",
-                "transition-colors duration-75",
-                "bg-crumble-base text-white",
-                "hover:bg-crumble-dark active:bg-crumble-darker",
-                "px-3 py-1.5 text-sm md:text-base",
-            ])}
+            className={clxsm(
+                styling && [
+                    "inline-flex items-center justify-center rounded-lg font-medium",
+                    "focus-visible:ring-crumble-500 focus:outline-none focus-visible:ring",
+                    "shadow-sm",
+                    "transition-colors duration-75",
+                    "bg-crumble-base text-white",
+                    "hover:bg-crumble-dark active:bg-crumble-darker",
+                    "px-3 py-1.5 text-sm md:text-base",
+                ]
+            )}
         >
             {children}
         </DialogPrimitive.Trigger>
