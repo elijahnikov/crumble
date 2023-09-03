@@ -84,7 +84,7 @@ const SingleListView = ({ list }: SingleListViewProps) => {
                                         size={"sm"}
                                         intent={"primary"}
                                         className="float-right ml-4 mt-4 fill-crumble"
-                                        onClick={() => setEditingMode(true)}
+                                        onClick={() => setEditingMode(false)}
                                     >
                                         <BsCheck />
                                     </IconButton>
