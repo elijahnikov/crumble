@@ -11,7 +11,7 @@ import { api } from "@/utils/api";
 import clxsm from "@/utils/clsxm";
 import { fetchWithZod } from "@/utils/fetch/zodFetch";
 import { useCallback, useEffect, useState } from "react";
-import { BsPlus } from "react-icons/bs";
+import { BsArrowLeft, BsPlus } from "react-icons/bs";
 import type { ZodType } from "zod";
 import Image from "next/image";
 import toast from "react-hot-toast";
@@ -128,35 +128,45 @@ const AddMovieToList = ({ listId }: { listId: string }) => {
                         </div>
                     )}
                     {chosenMovie && (
-                        <div className="flex">
-                            <Image
-                                alt={chosenMovie.title}
-                                src={`https://image.tmdb.org/t/p/w500${chosenMovie.poster}`}
-                                width={100}
-                                height={100}
-                                className="mr-5 aspect-auto rounded-lg"
-                            />
-                            <div className="ml-5 w-[100%] text-left">
-                                <div className="mb-2 flex h-max w-[100%]">
-                                    <h2>
-                                        {chosenMovie.title}{" "}
-                                        <span className="mt-[7px] text-lg text-crumble">
-                                            {chosenMovie.releaseDate.slice(
-                                                0,
-                                                4
-                                            )}
-                                        </span>
-                                    </h2>
+                        <div>
+                            <Button
+                                onClick={() => handleCancel()}
+                                size="sm"
+                                className="mb-4"
+                                leftIcon={BsArrowLeft}
+                            >
+                                Back
+                            </Button>
+                            <div className="flex">
+                                <Image
+                                    alt={chosenMovie.title}
+                                    src={`https://image.tmdb.org/t/p/w500${chosenMovie.poster}`}
+                                    width={100}
+                                    height={100}
+                                    className="mr-5 aspect-auto rounded-lg"
+                                />
+                                <div className="ml-5 w-[100%] text-left">
+                                    <div className="mb-2 flex h-max w-[100%]">
+                                        <h2>
+                                            {chosenMovie.title}{" "}
+                                            <span className="mt-[7px] text-lg text-crumble">
+                                                {chosenMovie.releaseDate.slice(
+                                                    0,
+                                                    4
+                                                )}
+                                            </span>
+                                        </h2>
+                                    </div>
+                                    <p className="text-sm text-slate-700 dark:text-slate-300">
+                                        {chosenMovie.overview &&
+                                        chosenMovie.overview.length > 200
+                                            ? `${chosenMovie.overview?.slice(
+                                                  0,
+                                                  200
+                                              )}...`
+                                            : chosenMovie.overview}
+                                    </p>
                                 </div>
-                                <p className="text-sm text-slate-700 dark:text-slate-300">
-                                    {chosenMovie.overview &&
-                                    chosenMovie.overview.length > 200
-                                        ? `${chosenMovie.overview?.slice(
-                                              0,
-                                              200
-                                          )}...`
-                                        : chosenMovie.overview}
-                                </p>
                             </div>
                         </div>
                     )}

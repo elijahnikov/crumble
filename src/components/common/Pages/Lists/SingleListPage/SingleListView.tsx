@@ -76,8 +76,11 @@ const SingleListView = ({ list }: SingleListViewProps) => {
     };
 
     const handleSaveEditing = async (listId: string) => {
-        removeEntryMutate({ listId, entryIds: idsToRemove });
-        editListMutate({ id: listData.id, title, description });
+        if (idsToRemove.length > 0)
+            removeEntryMutate({ listId, entryIds: idsToRemove });
+        if (title !== listData.title || description !== listData.description) {
+            editListMutate({ id: listData.id, title, description });
+        }
         setEditingMode(false);
         await trpcUtils.list.invalidate();
     };
@@ -162,7 +165,7 @@ const SingleListView = ({ list }: SingleListViewProps) => {
                             </div>
                         </div>
                         {!editingMode ? (
-                            <p className="mb-2 mt-1 text-slate-600 dark:text-slate-300">
+                            <p className="mb-2 mt-4 text-slate-600 dark:text-slate-300">
                                 {listData.description}
                             </p>
                         ) : (
