@@ -221,6 +221,18 @@ export const listRouter = createTRPCRouter({
             };
         }),
     //
+    // Delete movie list
+    //
+    deleteList: protectedProcedure
+        .input(z.object({ id: z.string() }))
+        .mutation(async ({ ctx, input }) => {
+            await ctx.prisma.list.delete({
+                where: {
+                    id: input.id,
+                },
+            });
+        }),
+    //
     //  Update movie list
     //
     updateList: protectedProcedure

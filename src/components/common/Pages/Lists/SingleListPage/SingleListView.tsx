@@ -14,6 +14,8 @@ import { useState } from "react";
 import Button from "@/components/ui/Button/Button";
 import Input from "@/components/ui/Input/Input";
 import InputArea from "@/components/ui/InputArea/InputArea";
+import ActionPopover from "./ActionPopover";
+import { useRouter } from "next/router";
 
 interface SingleListViewProps {
     list: RouterOutputs["list"]["list"];
@@ -35,6 +37,8 @@ const SingleListView = ({ list }: SingleListViewProps) => {
     const [description, setDescription] = useState<string | undefined>(
         listData.description ? listData.description : ""
     );
+
+    const router = useRouter();
 
     const toggleLike = api.list.toggleListLike.useMutation({
         onSuccess: async () => {
@@ -61,6 +65,17 @@ const SingleListView = ({ list }: SingleListViewProps) => {
                 className: "dark:bg-brand dark:text-white text-black",
             });
             await trpcUtils.list.list.invalidate();
+        },
+    });
+
+    const { mutate: deleteListMutate } = api.list.deleteList.useMutation({
+        onSuccess: () => {
+            toast.success("Successfully deleted your list!", {
+                position: "bottom-center",
+                duration: 4000,
+                className: "dark:bg-brand dark:text-white text-black",
+            });
+            void router.push("/");
         },
     });
 
@@ -107,9 +122,15 @@ const SingleListView = ({ list }: SingleListViewProps) => {
                         <span className="text-md ml-2 mt-1 font-semibold text-slate-700 dark:text-slate-200">
                             {author.name}
                         </span>
-                        <div className="ml-4 mt-[9px] text-xs uppercase dark:text-slate-400">
+                        <div className="ml-4 mt-[9px] w-[100%] text-xs uppercase dark:text-slate-400">
                             Created {fromNow(listData.createdAt)}
                         </div>
+                        <ActionPopover
+                            deleteList={deleteListMutate}
+                            listId={listData.id}
+                            currentUserId={session?.user.id}
+                            listAuthorId={listData.user.id}
+                        />
                     </div>
                     <div>
                         <div className="flex">
