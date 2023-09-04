@@ -58,9 +58,7 @@ const NavigationBar = () => {
                             {item.icon && (
                                 <item.icon
                                     className={clxsm(
-                                        currentPath === item.href
-                                            ? "text-gray-500"
-                                            : " dark:text-white",
+                                        "dark:fill-white",
                                         "mr-3 h-6 w-6 flex-shrink-0 text-brand"
                                     )}
                                     aria-hidden="true"
