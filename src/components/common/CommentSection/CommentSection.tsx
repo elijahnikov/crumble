@@ -69,44 +69,41 @@ const CommentSection = ({
 
     return (
         <>
-            <div className="rounded-md border-[1px] border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-brand-light">
-                <p>{commentCount} comments</p>
-                {authenticated && (
-                    <>
-                        <InputArea
-                            className="mt-2 h-[80px]"
-                            fullWidth
-                            value={commentText}
-                            change={setCommentText}
-                            placeholder={`Leave a comment as ${session?.user.name}`}
-                        />
-                        <Button
-                            className="float-right"
-                            onClick={handlePostComment}
-                        >
-                            Post
-                        </Button>
-                    </>
-                )}
-
-                <InfiniteScroll
-                    dataLength={comments.length}
-                    next={fetchNewComments}
-                    hasMore={hasMore!}
-                    loader={"Loading..."}
-                >
-                    {comments.length > 0 &&
-                        comments.map((comment) => (
-                            <SingleComment
-                                deleteComment={deleteComment}
-                                toggleLike={toggleLike}
-                                comment={comment}
-                                currentUserId={session?.user.id}
-                                key={comment.id}
-                                authenticated={authenticated}
+            <div className="align-center flex justify-center rounded-md border-[1px] border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-brand-light">
+                <div className="w-[90%]">
+                    <p>{commentCount} comments</p>
+                    {authenticated && (
+                        <div>
+                            <InputArea
+                                className="mt-2 h-[80px]"
+                                fullWidth
+                                value={commentText}
+                                change={setCommentText}
+                                placeholder={`Leave a comment as ${session?.user.name}`}
                             />
-                        ))}
-                </InfiniteScroll>
+                            <Button onClick={handlePostComment}>Post</Button>
+                        </div>
+                    )}
+
+                    <InfiniteScroll
+                        dataLength={comments.length}
+                        next={fetchNewComments}
+                        hasMore={hasMore!}
+                        loader={"Loading..."}
+                    >
+                        {comments.length > 0 &&
+                            comments.map((comment) => (
+                                <SingleComment
+                                    deleteComment={deleteComment}
+                                    toggleLike={toggleLike}
+                                    comment={comment}
+                                    currentUserId={session?.user.id}
+                                    key={comment.id}
+                                    authenticated={authenticated}
+                                />
+                            ))}
+                    </InfiniteScroll>
+                </div>
             </div>
         </>
     );
@@ -141,9 +138,9 @@ const SingleComment = ({
     };
 
     return (
-        <div className="mt-2 rounded-lg  p-2">
+        <div className="mt-10 w-full rounded-lg p-2">
             <div className="flex">
-                <div className="flex w-[100%]">
+                <div className="flex">
                     {comment.user.image && (
                         <Image
                             src={comment.user.image}

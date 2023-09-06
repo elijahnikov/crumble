@@ -27,7 +27,7 @@ const Layout = ({ children, fullWidth }: LayoutProps) => {
                     className={clxsm(
                         fullWidth
                             ? "w-full"
-                            : "w-[80vw] min-w-[700px] max-w-[1000px] lg:w-[55vw]",
+                            : "w-[80vw] min-w-[700px] max-w-[1000px] lg:w-[65vw]",
                         "flex flex-col gap-6 lg:gap-8"
                     )}
                 >

@@ -11,7 +11,7 @@ const ListImage = ({ posters, size = 50 }: ListImageProps) => {
         return `z-${(posters.length - index) * 10}`;
     };
     return (
-        <div className={`flex p-2`}>
+        <div className={`flex`}>
             {posters.map((poster, index) => (
                 <Image
                     key={index}
