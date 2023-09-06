@@ -4,9 +4,10 @@ import ListImage from "./ListImage";
 import Image from "next/image";
 import { BsHeartFill } from "react-icons/bs";
 import { BiSolidComment } from "react-icons/bi";
+import Link from "next/link";
 
 const PopularLists = () => {
-    const { data, isLoading, isError } = api.list.lists.useQuery({
+    const { data, isLoading } = api.list.lists.useQuery({
         limit: 4,
     });
 
@@ -78,6 +79,17 @@ const PopularLists = () => {
                     <p>No lists found</p>
                 )}
             </div>
+            <Link
+                className="text-center underline"
+                href={{
+                    pathname: "/lists/all/[sorting]",
+                    query: {
+                        sorting: "popular",
+                    },
+                }}
+            >
+                <p className="mt-1 text-sm">See more</p>
+            </Link>
         </div>
     );
 };
