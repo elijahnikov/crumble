@@ -41,7 +41,7 @@ const Header = () => {
                 sizes="100vw"
                 src={`https://image.tmdb.org/t/p/original/jYEW5xZkZk2WTrdbMGAPFuBqbDc.jpg`}
                 alt={"list background"}
-                className="h-[250px] max-w-[100%] rounded-lg object-cover opacity-50 duration-[0.5s]"
+                className="h-[250px] max-w-[100%] rounded-lg object-cover opacity-60 duration-[0.5s] dark:opacity-50"
                 priority
                 style={{ width: "100%" }}
                 onLoadingComplete={(image) =>
