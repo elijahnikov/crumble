@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const listsSchema = z.object({
     limit: z.number().optional(),
-    cursor: z.object({ id: z.string(), createdAt: z.date() }),
+    cursor: z.object({ id: z.string(), createdAt: z.date() }).optional(),
 });
 export type IListsSchema = z.infer<typeof listsSchema>;
 

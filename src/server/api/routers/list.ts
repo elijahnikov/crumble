@@ -26,6 +26,20 @@ export const listRouter = createTRPCRouter({
                             listEntries: true,
                         },
                     },
+                    listEntries: {
+                        select: {
+                            id: true,
+                            listId: true,
+                            movieId: true,
+                            movie: {
+                                select: {
+                                    movieId: true,
+                                    title: true,
+                                    poster: true,
+                                },
+                            },
+                        },
+                    },
                     listLikes:
                         currentUserId === null
                             ? false
