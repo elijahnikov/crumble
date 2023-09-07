@@ -1,5 +1,6 @@
 import CreateListModal from "@/components/common/CreateListModal/CreateListModal";
 import Layout, { Container } from "@/components/common/Layout/Layout";
+import ListTags from "@/components/common/Pages/Lists/ListsHomePage/ListTags";
 import PopularLists from "@/components/common/Pages/Lists/ListsHomePage/PopularLists";
 import RecentLists from "@/components/common/Pages/Lists/ListsHomePage/RecentLists";
 import Head from "next/head";
@@ -20,7 +21,9 @@ const AllListsPage = () => {
                         <div className="w-[70%]">
                             <RecentLists />
                         </div>
-                        <h1>hello</h1>
+                        <div className="w-[29%]">
+                            <ListTags />
+                        </div>
                     </div>
                 </Container>
             </Layout>

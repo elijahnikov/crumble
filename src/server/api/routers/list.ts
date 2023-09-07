@@ -468,4 +468,60 @@ export const listRouter = createTRPCRouter({
                 return { addedLike: false };
             }
         }),
+    // -----------------------------------------------------------------------------//
+    // ------------------------------------ Tags -----------------------------------//
+    // -----------------------------------------------------------------------------//
+    //
+    // Get tags
+    //
+    tags: publicProcedure.query(async ({ ctx }) => {
+        const tags = await ctx.prisma.listTags.findMany({
+            take: 20,
+            orderBy: [{ count: "desc" }, { createdAt: "desc" }],
+        });
+        return tags;
+    }),
+    //
+    // Create tag
+    //
+    createTags: protectedProcedure
+        .input(z.object({ tags: z.string().array() }))
+        .mutation(async ({ ctx, input }) => {
+            const checkTags = await ctx.prisma.listTags.findMany({
+                where: {
+                    text: {
+                        in: input.tags,
+                    },
+                },
+            });
+
+            const existingsTags = checkTags.map((tag) => tag.text);
+            const missingTags = input.tags.filter(
+                (text) => !existingsTags.includes(text)
+            );
+
+            if (existingsTags.length > 0) {
+                await ctx.prisma.listTags.updateMany({
+                    where: {
+                        text: {
+                            in: existingsTags,
+                        },
+                    },
+                    data: {
+                        count: {
+                            increment: 1,
+                        },
+                    },
+                });
+            }
+            if (missingTags.length > 0) {
+                const missingTagsObj = missingTags.map((tag) => {
+                    return { text: tag };
+                });
+
+                await ctx.prisma.listTags.createMany({
+                    data: missingTagsObj,
+                });
+            }
+        }),
 });
