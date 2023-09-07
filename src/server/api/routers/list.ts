@@ -13,10 +13,17 @@ export const listRouter = createTRPCRouter({
     //
     lists: publicProcedure
         .input(listsSchema)
-        .query(async ({ ctx, input: { limit = 10, cursor } }) => {
+        .query(async ({ ctx, input: { limit = 10, cursor, orderBy } }) => {
             const currentUserId = ctx.session?.user.id;
             const data = await ctx.prisma.list.findMany({
                 take: limit + 1,
+                orderBy: orderBy
+                    ? {
+                          [orderBy]: {
+                              _count: "desc",
+                          },
+                      }
+                    : [{ createdAt: "desc" }, { id: "desc" }],
                 cursor: cursor ? { createdAt_id: cursor } : undefined,
                 include: {
                     _count: {

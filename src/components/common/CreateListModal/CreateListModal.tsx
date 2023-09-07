@@ -155,7 +155,7 @@ const CreateListModal = ({
                     </Modal.Trigger>
                 )}
                 <Modal.Content title="Create a new list">
-                    <div className="z-[100]">
+                    <div>
                         <div className="flex-end float-right mb-5 space-x-2">
                             <Button
                                 loading={listLoading}

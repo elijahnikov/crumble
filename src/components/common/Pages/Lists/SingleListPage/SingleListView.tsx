@@ -200,7 +200,7 @@ const SingleListView = ({ list }: SingleListViewProps) => {
                             <ShowTags tags={listData.tags} />
                         ) : null}
                     </div>
-                    <div className="mt-5 grid w-full grid-cols-5 gap-2">
+                    <div className="mt-5 grid w-full grid-cols-7 gap-2">
                         {listData.listEntries
                             .filter((entry) => !idsToRemove.includes(entry.id))
                             .map(({ movie, id }) => (
