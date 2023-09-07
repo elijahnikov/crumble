@@ -6,18 +6,20 @@ interface ListImageProps {
     size?: number;
 }
 
-const ListImage = ({ posters, size = 50 }: ListImageProps) => {
-    const generateZIndex = (index: number): string => {
-        return `z-${(posters.length - index) * 10}`;
-    };
+const generateZIndex = (index: number, postersLen: number): string => {
+    return `z-${(postersLen - index) * 10}`;
+};
+
+const ListImageWide = ({ posters, size = 50 }: ListImageProps) => {
     return (
-        <div className={`flex`}>
+        // <div className={`flex`}>
+        <div className="flex">
             {posters.map((poster, index) => (
                 <Image
                     key={index}
                     className={clxsm(
-                        generateZIndex(index),
-                        `max-w-[50%] rounded-md object-cover shadow-md [&:not(:first-child)]:-ml-20`
+                        generateZIndex(index, posters.length),
+                        `relative min-w-[30%]  rounded-md object-cover shadow-md [&:not(:first-child)]:-ml-[12.5%]`
                     )}
                     alt="listposters"
                     src={`https://image.tmdb.org/t/p/original${poster}`}
@@ -30,4 +32,4 @@ const ListImage = ({ posters, size = 50 }: ListImageProps) => {
     );
 };
 
-export default ListImage;
+export default ListImageWide;

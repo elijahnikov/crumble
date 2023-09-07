@@ -50,11 +50,11 @@ const Content = ({
 } & DialogPrimitive.DialogPortalProps) => {
     return (
         <DialogPrimitive.Portal {...props}>
-            <DialogPrimitive.Overlay className="bg-background/80 data-[state=closed]:animate-out data-[state=closed]:fade-out data-[state=open]:fade-in fixed inset-0 z-10 backdrop-blur-md transition-all duration-100" />
+            <DialogPrimitive.Overlay className="bg-background/80 data-[state=closed]:animate-out data-[state=closed]:fade-out data-[state=open]:fade-in fixed inset-0 z-10 z-[100] backdrop-blur-md transition-all duration-100" />
             <DialogPrimitive.Content
                 className={clxsm(
-                    "w-[50vw] min-w-[50vw] max-w-[50vw] overflow-y-auto",
-                    "animate-in data-[state=open]:fade-in-90 data-[state=open]:slide-in-from-bottom-10 data-[state=open]:sm:slide-in-from-bottom-0 fixed left-[50%] top-[50%] z-20 max-h-[85vh] translate-x-[-50%] translate-y-[-50%] rounded-[6px] border-[1px] border-gray-300 bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none dark:border-brand-light dark:bg-brand"
+                    "z-[100] w-[50vw] min-w-[50vw] max-w-[50vw] overflow-y-auto",
+                    "animate-in data-[state=open]:fade-in-90 data-[state=open]:slide-in-from-bottom-10 data-[state=open]:sm:slide-in-from-bottom-0 top-[50%]n fixed left-[50%] max-h-[85vh] translate-x-[-50%] translate-y-[-50%] rounded-[6px] border-[1px] border-gray-300 bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none dark:border-brand-light dark:bg-brand"
                 )}
             >
                 <h4 className="absolute left-[20px] top-[20px]  inline-flex text-crumble">

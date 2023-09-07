@@ -1,6 +1,7 @@
 import CreateListModal from "@/components/common/CreateListModal/CreateListModal";
 import Layout, { Container } from "@/components/common/Layout/Layout";
-import PopularLists from "@/components/common/Pages/Lists/AllListsPage/PopularLists";
+import PopularLists from "@/components/common/Pages/Lists/ListsHomePage/PopularLists";
+import RecentLists from "@/components/common/Pages/Lists/ListsHomePage/RecentLists";
 import Head from "next/head";
 import Image from "next/image";
 import { useState } from "react";
@@ -15,6 +16,12 @@ const AllListsPage = () => {
                 <Container>
                     <Header />
                     <PopularLists />
+                    <div className="flex">
+                        <div className="w-[70%]">
+                            <RecentLists />
+                        </div>
+                        <h1>hello</h1>
+                    </div>
                 </Container>
             </Layout>
         </>
@@ -28,7 +35,7 @@ const Header = () => {
     return (
         <div className="relative">
             <div className="absolute z-10 h-[100%] w-[100%] text-center before:content-['']">
-                <h1 className="mt-[80px] inline-block">
+                <h1 className="mt-[80px] inline-block text-white [text-shadow:_0_1px_1px_rgb(0_0_0_/_60%)]">
                     Your place to organise <br /> what you want to see most.
                 </h1>
                 <div className="mt-2">
@@ -41,7 +48,7 @@ const Header = () => {
                 sizes="100vw"
                 src={`https://image.tmdb.org/t/p/original/jYEW5xZkZk2WTrdbMGAPFuBqbDc.jpg`}
                 alt={"list background"}
-                className="h-[250px] max-w-[100%] rounded-lg object-cover opacity-60 duration-[0.5s] dark:opacity-50"
+                className="h-[250px] max-w-[100%] rounded-lg object-cover opacity-80  duration-[0.5s] dark:opacity-50"
                 priority
                 style={{ width: "100%" }}
                 onLoadingComplete={(image) =>
