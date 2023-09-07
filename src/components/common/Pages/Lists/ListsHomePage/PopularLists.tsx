@@ -8,7 +8,7 @@ import Link from "next/link";
 
 const PopularLists = () => {
     const { data, isLoading } = api.list.lists.useQuery({
-        limit: 4,
+        limit: 3,
         orderBy: "listLikes",
     });
 

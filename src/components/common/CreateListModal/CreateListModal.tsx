@@ -79,6 +79,8 @@ const CreateListModal = ({
 
     const { mutate: addMovieMutate } = api.movie.createManyMovie.useMutation();
 
+    const { mutate: addTagsMutate } = api.list.createTags.useMutation();
+
     const fetchMoviesFromSearchTerm = useCallback(async () => {
         if (searchedMovieName !== "") {
             const data = await fetchWithZod(
@@ -126,6 +128,10 @@ const CreateListModal = ({
         });
 
         addMovieMutate(chosenMovies);
+
+        addTagsMutate({
+            tags,
+        });
 
         setTimeout(() => {
             setOpen(false);

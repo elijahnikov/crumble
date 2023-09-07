@@ -3,7 +3,6 @@ import { api } from "@/utils/api";
 import Link from "next/link";
 import { BiSolidComment } from "react-icons/bi";
 import { BsHeartFill } from "react-icons/bs";
-import ListImage from "./ListImage";
 import Image from "next/image";
 import ListImageWide from "./ListImageWide";
 
