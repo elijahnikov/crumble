@@ -21,22 +21,26 @@ export const listRouter = createTRPCRouter({
                 const currentUserId = ctx.session?.user.id;
                 const data = await ctx.prisma.list.findMany({
                     take: limit + 1,
-                    orderBy: orderBy
-                        ? {
-                              [orderBy]: {
-                                  _count: "desc",
-                              },
-                          }
-                        : [{ createdAt: "desc" }, { id: "desc" }],
+                    orderBy:
+                        // if order by is supplied and its not createdAt orderBy key
+                        orderBy && orderBy !== "createdAt"
+                            ? {
+                                  [orderBy]: {
+                                      _count: "desc",
+                                  },
+                              }
+                            : [{ createdAt: "desc" }, { id: "desc" }],
                     cursor: cursor ? { createdAt_id: cursor } : undefined,
-                    where: dateSortBy
-                        ? {
-                              createdAt: {
-                                  lte: new Date(),
-                                  gte: dateSortBy,
-                              },
-                          }
-                        : {},
+                    where:
+                        // only apply date sort by if not sorting by recent
+                        dateSortBy && orderBy !== "createdAt"
+                            ? {
+                                  createdAt: {
+                                      lte: new Date(),
+                                      gte: dateSortBy,
+                                  },
+                              }
+                            : {},
                     include: {
                         _count: {
                             select: {

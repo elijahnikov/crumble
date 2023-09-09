@@ -19,13 +19,14 @@ import { type Dispatch, type SetStateAction, useState, useEffect } from "react";
 type PageProps = InferGetStaticPropsType<typeof getStaticProps>;
 
 const sortToKeyMap = {
-    popular: "listLikes",
+    Top: "listLikes",
+    Newest: "createdAt",
 };
 
 const AllListsBySortingPage: NextPage<PageProps> = ({ sorting }) => {
     const [selectedDurationSort, setSelectedDurationSort] =
         useState<string>("30 days");
-    console.log(sortToKeyMap[sorting as keyof typeof sortToKeyMap]);
+    const [sortBySelection, setSortBySelection] = useState<string>("Newest");
     const {
         data: lists,
         isLoading,
@@ -35,7 +36,7 @@ const AllListsBySortingPage: NextPage<PageProps> = ({ sorting }) => {
     } = api.list.lists.useInfiniteQuery(
         {
             limit: 10,
-            orderBy: sortToKeyMap[sorting as keyof typeof sortToKeyMap],
+            orderBy: sortToKeyMap[sortBySelection as keyof typeof sortToKeyMap],
             dateSortBy: getDatesToSortBy(selectedDurationSort),
         },
         {
@@ -50,9 +51,7 @@ const AllListsBySortingPage: NextPage<PageProps> = ({ sorting }) => {
     return (
         <>
             <Head>
-                <title>
-                    {`All lists - ${_.upperFirst(sorting)} • Crumble`}
-                </title>
+                <title>{`All lists • Crumble`}</title>
             </Head>
             <Layout>
                 <Container>
@@ -60,6 +59,8 @@ const AllListsBySortingPage: NextPage<PageProps> = ({ sorting }) => {
                         sorting={sorting}
                         selectedDurationSort={selectedDurationSort}
                         setSelectedDurationSort={setSelectedDurationSort}
+                        setSortBySelection={setSortBySelection}
+                        sortBySelection={sortBySelection}
                     />
                     <InfiniteListSection
                         isError={isError}
@@ -79,41 +80,37 @@ interface HeaderProps {
     sorting: string;
     selectedDurationSort: string;
     setSelectedDurationSort: Dispatch<SetStateAction<string>>;
+    sortBySelection: string;
+    setSortBySelection: Dispatch<SetStateAction<string>>;
 }
 
 const Header = ({
-    sorting,
     selectedDurationSort,
     setSelectedDurationSort,
+    sortBySelection,
+    setSortBySelection,
 }: HeaderProps) => {
     return (
         <div className="flex">
             <div className="flex w-[100%]">
-                <h3>{_.upperFirst(sorting)} lists</h3>
-                <Link
-                    href={{
-                        pathname: "/lists/all/[sorting]",
-                        query: {
-                            sorting:
-                                sorting === "recent" ? "popular" : "recent",
-                        },
-                    }}
-                    className="ml-2 mt-2 text-sm text-crumble hover:underline"
-                >
-                    {sorting === "recent" ? "See popular" : "See recent"}
-                </Link>
+                <h3>All lists</h3>
             </div>
-            <div className="float-right">
-                <Select
-                    value={selectedDurationSort}
-                    setValue={setSelectedDurationSort}
-                    placeholder="Sort by"
-                >
-                    <Select.Item value="1 week">1 week</Select.Item>
-                    <Select.Item value="30 days">30 days</Select.Item>
-                    <Select.Item value="6 months">6 months</Select.Item>
-                    <Select.Item value="1 year">1 year</Select.Item>
-                    <Select.Item value="All time">All time</Select.Item>
+            <div className="float-right flex space-x-2">
+                {sortBySelection === "Top" && (
+                    <Select
+                        value={selectedDurationSort}
+                        setValue={setSelectedDurationSort}
+                    >
+                        <Select.Item value="1 week">1 week</Select.Item>
+                        <Select.Item value="30 days">30 days</Select.Item>
+                        <Select.Item value="6 months">6 months</Select.Item>
+                        <Select.Item value="1 year">1 year</Select.Item>
+                        <Select.Item value="All time">All time</Select.Item>
+                    </Select>
+                )}
+                <Select value={sortBySelection} setValue={setSortBySelection}>
+                    <Select.Item value="Newest">Newest</Select.Item>
+                    <Select.Item value="Top">Top</Select.Item>
                 </Select>
             </div>
         </div>
@@ -127,7 +124,7 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
 
     if (typeof sorting !== "string") throw new Error("No slug");
 
-    await helpers.list.lists.prefetchInfinite({ orderBy: sorting });
+    await helpers.list.lists.prefetchInfinite({});
 
     return {
         props: {

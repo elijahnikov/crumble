@@ -62,7 +62,7 @@ const Select = ({
                     </div>
                 </PopoverPrimitive.Trigger>
                 <PopoverPrimitive.Portal>
-                    <PopoverPrimitive.Content className="mt-2 max-h-[400px] w-[200px] space-y-1 overflow-y-scroll rounded-lg border-[1px] border-slate-200 bg-white p-[5px] dark:border-gray-700 dark:bg-black">
+                    <PopoverPrimitive.Content className="mt-2 max-h-[400px] w-[200px] space-y-1 overflow-y-auto rounded-lg border-[1px] border-slate-200 bg-white p-[5px] dark:border-gray-700 dark:bg-black">
                         {searchable && (
                             <Input
                                 className="w-[100%]"

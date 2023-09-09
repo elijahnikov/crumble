@@ -12,7 +12,7 @@ interface SingleListProps {
 
 const SingleList = ({ list, toggleLike }: SingleListProps) => {
     return (
-        <div key={list.id} className="flex">
+        <div key={list.id} className="flex w-[95%]">
             <div className="relative m-1 mt-2 flex h-[150px] max-h-[150px] min-h-[150px] min-w-[300px] max-w-[300px] rounded-md border bg-brand-white p-2 dark:border-gray-800 dark:bg-brand">
                 <ListImageWide
                     listId={list.id}
