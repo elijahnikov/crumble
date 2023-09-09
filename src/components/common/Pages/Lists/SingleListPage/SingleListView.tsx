@@ -140,7 +140,7 @@ const SingleListView = ({ list }: SingleListViewProps) => {
                                 <Input
                                     value={title}
                                     change={setTitle}
-                                    className="mt-3 w-max"
+                                    className="mt-3 w-[400px]"
                                 />
                             )}
                             <div className="ml-5 mt-[20px]">

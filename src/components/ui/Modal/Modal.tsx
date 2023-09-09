@@ -50,7 +50,7 @@ const Content = ({
 } & DialogPrimitive.DialogPortalProps) => {
     return (
         <DialogPrimitive.Portal {...props}>
-            <DialogPrimitive.Overlay className="bg-background/80 data-[state=closed]:animate-out data-[state=closed]:fade-out data-[state=open]:fade-in fixed inset-0 z-50 backdrop-blur-md transition-all duration-100" />
+            <DialogPrimitive.Overlay className="bg-background/80 data-[state=closed]:animate-out data-[state=closed]:fade-out data-[state=open]:fade-in fixed inset-0 z-[90] backdrop-blur-md transition-all duration-100" />
             <DialogPrimitive.Content
                 className={clxsm(
                     "w-[50vw] min-w-[50vw] max-w-[50vw] overflow-y-auto",

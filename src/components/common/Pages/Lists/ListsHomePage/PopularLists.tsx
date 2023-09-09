@@ -44,9 +44,10 @@ const PopularLists = () => {
                             className="mx-2 w-[33%] rounded-md border  bg-brand-white p-2 dark:border-gray-800 dark:bg-brand"
                             key={list.id}
                         >
-                            <div>
+                            <div className="relative">
                                 <ListImage
-                                    size={120}
+                                    listId={list.id}
+                                    size={50}
                                     posters={list.listEntries.map(
                                         (list) => list.movie.poster
                                     )}

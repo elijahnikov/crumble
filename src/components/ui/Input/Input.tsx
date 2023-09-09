@@ -5,61 +5,69 @@ import { type InputHTMLAttributes } from "react";
 import { type IconType } from "react-icons";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 
-const input = cva(["py-2 px-3", "rounded-lg", "border-[1px]", "outline-none"], {
-    variants: {
-        intent: {
-            default: [
-                "placeholder-ink-lighter text-black",
-                "dark:placeholder-sky-dark dark:bg-black dark:text-white",
-            ],
-        },
-        size: {
-            base: "py-2",
-            sm: "text-sm",
-            large: "py-4",
-        },
-        fullWidth: {
-            true: "w-[100%]",
-        },
-        disabled: {
-            true: [
-                "placeholder-sky-base text-sky-dark border-sky-lighter bg-sky-lightest cursor-not-allowed pointer-events-none",
-                "dark:placeholder:ink-base dark:text-ink-base dark:border-ink-dark dark:bg-ink-darker",
-            ],
-        },
-        error: {
-            true: "border-red-500 dark:border-red-500",
-        },
-    },
-    compoundVariants: [
-        {
-            disabled: true,
-            intent: "default",
-            className: " bg-gray-200 dark:bg-gray-950 text-red-400",
-        },
-        {
-            disabled: false,
-            intent: "default",
-            className: "bg-white dark:bg-black",
-        },
-        {
-            error: true,
-            intent: "default",
-            className:
-                "border-red-500 dark:border-red-500 focus:border-red-500 dark:focus:border-red-500",
-        },
-        {
-            error: false,
-            intent: "default",
-            className:
-                "border-sky-light dark:border-slate-800 dark:border-slate-800",
-        },
+const input = cva(
+    [
+        "py-2 px-3",
+        "rounded-lg",
+        "border-[1px] dark:border-[#212227]",
+        "outline-none",
     ],
-    defaultVariants: {
-        size: "base",
-        intent: "default",
-    },
-});
+    {
+        variants: {
+            intent: {
+                default: [
+                    "placeholder-ink-lighter text-black",
+                    "dark:placeholder-sky-dark dark:bg-black dark:text-white",
+                ],
+            },
+            size: {
+                base: "py-2",
+                sm: "text-sm",
+                large: "py-4",
+            },
+            fullWidth: {
+                true: "w-[100%]",
+            },
+            disabled: {
+                true: [
+                    "placeholder-sky-base text-sky-dark border-sky-lighter bg-sky-lightest cursor-not-allowed pointer-events-none",
+                    "dark:placeholder:ink-base dark:text-ink-base dark:border-ink-dark dark:bg-ink-darker",
+                ],
+            },
+            error: {
+                true: "border-red-500 dark:border-red-500",
+            },
+        },
+        compoundVariants: [
+            {
+                disabled: true,
+                intent: "default",
+                className: " bg-gray-200 dark:bg-gray-950 text-red-400",
+            },
+            {
+                disabled: false,
+                intent: "default",
+                className: "bg-white dark:bg-black",
+            },
+            {
+                error: true,
+                intent: "default",
+                className:
+                    "border-red-500 dark:border-red-500 focus:border-red-500 dark:focus:border-red-500",
+            },
+            {
+                error: false,
+                intent: "default",
+                className:
+                    "border-sky-light dark:border-slate-800 dark:border-slate-800",
+            },
+        ],
+        defaultVariants: {
+            size: "base",
+            intent: "default",
+        },
+    }
+);
 
 interface InputProps
     extends Omit<

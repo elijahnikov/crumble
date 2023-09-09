@@ -39,8 +39,9 @@ const RecentLists = () => {
                 ) : data && data?.lists.length > 0 ? (
                     data?.lists.map((list) => (
                         <div key={list.id} className="flex">
-                            <div className="m-1 mt-2 flex min-w-[300px] max-w-[300px] rounded-md border bg-brand-white p-2 dark:border-gray-800 dark:bg-brand">
+                            <div className="relative m-1 mt-2 flex h-[150px] max-h-[150px] min-h-[150px] min-w-[300px] max-w-[300px] rounded-md border bg-brand-white p-2 dark:border-gray-800 dark:bg-brand">
                                 <ListImageWide
+                                    listId={list.id}
                                     size={80}
                                     posters={list.listEntries.map(
                                         (list) => list.movie.poster
@@ -107,7 +108,7 @@ const RecentLists = () => {
                                         </div>
                                     </div>
                                 </div>
-                                <p className="ml-3 mt-3  max-w-[500px] text-sm text-slate-600 dark:text-slate-300">
+                                <p className="relative ml-3 mt-3 hidden max-w-[500px] text-sm text-slate-600 dark:text-slate-300 xl:block">
                                     {list.description &&
                                     list.description.length > 100 ? (
                                         <span className="flex">
