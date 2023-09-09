@@ -5,7 +5,7 @@ import clxsm from "@/utils/clsxm";
 import { useEffect, useState } from "react";
 import DarkModeSwitch from "../DarkModeSwitch/DarkModeSwitch";
 import navigation from "@/utils/data/navLinks";
-import DiscordSignIn from "../DiscordSignIn/DiscordSignIn";
+import SignIn from "../SignIn/SignIn";
 import CreateModalMenu from "../CreateModalMenu/CreateModalMenu";
 
 const NavigationBar = () => {
@@ -99,7 +99,7 @@ const NavigationBar = () => {
                 </div>
             ) : (
                 <div className="mb-5 text-center">
-                    <DiscordSignIn callbackUrl={"/"} />
+                    <SignIn callbackUrl={"/"} />
                 </div>
             )}
         </div>

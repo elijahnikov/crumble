@@ -7,12 +7,13 @@ import {
     getProviders,
 } from "next-auth/react";
 import { useEffect, useState } from "react";
+import { BsDiscord, BsGithub } from "react-icons/bs";
 
 interface DiscordSignInProps {
     callbackUrl: string | string[] | undefined;
 }
 
-const DiscordSignIn = ({ callbackUrl }: DiscordSignInProps) => {
+const SignIn = ({ callbackUrl }: DiscordSignInProps) => {
     const [providers, setProviders] = useState<Record<
         LiteralUnion<BuiltInProviderType, string>,
         ClientSafeProvider
@@ -57,15 +58,17 @@ const DiscordSignIn = ({ callbackUrl }: DiscordSignInProps) => {
                                 />
                             )}
 
-                            <Button intent="secondary" type="submit">
-                                Sign in
-                                <i
-                                    className={
-                                        "bi-" + providers[providerKey]?.id
-                                    }
-                                    role="img"
-                                    aria-label="Discord"
-                                ></i>
+                            <Button
+                                className="mt-2"
+                                intent="secondary"
+                                type="submit"
+                                rightIcon={
+                                    providers[providerKey]?.name === "Discord"
+                                        ? BsDiscord
+                                        : BsGithub
+                                }
+                            >
+                                Sign in with
                             </Button>
                         </form>
                     </div>
@@ -74,4 +77,4 @@ const DiscordSignIn = ({ callbackUrl }: DiscordSignInProps) => {
     );
 };
 
-export default DiscordSignIn;
+export default SignIn;

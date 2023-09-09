@@ -24,6 +24,8 @@ export const env = createEnv({
         DISCORD_CLIENT_ID: z.string(),
         DISCORD_CLIENT_SECRET: z.string(),
         NEXT_PUBLIC_TMDB_ACCESS_TOKEN: z.string(),
+        GITHUB_CLIENT_ID: z.string(),
+        GITHUB_CLIENT_SECRET: z.string(),
     },
 
     /**
@@ -47,6 +49,8 @@ export const env = createEnv({
         NEXTAUTH_URL: process.env.NEXTAUTH_URL,
         DISCORD_CLIENT_ID: process.env.DISCORD_CLIENT_ID,
         DISCORD_CLIENT_SECRET: process.env.DISCORD_CLIENT_SECRET,
+        GITHUB_CLIENT_ID: process.env.GITHUB_CLIENT_ID,
+        GITHUB_CLIENT_SECRET: process.env.GITHUB_CLIENT_SECRET,
         NEXT_PUBLIC_TMDB_ACCESS_TOKEN:
             process.env.NEXT_PUBLIC_TMDB_ACCESS_TOKEN,
     },
