@@ -1,5 +1,6 @@
 import Layout, { Container } from "@/components/common/Layout/Layout";
 import InfiniteListSection from "@/components/common/Pages/Lists/AllLists/InfiniteListSection";
+import Button from "@/components/ui/Button/Button";
 import { Select } from "@/components/ui/Select/Select";
 import { generateSSGHelper } from "@/server/helpers/ssgHelper";
 import { api } from "@/utils/api";
@@ -12,6 +13,7 @@ import type {
     GetStaticPaths,
 } from "next";
 import Head from "next/head";
+import Link from "next/link";
 import { type Dispatch, type SetStateAction, useState, useEffect } from "react";
 
 type PageProps = InferGetStaticPropsType<typeof getStaticProps>;
@@ -86,7 +88,21 @@ const Header = ({
 }: HeaderProps) => {
     return (
         <div className="flex">
-            <h3 className="w-[100%]">{_.upperFirst(sorting)} lists</h3>
+            <div className="flex w-[100%]">
+                <h3>{_.upperFirst(sorting)} lists</h3>
+                <Link
+                    href={{
+                        pathname: "/lists/all/[sorting]",
+                        query: {
+                            sorting:
+                                sorting === "recent" ? "popular" : "recent",
+                        },
+                    }}
+                    className="ml-2 mt-2 text-sm text-crumble hover:underline"
+                >
+                    {sorting === "recent" ? "See popular" : "See recent"}
+                </Link>
+            </div>
             <div className="float-right">
                 <Select
                     value={selectedDurationSort}

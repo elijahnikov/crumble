@@ -38,11 +38,11 @@ const RecentLists = () => {
                     </div>
                 ) : data && data?.lists.length > 0 ? (
                     data?.lists.map((list) => (
-                        <div key={list.id} className="flex">
-                            <div className="relative m-1 mt-2 flex h-[150px] max-h-[150px] min-h-[150px] min-w-[300px] max-w-[300px] rounded-md border bg-brand-white p-2 dark:border-gray-800 dark:bg-brand">
+                        <div className=" flex" key={list.id}>
+                            <div className="m-1 mt-2 flex h-[150px] max-h-[150px] min-h-[150px] min-w-[300px] max-w-[300px] rounded-md border bg-brand-white p-2 dark:border-gray-800 dark:bg-brand">
                                 <ListImageWide
                                     listId={list.id}
-                                    size={80}
+                                    size={50}
                                     posters={list.listEntries.map(
                                         (list) => list.movie.poster
                                     )}

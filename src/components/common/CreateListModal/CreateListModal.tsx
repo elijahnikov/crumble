@@ -113,17 +113,6 @@ const CreateListModal = ({
             title: listName,
             description: listDescription,
             tags: tags.join(","),
-            posterPathOne: chosenMovies[0] ? chosenMovies[0].poster : undefined,
-            posterPathTwo: chosenMovies[1] ? chosenMovies[1].poster : undefined,
-            posterPathThree: chosenMovies[2]
-                ? chosenMovies[2].poster
-                : undefined,
-            posterPathFour: chosenMovies[3]
-                ? chosenMovies[3].poster
-                : undefined,
-            posterPathFive: chosenMovies[4]
-                ? chosenMovies[4].poster
-                : undefined,
             movieIds,
         });
 

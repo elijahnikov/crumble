@@ -17,18 +17,18 @@ const ListImageWide = ({ posters, listId, size = 50 }: ListImageProps) => {
                     id: listId,
                 },
             }}
-            className={` flex cursor-pointer rounded-md border-crumble bg-none hover:border-[2px]`}
+            className={`flex w-full cursor-pointer rounded-md border-crumble bg-none hover:border-[2px]`}
         >
             {posters[0] && (
                 <Image
                     className={clxsm(
-                        `z-50 min-w-[40%] max-w-[50%] rounded-md object-cover shadow-md lg:w-[43%]`
+                        `relative z-50 min-w-[40%] max-w-[50%] rounded-md object-cover shadow-md lg:w-[43%]`
                     )}
                     alt="listposters"
                     src={`https://image.tmdb.org/t/p/w500${posters[0]}`}
                     width={size}
                     height={size}
-                    sizes="100vw"
+                    sizes="10vw"
                 />
             )}
             {posters[1] && (

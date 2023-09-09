@@ -1,4 +1,3 @@
-import { type RouterOutputs } from "@/utils/api";
 import InfiniteScroll from "react-infinite-scroll-component";
 import SingleList from "./SingleList";
 
@@ -17,6 +16,16 @@ export interface List {
     description: string | null;
     numberOfFilms: number;
     id: string;
+    listEntries: Array<{
+        id: string;
+        listId: string;
+        movieId: number;
+        movie: {
+            movieId: number;
+            title: string;
+            poster: string | null;
+        };
+    }>;
 }
 
 interface InfiniteListSectionProps {
