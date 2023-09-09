@@ -20,7 +20,7 @@ const RecentLists = () => {
                     href={{
                         pathname: "/lists/all/[sorting]",
                         query: {
-                            sorting: "recent",
+                            sorting: "newest",
                         },
                     }}
                 >

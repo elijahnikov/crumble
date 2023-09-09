@@ -82,6 +82,7 @@ const AllListsBySortingPage: NextPage<PageProps> = ({ sorting }) => {
                         setSortBySelection={setSortBySelection}
                         sortBySelection={sortBySelection}
                     />
+                    <div className="mb-10" />
                     <InfiniteListSection
                         isError={isError}
                         isLoading={isLoading}

@@ -4,6 +4,7 @@ import Image from "next/image";
 import ListImageWide from "../ListsHomePage/ListImageWide";
 import { BiSolidComment } from "react-icons/bi";
 import { BsHeartFill } from "react-icons/bs";
+import clxsm from "@/utils/clsxm";
 
 interface SingleListProps {
     list: List;
@@ -62,20 +63,6 @@ const SingleList = ({ list, toggleLike }: SingleListProps) => {
                             {list.user.name}
                         </p>
                     </Link>
-                    <div className="ml-2 mt-[1px]  flex space-x-2">
-                        <div className="flex space-x-1">
-                            <BsHeartFill className="mt-[2px] h-3 w-3 fill-slate-400 dark:fill-slate-500" />
-                            <p className="text-xs text-slate-500 dark:text-slate-500">
-                                {list.likeCount}
-                            </p>
-                        </div>
-                        <div className="flex space-x-1">
-                            <BiSolidComment className="mt-[2px] h-3 w-3 fill-slate-400 dark:fill-slate-500" />
-                            <p className="text-xs text-slate-500 dark:text-slate-500">
-                                {list.commentCount}
-                            </p>
-                        </div>
-                    </div>
                 </div>
                 <p className="relative ml-3 mt-3  hidden w-[100%] text-sm text-slate-600 dark:text-slate-300 xl:block">
                     {list.description && list.description.length > 200 ? (
@@ -101,6 +88,28 @@ const SingleList = ({ list, toggleLike }: SingleListProps) => {
                         list.description
                     )}
                 </p>
+                <div className="ml-2 mt-[10px]  flex space-x-2">
+                    <div className="flex space-x-1">
+                        <BsHeartFill
+                            onClick={() => toggleLike({ id: list.id })}
+                            className={clxsm(
+                                list.likedByMe
+                                    ? "fill-crumble "
+                                    : "fill-slate-400 hover:fill-crumble dark:fill-slate-500",
+                                "mt-[2px] h-4 w-4 cursor-pointer"
+                            )}
+                        />
+                        <p className="text-xs text-slate-500 dark:text-slate-500">
+                            {list.likeCount}
+                        </p>
+                    </div>
+                    <div className="flex space-x-1">
+                        <BiSolidComment className="mt-[2px] h-4 w-4 fill-slate-400 dark:fill-slate-500" />
+                        <p className="text-xs text-slate-500 dark:text-slate-500">
+                            {list.commentCount}
+                        </p>
+                    </div>
+                </div>
             </div>
         </div>
     );

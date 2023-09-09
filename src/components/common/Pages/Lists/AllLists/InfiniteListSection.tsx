@@ -1,5 +1,6 @@
 import InfiniteScroll from "react-infinite-scroll-component";
 import SingleList from "./SingleList";
+import { api } from "@/utils/api";
 
 export interface List {
     user: {
@@ -45,6 +46,14 @@ const InfiniteListSection = ({
     toggleLike,
     hasMore,
 }: InfiniteListSectionProps) => {
+    const trpcUtils = api.useContext();
+
+    const { mutate } = api.list.toggleListLike.useMutation({
+        onSuccess: async () => {
+            await trpcUtils.list.lists.invalidate();
+        },
+    });
+
     if (isLoading) return <div>Loading...</div>;
 
     if (isError) return <div>Error...</div>;
@@ -64,7 +73,7 @@ const InfiniteListSection = ({
                         <SingleList
                             key={list.id}
                             list={list}
-                            toggleLike={toggleLike}
+                            toggleLike={mutate}
                         />
                     ))}
             </InfiniteScroll>
