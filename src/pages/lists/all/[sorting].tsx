@@ -13,7 +13,7 @@ import type {
     GetStaticPaths,
 } from "next";
 import Head from "next/head";
-import Link from "next/link";
+import { useRouter } from "next/router";
 import { type Dispatch, type SetStateAction, useState, useEffect } from "react";
 
 type PageProps = InferGetStaticPropsType<typeof getStaticProps>;
@@ -24,9 +24,12 @@ const sortToKeyMap = {
 };
 
 const AllListsBySortingPage: NextPage<PageProps> = ({ sorting }) => {
+    const router = useRouter();
     const [selectedDurationSort, setSelectedDurationSort] =
         useState<string>("30 days");
-    const [sortBySelection, setSortBySelection] = useState<string>("Newest");
+    const [sortBySelection, setSortBySelection] = useState<string>(
+        _.upperFirst(String(router.query.sorting))
+    );
     const {
         data: lists,
         isLoading,
@@ -44,9 +47,26 @@ const AllListsBySortingPage: NextPage<PageProps> = ({ sorting }) => {
         }
     );
 
+    console.log(router.query.duration);
+
     useEffect(() => {
         getDatesToSortBy(selectedDurationSort);
     }, [selectedDurationSort]);
+
+    useEffect(() => {
+        void router.push(
+            {
+                pathname: "/lists/all/[sorting]",
+                query: {
+                    sorting: _.lowerCase(sortBySelection),
+                },
+            },
+            undefined,
+            { shallow: true }
+        );
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [sortBySelection, selectedDurationSort]);
 
     return (
         <>
@@ -124,7 +144,7 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
 
     if (typeof sorting !== "string") throw new Error("No slug");
 
-    await helpers.list.lists.prefetchInfinite({});
+    await helpers.list.lists.prefetchInfinite({ orderBy: sorting });
 
     return {
         props: {

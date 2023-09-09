@@ -6,7 +6,6 @@ export const getDatesToSortBy = (sortValue: string) => {
             string,
             ManipulateType | undefined
         ];
-        console.log({ amount, unit });
         return new Date(dayjs().subtract(Number(amount), unit).toString());
     } else {
         return new Date(0);
