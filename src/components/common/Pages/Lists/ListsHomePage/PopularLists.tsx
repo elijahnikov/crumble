@@ -111,7 +111,11 @@ const PopularLists = () => {
                         </div>
                     ))
                 ) : (
-                    <p>No lists found</p>
+                    <div className="my-auto flex h-[100px] w-full justify-center rounded-md border bg-brand-white text-center dark:border-slate-700  dark:bg-brand">
+                        <p className="mt-[35px] text-slate-600 dark:text-slate-400">
+                            No lists found
+                        </p>
+                    </div>
                 )}
             </div>
         </div>

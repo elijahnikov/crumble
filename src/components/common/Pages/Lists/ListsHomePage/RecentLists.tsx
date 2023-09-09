@@ -29,7 +29,7 @@ const RecentLists = () => {
                     </p>
                 </Link>
             </div>
-            <div>
+            <div className="mt-2">
                 {isLoading ? (
                     <div className="items-center justify-center text-center align-middle">
                         <div className="mx-auto w-max">
@@ -140,7 +140,11 @@ const RecentLists = () => {
                         </div>
                     ))
                 ) : (
-                    <p>No lists found</p>
+                    <div className="my-auto flex h-[100px] w-[90%] justify-center rounded-md border bg-brand-white text-center dark:border-slate-700  dark:bg-brand">
+                        <p className="mt-[35px] text-slate-600 dark:text-slate-400">
+                            No lists found
+                        </p>
+                    </div>
                 )}
             </div>
         </div>

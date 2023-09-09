@@ -24,7 +24,7 @@ const ListTags = () => {
                     </p>
                 </Link>
             </div>
-            <div className="mt-4">
+            <div className="mt-2">
                 {isLoading ? (
                     <div className="items-center justify-center text-center align-middle">
                         <div className="mx-auto mt-5 w-max">
@@ -51,7 +51,11 @@ const ListTags = () => {
                         </Link>
                     ))
                 ) : (
-                    <p>No tags found</p>
+                    <div className="my-auto flex h-[100px] w-full justify-center rounded-md border bg-brand-white text-center dark:border-slate-700  dark:bg-brand">
+                        <p className="mt-[35px] text-slate-600 dark:text-slate-400">
+                            No tags found for lists
+                        </p>
+                    </div>
                 )}
             </div>
         </div>
