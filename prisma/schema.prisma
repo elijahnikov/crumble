@@ -207,11 +207,6 @@ model List {
   description String?
   tags String?
   numberOfFilms Int @default(0)
-  posterPathOne String?
-  posterPathTwo String?
-  posterPathThree String?
-  posterPathFour String?
-  posterPathFive String?
   createdAt        DateTime        @default(now())
   updatedAt        DateTime        @updatedAt
   

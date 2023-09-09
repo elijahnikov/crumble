@@ -13,77 +13,90 @@ export const listRouter = createTRPCRouter({
     //
     lists: publicProcedure
         .input(listsSchema)
-        .query(async ({ ctx, input: { limit = 10, cursor, orderBy } }) => {
-            const currentUserId = ctx.session?.user.id;
-            const data = await ctx.prisma.list.findMany({
-                take: limit + 1,
-                orderBy: orderBy
-                    ? {
-                          [orderBy]: {
-                              _count: "desc",
-                          },
-                      }
-                    : [{ createdAt: "desc" }, { id: "desc" }],
-                cursor: cursor ? { createdAt_id: cursor } : undefined,
-                include: {
-                    _count: {
-                        select: {
-                            listLikes: true,
-                            listComments: true,
-                            listEntries: true,
+        .query(
+            async ({
+                ctx,
+                input: { limit = 10, cursor, orderBy, dateSortBy },
+            }) => {
+                const currentUserId = ctx.session?.user.id;
+                const data = await ctx.prisma.list.findMany({
+                    take: limit + 1,
+                    orderBy: orderBy
+                        ? {
+                              [orderBy]: {
+                                  _count: "desc",
+                              },
+                          }
+                        : [{ createdAt: "desc" }, { id: "desc" }],
+                    cursor: cursor ? { createdAt_id: cursor } : undefined,
+                    where: dateSortBy
+                        ? {
+                              createdAt: {
+                                  lte: new Date(),
+                                  gte: dateSortBy,
+                              },
+                          }
+                        : {},
+                    include: {
+                        _count: {
+                            select: {
+                                listLikes: true,
+                                listComments: true,
+                                listEntries: true,
+                            },
                         },
-                    },
-                    listEntries: {
-                        select: {
-                            id: true,
-                            listId: true,
-                            movieId: true,
-                            movie: {
-                                select: {
-                                    movieId: true,
-                                    title: true,
-                                    poster: true,
+                        listEntries: {
+                            select: {
+                                id: true,
+                                listId: true,
+                                movieId: true,
+                                movie: {
+                                    select: {
+                                        movieId: true,
+                                        title: true,
+                                        poster: true,
+                                    },
                                 },
                             },
                         },
-                    },
-                    listLikes:
-                        currentUserId === null
-                            ? false
-                            : { where: { userId: currentUserId } },
-                    user: {
-                        select: {
-                            id: true,
-                            name: true,
-                            displayName: true,
-                            image: true,
+                        listLikes:
+                            currentUserId === null
+                                ? false
+                                : { where: { userId: currentUserId } },
+                        user: {
+                            select: {
+                                id: true,
+                                name: true,
+                                displayName: true,
+                                image: true,
+                            },
                         },
                     },
-                },
-            });
-            let nextCursor: typeof cursor | undefined;
-            if (data.length > limit) {
-                const nextItem = data.pop();
-                if (nextItem != null) {
-                    nextCursor = {
-                        id: nextItem.id,
-                        createdAt: nextItem.createdAt,
-                    };
+                });
+                let nextCursor: typeof cursor | undefined;
+                if (data.length > limit) {
+                    const nextItem = data.pop();
+                    if (nextItem != null) {
+                        nextCursor = {
+                            id: nextItem.id,
+                            createdAt: nextItem.createdAt,
+                        };
+                    }
                 }
+                return {
+                    lists: data.map((list) => {
+                        return {
+                            ...list,
+                            likeCount: list._count.listLikes,
+                            commentCount: list._count.listComments,
+                            user: { ...list.user },
+                            likedByMe: list.listLikes.length > 0,
+                        };
+                    }),
+                    nextCursor,
+                };
             }
-            return {
-                lists: data.map((list) => {
-                    return {
-                        ...list,
-                        likeCount: list._count.listLikes,
-                        commentCount: list._count.listComments,
-                        user: { ...list.user },
-                        likedByMe: list.listLikes.length > 0,
-                    };
-                }),
-                nextCursor,
-            };
-        }),
+        ),
     //
     // Get list by id
     //
