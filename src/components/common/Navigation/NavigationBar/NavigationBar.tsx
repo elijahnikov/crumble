@@ -3,10 +3,11 @@ import Image from "next/image";
 import { useSession } from "next-auth/react";
 import clxsm from "@/utils/clsxm";
 import { useEffect, useState } from "react";
-import DarkModeSwitch from "../DarkModeSwitch/DarkModeSwitch";
+import DarkModeSwitch from "../../DarkModeSwitch/DarkModeSwitch";
 import navigation from "@/utils/data/navLinks";
-import SignIn from "../SignIn/SignIn";
-import CreateModalMenu from "../CreateModalMenu/CreateModalMenu";
+import SignIn from "../../SignIn/SignIn";
+import CreateModalMenu from "../../CreateModalMenu/CreateModalMenu";
+import AvatarMenu from "../AvatarMenu/AvatarMenu";
 
 const NavigationBar = () => {
     const [currentPath, setCurrentPath] = useState("");
@@ -80,12 +81,9 @@ const NavigationBar = () => {
                     <div className="group block w-full flex-shrink-0">
                         <div className="flex items-center">
                             {session.user.image && (
-                                <Image
-                                    width={50}
-                                    height={50}
-                                    className="inline-block h-9 w-9 rounded-full"
-                                    src={session.user.image}
-                                    alt={"Profile picture"}
+                                <AvatarMenu
+                                    username={session.user.name!}
+                                    avatar={session.user.image}
                                 />
                             )}
                             <div className="ml-3 flex">

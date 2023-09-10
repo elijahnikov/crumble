@@ -71,7 +71,7 @@ const PopularLists = () => {
                                     <Link
                                         className="flex"
                                         href={{
-                                            pathname: "/[username]",
+                                            pathname: "/@[username]",
                                             query: {
                                                 username: list.user.id,
                                             },
