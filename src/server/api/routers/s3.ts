@@ -6,6 +6,15 @@ import { PutObjectCommand, UploadPartCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { TRPCError } from "@trpc/server";
 import { env } from "@/env.mjs";
+import { Ratelimit } from "@upstash/ratelimit";
+import { Redis } from "@upstash/redis/nodejs";
+
+const ratelimit = new Ratelimit({
+    redis: Redis.fromEnv(),
+    limiter: Ratelimit.slidingWindow(1, "1 h"),
+    analytics: true,
+    prefix: "@upstash/ratelimit",
+});
 
 export const s3Router = createTRPCRouter({
     getObjects: publicProcedure.query(async ({ ctx }) => {
@@ -19,8 +28,11 @@ export const s3Router = createTRPCRouter({
     }),
 
     getStandardUploadPresignedUrl: publicProcedure
-        .input(z.object({ key: z.string() }))
+        .input(z.object({ key: z.string(), userId: z.string() }))
         .mutation(async ({ ctx, input }) => {
+            const { success } = await ratelimit.limit("image_upload");
+            if (!success) throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
+
             const { key } = input;
             const { s3 } = ctx;
 

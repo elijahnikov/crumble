@@ -2,8 +2,10 @@ import { useCallback, useMemo, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import axios from "axios";
 import { api } from "@/utils/api";
+import { useSession } from "next-auth/react";
 
 export const StandardDropzone = () => {
+    const { data: session } = useSession();
     const [presignedUrl, setPresignedUrl] = useState<string | null>(null);
     const { mutateAsync: fetchPresignedUrls } =
         api.s3.getStandardUploadPresignedUrl.useMutation();
@@ -20,6 +22,7 @@ export const StandardDropzone = () => {
 
                 fetchPresignedUrls({
                     key: file.name,
+                    userId: session!.user.id,
                 })
                     .then((url) => {
                         console.log({ url });
