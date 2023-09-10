@@ -13,7 +13,7 @@ const MovieStats = ({
     likeCount,
 }: MovieStatsProps) => {
     return (
-        <div className="ml-7 mt-5">
+        <div className="ml-12 mt-5">
             <div className="flex space-x-3">
                 <div className="flex space-x-1">
                     <BsFillEyeFill className="fill-slate-600 dark:fill-slate-400" />

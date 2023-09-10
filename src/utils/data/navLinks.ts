@@ -1,6 +1,6 @@
 import type { IconType } from "react-icons";
 import { BiCameraMovie, BiCommentDetail } from "react-icons/bi";
-import { BsBook, BsEye, BsCardList } from "react-icons/bs";
+import { BsBook, BsCardList, BsPerson } from "react-icons/bs";
 
 const pages = ["films", "diary", "reviews", "people", "lists"] as const;
 
@@ -27,8 +27,13 @@ const navigation: NavigationArrayType = [
         href: "/reviews",
         includeUrls: ["review"],
     },
-    { name: "People", icon: BsEye, href: "/people" },
-    { name: "Lists", icon: BsCardList, href: "/lists", includeUrls: ["list"] },
+    { name: "People", icon: BsPerson, href: "/people" },
+    {
+        name: "Lists",
+        icon: BsCardList,
+        href: "/lists",
+        includeUrls: ["list", "lists"],
+    },
 ];
 
 export default navigation;

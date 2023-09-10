@@ -67,7 +67,7 @@ const SingleFilmView = ({ movieData }: SingleFilmViewProps) => {
                                     </span>
                                 </h2>
                             </div>
-                            <div className="relative top-6 text-center">
+                            <div className="relative top-0 text-center">
                                 <Tooltip>
                                     <Tooltip.Trigger>
                                         <p className="font-semibold">
@@ -122,13 +122,13 @@ const SingleFilmView = ({ movieData }: SingleFilmViewProps) => {
                 </div>
                 {/* DESCRIPTION AND STATS */}
                 <div className="mb-[20px] flex">
-                    <div className="ml-5 mt-[60px] w-[30%] space-y-5 text-center">
+                    <div className="mt-[60px] min-w-[200px] max-w-[200px] space-y-5 text-center">
                         <MovieStats
                             likeCount={extraMovieData?.data.likeCount}
                             listCount={extraMovieData?.data.listCount}
                             watchedCount={extraMovieData?.data.watchedCount}
                         />
-                        <div>
+                        <div className="mr-[4vw] w-full">
                             <CreateReviewModal
                                 fromMenu={false}
                                 open={open}
@@ -145,7 +145,7 @@ const SingleFilmView = ({ movieData }: SingleFilmViewProps) => {
                             />
                         </div>
                     </div>
-                    <div className="mt-5 w-[90%] space-y-4 pl-10">
+                    <div className="mt-5 space-y-4 pl-7">
                         <p className="font-semibold text-slate-800 dark:text-slate-400">
                             {movieData.tagline}
                         </p>

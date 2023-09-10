@@ -34,7 +34,6 @@ interface InfiniteListSectionProps {
     isError: boolean;
     hasMore?: boolean;
     fetchNewLists: () => Promise<unknown>;
-    toggleLike: (variables: { id: string }) => void;
     lists?: List[];
 }
 
@@ -43,7 +42,6 @@ const InfiniteListSection = ({
     isError,
     isLoading,
     lists,
-    toggleLike,
     hasMore,
 }: InfiniteListSectionProps) => {
     const trpcUtils = api.useContext();

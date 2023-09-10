@@ -72,7 +72,7 @@ const Cast = ({
     return (
         <div className="mt-[20px]">
             <h3 className="ml-2">Cast</h3>
-            <div className="mb-[15px] mt-[10px] grid w-full grid-cols-6 gap-2">
+            <div className="mb-[15px] mt-[10px] grid w-full grid-cols-8 gap-2">
                 {cast
                     ? cast
                           .filter((obj) => {

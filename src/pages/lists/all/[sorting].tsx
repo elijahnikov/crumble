@@ -1,6 +1,5 @@
 import Layout, { Container } from "@/components/common/Layout/Layout";
 import InfiniteListSection from "@/components/common/Pages/Lists/AllLists/InfiniteListSection";
-import Button from "@/components/ui/Button/Button";
 import { Select } from "@/components/ui/Select/Select";
 import { generateSSGHelper } from "@/server/helpers/ssgHelper";
 import { api } from "@/utils/api";
@@ -89,7 +88,6 @@ const AllListsBySortingPage: NextPage<PageProps> = ({ sorting }) => {
                         hasMore={hasNextPage}
                         lists={lists?.pages.flatMap((page) => page.lists)}
                         fetchNewLists={fetchNextPage}
-                        toggleLike={() => null}
                     />
                 </Container>
             </Layout>
@@ -122,6 +120,7 @@ const Header = ({
                         value={selectedDurationSort}
                         setValue={setSelectedDurationSort}
                     >
+                        <Select.Item value="1 Day">1 Day</Select.Item>
                         <Select.Item value="1 week">1 week</Select.Item>
                         <Select.Item value="30 days">30 days</Select.Item>
                         <Select.Item value="6 months">6 months</Select.Item>

@@ -88,7 +88,7 @@ const SingleList = ({ list, toggleLike }: SingleListProps) => {
                         list.description
                     )}
                 </p>
-                <div className="ml-2 mt-[10px]  flex space-x-2">
+                <div className="ml-3 mt-[10px]  flex space-x-2">
                     <div className="flex space-x-1">
                         <BsHeartFill
                             onClick={() => toggleLike({ id: list.id })}

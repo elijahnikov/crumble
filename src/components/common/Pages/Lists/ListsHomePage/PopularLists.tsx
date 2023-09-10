@@ -22,7 +22,7 @@ const PopularLists = () => {
                     href={{
                         pathname: "/lists/all/[sorting]",
                         query: {
-                            sorting: "popular",
+                            sorting: "top",
                         },
                     }}
                 >
