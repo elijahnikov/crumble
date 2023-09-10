@@ -1,6 +1,7 @@
 import NavigationBar from "../NavigationBar/NavigationBar";
 import MobileNavigationBar from "../MobileNavigationBar/MobileNavigationBar";
 import clxsm from "@/utils/clsxm";
+import Footer from "../Footer/Footer";
 
 interface LayoutProps {
     children: React.ReactNode;
@@ -33,6 +34,7 @@ const Layout = ({ children, fullWidth }: LayoutProps) => {
                 >
                     {children}
                 </div>
+                <Footer />
             </main>
         </div>
     );
