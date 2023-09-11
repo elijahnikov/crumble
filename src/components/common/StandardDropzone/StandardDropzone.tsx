@@ -4,13 +4,22 @@ import axios from "axios";
 import { api } from "@/utils/api";
 import { useSession } from "next-auth/react";
 
-export const StandardDropzone = () => {
-    const { data: session } = useSession();
+interface StandardDropzoneProps {
+    children: React.ReactNode;
+    to: "header" | "image";
+}
+
+const StandardDropzone = ({ children, to }: StandardDropzoneProps) => {
     const [presignedUrl, setPresignedUrl] = useState<string | null>(null);
     const { mutateAsync: fetchPresignedUrls } =
-        api.s3.getStandardUploadPresignedUrl.useMutation();
+        api.s3.getStandardUploadPresignedUrl.useMutation({
+            onSuccess: (file) => {
+                console.log(file);
+            },
+        });
     const [submitDisabled, setSubmitDisabled] = useState(true);
     const apiUtils = api.useContext();
+    const { data: session } = useSession();
 
     const { getRootProps, getInputProps, isDragActive, acceptedFiles } =
         useDropzone({
@@ -25,20 +34,17 @@ export const StandardDropzone = () => {
                     userId: session!.user.id,
                 })
                     .then((url) => {
-                        console.log({ url });
                         setPresignedUrl(url);
                         setSubmitDisabled(false);
+                        console.log(url);
                     })
                     .catch((err) => console.error(err));
             },
         });
-
     const files = useMemo(() => {
         if (!submitDisabled)
             return acceptedFiles.map((file) => (
-                <li key={file.name}>
-                    {file.name} - {file.size} bytes
-                </li>
+                <li key={file.name}>{file.name}</li>
             ));
         return null;
     }, [acceptedFiles, submitDisabled]);
@@ -62,40 +68,29 @@ export const StandardDropzone = () => {
     }, [acceptedFiles, apiUtils.s3.getObjects, presignedUrl]);
 
     return (
-        <section>
-            <h2 className="text-lg font-semibold">Standard Dropzone</h2>
-            <p className="mb-3">
-                Simple example for uploading one file at a time
-            </p>
-            <div {...getRootProps()} className="dropzone-container">
+        <>
+            <div {...getRootProps()}>
                 <input {...getInputProps()} />
-                {isDragActive ? (
-                    <div className="flex h-full items-center justify-center font-semibold">
-                        <p>Drop the file here...</p>
-                    </div>
-                ) : (
-                    <div className="flex h-full items-center justify-center font-semibold">
-                        <p>Drag n drop file here, or click to select files</p>
-                    </div>
-                )}
+                {children}
             </div>
-            <aside className="my-2">
+            {/* <aside className="my-2">
                 <h4 className="font-semibold text-zinc-400">
                     Files pending upload
                 </h4>
                 <ul>{files}</ul>
-            </aside>
-            <button
+            </aside> */}
+            {/* <button
                 onClick={() => void handleSubmit()}
                 disabled={
                     presignedUrl === null ||
                     acceptedFiles.length === 0 ||
                     submitDisabled
                 }
-                className="submit-button"
             >
                 Upload
-            </button>
-        </section>
+            </button> */}
+        </>
     );
 };
+
+export default StandardDropzone;

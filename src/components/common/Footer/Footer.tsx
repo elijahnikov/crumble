@@ -3,9 +3,9 @@ import { BsGithub, BsLinkedin, BsTwitter } from "react-icons/bs";
 const Footer = () => {
     return (
         <footer className="mt-[-10px]">
-            <div className="mx-auto max-w-7xl space-x-2 px-6 pb-8 md:flex md:items-center md:justify-between lg:px-8">
-                <div className="flex justify-center space-x-6 md:order-2"></div>
-                <div className="mt-6  md:mt-0">
+            <div className="mx-auto flex max-w-7xl items-center justify-between space-x-2 px-6 px-8 pb-8">
+                <div className="flex justify-center space-x-6 "></div>
+                <div className="mt-0  mt-6">
                     <p className="text-center text-xs leading-5 text-gray-400 dark:text-slate-500">
                         Made by{" "}
                         <a
