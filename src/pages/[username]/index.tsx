@@ -1,5 +1,6 @@
 import Layout, { Container } from "@/components/common/Layout/Layout";
 import { LoadingPage } from "@/components/common/LoadingSpinner/LoadingSpinner";
+import MainUserInformation from "@/components/common/Pages/User/MainUserInformation";
 import SingleUserView from "@/components/common/Pages/User/SingleUserView";
 import { generateSSGHelper } from "@/server/helpers/ssgHelper";
 import { api } from "@/utils/api";
@@ -62,6 +63,10 @@ const ProfilePage: NextPage<PageProps> = ({ username }) => {
         <Layout>
             <Container>
                 <SingleUserView user={user} isMe={isMe} />
+            </Container>
+            <div className="-mb-[45px]" />
+            <Container>
+                <MainUserInformation />
             </Container>
         </Layout>
     );
