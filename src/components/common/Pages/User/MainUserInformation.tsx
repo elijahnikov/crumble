@@ -4,6 +4,7 @@ import {
     TabsList,
     TabsTrigger,
 } from "@/components/ui/Tabs/Tabs";
+import ProfileTab from "./UserPageTabs/ProfileTab";
 
 const MainUserInformation = () => {
     return (
@@ -17,6 +18,24 @@ const MainUserInformation = () => {
                     <TabsTrigger value="watchlist">Watchlist</TabsTrigger>
                     <TabsTrigger value="reviews">Reviews</TabsTrigger>
                 </TabsList>
+                <TabsContent value="profile">
+                    <ProfileTab />
+                </TabsContent>
+                <TabsContent value="activity">
+                    <h1>Activity</h1>
+                </TabsContent>
+                <TabsContent value="movies">
+                    <h1>Movies</h1>
+                </TabsContent>
+                <TabsContent value="diary">
+                    <h1>Diary</h1>
+                </TabsContent>
+                <TabsContent value="watchlist">
+                    <h1>Watchlist</h1>
+                </TabsContent>
+                <TabsContent value="reviews">
+                    <h1>Reviews</h1>
+                </TabsContent>
             </Tabs>
         </h1>
     );

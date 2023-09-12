@@ -14,7 +14,7 @@ const input = cva(
             intent: {
                 default: [
                     "placeholder-ink-lighter text-black",
-                    "dark:placeholder-sky-dark dark:bg-black dark:text-white",
+                    "dark:placeholder-sky-dark dark:bg-black bg-brand-white dark:text-white",
                 ],
             },
             size: {
