@@ -17,9 +17,13 @@ import { type Dispatch, type SetStateAction, useState, useEffect } from "react";
 
 type PageProps = InferGetStaticPropsType<typeof getStaticProps>;
 
-const sortToKeyMap = {
-    Top: "listLikes",
-    Newest: "createdAt",
+const sortToKeyMap: Record<
+    string,
+    { key: string; direction: "desc" | "asc" | undefined }
+> = {
+    Top: { key: "listLikes", direction: "desc" },
+    Newest: { key: "createdAt", direction: "desc" },
+    Controversial: { key: "listLikes", direction: "asc" },
 };
 
 const AllListsBySortingPage: NextPage<PageProps> = ({ sorting }) => {
@@ -38,15 +42,14 @@ const AllListsBySortingPage: NextPage<PageProps> = ({ sorting }) => {
     } = api.list.lists.useInfiniteQuery(
         {
             limit: 10,
-            orderBy: sortToKeyMap[sortBySelection as keyof typeof sortToKeyMap],
+            orderBy: sortToKeyMap[sortBySelection]?.key,
             dateSortBy: getDatesToSortBy(selectedDurationSort),
+            orderDirection: sortToKeyMap[sortBySelection]?.direction,
         },
         {
             getNextPageParam: (lastPage) => lastPage.nextCursor,
         }
     );
-
-    console.log(router.query.duration);
 
     useEffect(() => {
         getDatesToSortBy(selectedDurationSort);
@@ -115,7 +118,8 @@ const Header = ({
                 <h3>All lists</h3>
             </div>
             <div className="float-right flex space-x-2">
-                {sortBySelection === "Top" && (
+                {(sortBySelection === "Top" ||
+                    sortBySelection === "Controversial") && (
                     <Select
                         value={selectedDurationSort}
                         setValue={setSelectedDurationSort}
@@ -131,6 +135,9 @@ const Header = ({
                 <Select value={sortBySelection} setValue={setSortBySelection}>
                     <Select.Item value="Newest">Newest</Select.Item>
                     <Select.Item value="Top">Top</Select.Item>
+                    <Select.Item value="Controversial">
+                        Controversial
+                    </Select.Item>
                 </Select>
             </div>
         </div>

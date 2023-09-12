@@ -4,6 +4,7 @@ export const listsSchema = z.object({
     limit: z.number().optional(),
     cursor: z.object({ id: z.string(), createdAt: z.date() }).optional(),
     orderBy: z.string().optional(),
+    orderDirection: z.enum(["desc", "asc"]).optional(),
     dateSortBy: z.date().optional(),
 });
 export type IListsSchema = z.infer<typeof listsSchema>;

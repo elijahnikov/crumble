@@ -16,7 +16,13 @@ export const listRouter = createTRPCRouter({
         .query(
             async ({
                 ctx,
-                input: { limit = 10, cursor, orderBy, dateSortBy },
+                input: {
+                    limit = 10,
+                    cursor,
+                    orderBy,
+                    dateSortBy,
+                    orderDirection = "desc",
+                },
             }) => {
                 const currentUserId = ctx.session?.user.id;
                 const data = await ctx.prisma.list.findMany({
@@ -26,10 +32,10 @@ export const listRouter = createTRPCRouter({
                         orderBy && orderBy !== "createdAt"
                             ? {
                                   [orderBy]: {
-                                      _count: "desc",
+                                      _count: orderDirection,
                                   },
                               }
-                            : [{ createdAt: "desc" }, { id: "desc" }],
+                            : [{ createdAt: orderDirection }, { id: "desc" }],
                     cursor: cursor ? { createdAt_id: cursor } : undefined,
                     where:
                         // only apply date sort by if not sorting by recent

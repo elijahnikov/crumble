@@ -58,6 +58,14 @@ const InfiniteListSection = ({
 
     if (lists === null || typeof lists === "undefined") return null;
 
+    if (lists.length === 0) {
+        return (
+            <div>
+                <p>No lists found. Try adjusting the filters.</p>
+            </div>
+        );
+    }
+
     return (
         <>
             <InfiniteScroll
