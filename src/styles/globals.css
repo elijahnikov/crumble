@@ -55,7 +55,7 @@
     }
 
     html {
-        @apply bg-brand;
+        @apply bg-brand-white dark:bg-brand;
     }
 }
 

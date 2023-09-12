@@ -42,7 +42,7 @@ const SingleList = ({ list, toggleLike }: SingleListProps) => {
                     <Link
                         className="flex"
                         href={{
-                            pathname: "/[username]",
+                            pathname: "/@[username]",
                             query: {
                                 username: list.user.id,
                             },

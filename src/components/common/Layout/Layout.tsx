@@ -1,5 +1,5 @@
-import NavigationBar from "../NavigationBar/NavigationBar";
-import MobileNavigationBar from "../MobileNavigationBar/MobileNavigationBar";
+import NavigationBar from "../Navigation/NavigationBar/NavigationBar";
+import MobileNavigationBar from "../Navigation/MobileNavigationBar/MobileNavigationBar";
 import clxsm from "@/utils/clsxm";
 import Footer from "../Footer/Footer";
 

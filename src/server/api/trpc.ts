@@ -1,3 +1,4 @@
+import { s3 } from "../aws/s3";
 /**
  * YOU PROBABLY DON'T NEED TO EDIT THIS FILE, UNLESS:
  * 1. You want to modify request context (see Part 1).
@@ -60,6 +61,7 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
         session,
         userId,
         prisma,
+        s3,
     };
 };
 
