@@ -27,7 +27,7 @@ const SingleReviewPage: NextPage<PageProps> = ({ id }) => {
     } = api.review.infiniteCommentFeed.useInfiniteQuery(
         {
             limit: 10,
-            id: data!.review.id!,
+            id: data!.review.id,
         },
         {
             getNextPageParam: (lastPage) => lastPage.nextCursor,

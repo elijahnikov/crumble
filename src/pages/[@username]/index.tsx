@@ -12,6 +12,7 @@ import type {
 } from "next";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
+import { Router, useRouter } from "next/router";
 
 type PageProps = InferGetStaticPropsType<typeof getStaticProps>;
 
@@ -75,7 +76,15 @@ const ProfilePage: NextPage<PageProps> = ({ username }) => {
 export const getStaticProps = async (context: GetStaticPropsContext) => {
     const helpers = await generateSSGHelper();
 
-    const username = context.params?.username;
+    const username = context.params!["@username"];
+
+    if (!username?.includes("@")) {
+        return {
+            redirect: {
+                destination: "/",
+            },
+        };
+    }
 
     if (username) {
         const formattedUsername = String(username).replace("@", "");

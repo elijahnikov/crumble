@@ -21,22 +21,38 @@ export const reviewRouter = createTRPCRouter({
         .query(
             async ({
                 ctx,
-                input: { limit = 10, cursor, movieId, orderBy },
+                input: {
+                    limit = 10,
+                    cursor,
+                    movieId,
+                    orderBy,
+                    dateSortBy,
+                    orderDirection = "desc",
+                },
             }) => {
                 const currentUserId = ctx.session?.user.id;
                 const data = await ctx.prisma.review.findMany({
                     take: limit + 1,
-                    where: {
-                        ...(movieId ? { movieId } : {}),
-                    },
+                    where:
+                        dateSortBy && orderBy !== "createdAt"
+                            ? {
+                                  createdAt: {
+                                      lte: new Date(),
+                                      gte: dateSortBy,
+                                  },
+                              }
+                            : movieId
+                            ? { movieId }
+                            : {},
                     cursor: cursor ? { createdAt_id: cursor } : undefined,
-                    orderBy: orderBy
-                        ? {
-                              [orderBy]: {
-                                  _count: "desc",
-                              },
-                          }
-                        : [{ createdAt: "desc" }, { id: "desc" }],
+                    orderBy:
+                        orderBy && orderBy !== "createdAt"
+                            ? {
+                                  [orderBy]: {
+                                      _count: orderDirection,
+                                  },
+                              }
+                            : [{ createdAt: orderDirection }, { id: "desc" }],
                     include: {
                         _count: {
                             select: { reviewLikes: true, reviewComments: true },
