@@ -11,9 +11,7 @@ const SingleUserView = ({ user, isMe }: SingleUserViewProps) => {
     return (
         <div>
             <UserHeader isMe={isMe} userHeaderData={user} />
-            <div>
-                <p>test</p>
-            </div>
+            <UserInfo user={user} isMe={isMe} />
         </div>
     );
 };
@@ -71,6 +69,63 @@ const UserHeader = ({ userHeaderData, isMe }: UserHeaderProps) => {
                         Edit profile
                     </Button>
                 )}
+            </div>
+        </div>
+    );
+};
+
+const UserInfo = ({
+    user,
+    isMe,
+}: {
+    user: SingleUserViewProps["user"];
+    isMe: boolean;
+}) => {
+    return (
+        <div className="mt-12 flex px-5">
+            <div className="flex w-[80%]">
+                <div>
+                    {<h3>{user.displayName ? user.displayName : user.name}</h3>}
+                    <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">
+                        @{user.name}
+                    </p>
+                </div>
+                <div>{isMe && <Button className="ml-5">Follow</Button>}</div>
+            </div>
+
+            <div className="relative w-[100%]">
+                <div className="ml-5 flex w-[90%] w-full space-x-4 text-center text-sm text-slate-600 dark:text-slate-300">
+                    <div>
+                        <h3>{user.followers}</h3>
+                        <p className="text-slate-500 dark:text-slate-400">
+                            followers
+                        </p>
+                    </div>
+                    <div>
+                        <h3>{user.following}</h3>
+                        <p className="text-slate-500 dark:text-slate-400">
+                            following
+                        </p>
+                    </div>
+                    <div>
+                        <h3>{user.totalHoursWatched}</h3>
+                        <p className="text-slate-500 dark:text-slate-400">
+                            hours watched
+                        </p>
+                    </div>
+                    <div>
+                        <h3>{user.totalListsCreated}</h3>
+                        <p className="text-slate-500 dark:text-slate-400">
+                            lists created
+                        </p>
+                    </div>
+                    <div>
+                        <h3>{user.totalMoviesWatched}</h3>
+                        <p className="text-slate-500 dark:text-slate-400">
+                            movies watched
+                        </p>
+                    </div>
+                </div>
             </div>
         </div>
     );
