@@ -1,4 +1,5 @@
 import { Menu, Transition } from "@headlessui/react";
+import { signOut } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { Fragment } from "react";
@@ -50,6 +51,14 @@ const AvatarMenu = ({
                                 >
                                     Settings
                                 </Link>
+                            </Menu.Item>
+                            <Menu.Item>
+                                <div
+                                    onClick={() => void signOut()}
+                                    className={`group flex w-full cursor-pointer items-center rounded-md px-2 py-2 text-sm text-crumble hover:bg-brand-light`}
+                                >
+                                    Sign out
+                                </div>
                             </Menu.Item>
                         </div>
                     </Menu.Items>

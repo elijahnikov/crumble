@@ -8,6 +8,7 @@ import navigation from "@/utils/data/navLinks";
 import SignIn from "../../SignIn/SignIn";
 import CreateModalMenu from "../../CreateModalMenu/CreateModalMenu";
 import AvatarMenu from "../AvatarMenu/AvatarMenu";
+import MoreMenu from "../MoreMenu/MoreMenu";
 
 const NavigationBar = () => {
     const [currentPath, setCurrentPath] = useState("");
@@ -69,6 +70,7 @@ const NavigationBar = () => {
                             <span className="flex-1">{item.name}</span>
                         </Link>
                     ))}
+                    <MoreMenu />
                 </nav>
             </div>
             {authenticated ? (

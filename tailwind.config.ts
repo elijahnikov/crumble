@@ -15,6 +15,7 @@ module.exports = {
         extend: {
             fontFamily: {
                 primary: ["Inter", ...fontFamily.sans],
+                fancy: ["DM Serif Display", "serif"],
             },
             colors: {
                 brand: {

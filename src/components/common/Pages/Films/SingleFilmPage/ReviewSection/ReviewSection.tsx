@@ -95,7 +95,10 @@ const ReviewRow = ({ review }: ReviewRow) => {
                     />
                 )}
                 <p className="ml-2 mt-1 text-sm font-semibold">
-                    {review.user.name}
+                    <span className="text-slate-600 dark:text-slate-300">
+                        Review by{" "}
+                    </span>
+                    <span className="underline">{review.user.name}</span>
                 </p>
                 <Rating
                     className="ml-3"
@@ -110,31 +113,25 @@ const ReviewRow = ({ review }: ReviewRow) => {
                     fillColor="#EF4444"
                 />
             </div>
-            <div className="mt-2 text-sm dark:text-slate-200">
+            <div className="text-md mt-2 font-semibold text-slate-700 dark:text-slate-200 dark:text-slate-200">
                 {review.text}
             </div>
             <div className=" mb-2 mt-2 flex space-x-4">
-                <div className=" flex space-x-1 text-xs">
-                    <p className="text-slate-700 dark:text-slate-400">
-                        {review.likeCount}
-                    </p>
-                    <BiSolidComment className="dark-fill-slate-400 mt-1 fill-slate-600" />
-                </div>
                 <div className="flex space-x-1 text-xs">
-                    <p className="dark:text-slate-400">
-                        {review._count.reviewComments}
-                    </p>
                     <BsHeartFill
                         className={clxsm(
-                            "mt-1",
+                            "mt-[3px]",
                             review.likedByMe
                                 ? "fill-crumble"
                                 : "dark-fill-slate-400 fill-slate-600"
                         )}
                     />
+                    <p className="dark:text-slate-400">
+                        {review._count.reviewComments}
+                    </p>
                 </div>
             </div>
-            <hr className="mt-5 border-gray-200 dark:border-gray-700" />
+            <hr className="mx-auto mt-5 w-[90%] border-gray-200 dark:border-gray-700" />
         </div>
     );
 };

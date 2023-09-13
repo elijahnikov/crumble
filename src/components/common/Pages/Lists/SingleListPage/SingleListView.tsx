@@ -31,6 +31,9 @@ const SingleListView = ({ list }: SingleListViewProps) => {
     const { data: session } = useSession();
     const authenticated = !!session;
 
+    const isMe = listData.userId === session?.user.id;
+    const isEditing = editingMode && isMe;
+
     const trpcUtils = api.useContext();
 
     const [title, setTitle] = useState<string>(listData.title);
@@ -134,7 +137,7 @@ const SingleListView = ({ list }: SingleListViewProps) => {
                     </div>
                     <div>
                         <div className="flex">
-                            {!editingMode ? (
+                            {!editingMode || !isMe ? (
                                 <h3 className="mt-4">{listData.title}</h3>
                             ) : (
                                 <Input
@@ -144,7 +147,7 @@ const SingleListView = ({ list }: SingleListViewProps) => {
                                 />
                             )}
                             <div className="ml-5 mt-[20px]">
-                                {!editingMode ? (
+                                {!editingMode && isMe ? (
                                     <div>
                                         <Button
                                             onClick={() => setEditingMode(true)}
@@ -154,7 +157,7 @@ const SingleListView = ({ list }: SingleListViewProps) => {
                                             Edit
                                         </Button>
                                     </div>
-                                ) : (
+                                ) : editingMode && isMe ? (
                                     <div className="flex space-x-2">
                                         <Button
                                             onClick={() =>
@@ -182,10 +185,10 @@ const SingleListView = ({ list }: SingleListViewProps) => {
                                             </p>
                                         ) : null}
                                     </div>
-                                )}
+                                ) : null}
                             </div>
                         </div>
-                        {!editingMode ? (
+                        {!editingMode || !isMe ? (
                             <p className="mb-2 mt-4 text-slate-600 dark:text-slate-300">
                                 {listData.description}
                             </p>
@@ -216,7 +219,8 @@ const SingleListView = ({ list }: SingleListViewProps) => {
                                             <Tooltip>
                                                 <Tooltip.Trigger>
                                                     <div className="relative">
-                                                        {!editingMode ? (
+                                                        {!editingMode &&
+                                                        !isMe ? (
                                                             <Link
                                                                 href={{
                                                                     pathname:
@@ -233,7 +237,7 @@ const SingleListView = ({ list }: SingleListViewProps) => {
                                                                         }
                                                                         src={`https://image.tmdb.org/t/p/w500${movie.poster}`}
                                                                         className={clxsm(
-                                                                            editingMode &&
+                                                                            isEditing &&
                                                                                 "opacity-40",
                                                                             "rounded-md"
                                                                         )}
@@ -278,7 +282,7 @@ const SingleListView = ({ list }: SingleListViewProps) => {
                                                                         }
                                                                         src={`https://image.tmdb.org/t/p/w500${movie.poster}`}
                                                                         className={clxsm(
-                                                                            editingMode &&
+                                                                            isEditing &&
                                                                                 "opacity-40",
                                                                             "rounded-md"
                                                                         )}
@@ -325,7 +329,7 @@ const SingleListView = ({ list }: SingleListViewProps) => {
                                     </div>
                                 </div>
                             ))}
-                        {session?.user.id === author.id && !editingMode ? (
+                        {!editingMode && isMe ? (
                             <AddMovieToList listId={listData.id} />
                         ) : null}
                     </div>
