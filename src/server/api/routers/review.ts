@@ -88,7 +88,9 @@ export const reviewRouter = createTRPCRouter({
                             likeCount: review._count.reviewLikes,
                             commentCount: review._count.reviewComments,
                             user: { ...review.user },
-                            likedByMe: review.reviewLikes.length > 0,
+                            likedByMe:
+                                review.reviewLikes.length > 0 &&
+                                ctx.session?.user.id,
                         };
                     }),
                     nextCursor,
@@ -137,7 +139,8 @@ export const reviewRouter = createTRPCRouter({
                     likeCount: data?._count.reviewLikes,
                     commentCount: data._count.reviewComments,
                     user: { ...data.user },
-                    likedByMe: data.reviewLikes.length > 0,
+                    likedByMe:
+                        data.reviewLikes.length > 0 && ctx.session?.user.id,
                 },
             };
         }),
@@ -306,7 +309,9 @@ export const reviewRouter = createTRPCRouter({
                         linkedToId: comment.reviewId,
                         user: comment.user,
                         likeCount: comment._count.reviewCommentLikes,
-                        likedByMe: comment.reviewCommentLikes?.length > 0,
+                        likedByMe:
+                            comment.reviewCommentLikes?.length > 0 &&
+                            ctx.session?.user.id,
                         createdAt: comment.createdAt,
                     };
                 }),

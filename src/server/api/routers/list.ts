@@ -100,7 +100,9 @@ export const listRouter = createTRPCRouter({
                             likeCount: list._count.listLikes,
                             commentCount: list._count.listComments,
                             user: { ...list.user },
-                            likedByMe: list.listLikes.length > 0,
+                            likedByMe:
+                                list.listLikes.length > 0 &&
+                                ctx.session?.user.id,
                         };
                     }),
                     nextCursor,
@@ -169,7 +171,8 @@ export const listRouter = createTRPCRouter({
                     likeCount: data._count.listLikes,
                     commentCount: data._count.listComments,
                     user: { ...data.user },
-                    likedByMe: data.listLikes.length > 0,
+                    likedByMe:
+                        data.listLikes.length > 0 && ctx.session?.user.id,
                 },
             };
         }),
@@ -427,7 +430,9 @@ export const listRouter = createTRPCRouter({
                         linkedToId: comment.listId,
                         user: comment.user,
                         likeCount: comment._count.listCommentLikes,
-                        likedByMe: comment.listCommentLikes?.length > 0,
+                        likedByMe:
+                            comment.listCommentLikes?.length > 0 &&
+                            ctx.session?.user.id,
                         createdAt: comment.createdAt,
                     };
                 }),

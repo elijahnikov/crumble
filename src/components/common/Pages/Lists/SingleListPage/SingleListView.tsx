@@ -219,8 +219,7 @@ const SingleListView = ({ list }: SingleListViewProps) => {
                                             <Tooltip>
                                                 <Tooltip.Trigger>
                                                     <div className="relative">
-                                                        {!editingMode &&
-                                                        !isMe ? (
+                                                        {!editingMode ? (
                                                             <Link
                                                                 href={{
                                                                     pathname:
