@@ -22,7 +22,7 @@ const AllListsPage = () => {
                         <div className="w-[70%]">
                             <RecentLists />
                         </div>
-                        <div className="w-[29%]">
+                        <div className="hidden w-[29%] lg:block">
                             <ListTags />
                         </div>
                     </div>

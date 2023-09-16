@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Fragment } from "react";
 import { BsThreeDots } from "react-icons/bs";
 
-const AvatarMenu = () => {
+const MoreMenu = () => {
     return (
         <>
             <Menu as="div">
@@ -52,4 +52,4 @@ const AvatarMenu = () => {
     );
 };
 
-export default AvatarMenu;
+export default MoreMenu;

@@ -40,38 +40,73 @@ const SignIn = ({ callbackUrl }: DiscordSignInProps) => {
         <>
             {providers &&
                 Object.keys(providers).map((providerKey, i) => (
-                    <div key={i}>
-                        <form
-                            action={providers[providerKey]?.signinUrl}
-                            method="POST"
-                        >
-                            <input
-                                type="hidden"
-                                name="csrfToken"
-                                value={csrfToken}
-                            />
-                            {providers[providerKey]?.callbackUrl && (
+                    <>
+                        <div className="hidden lg:block" key={i}>
+                            <form
+                                action={providers[providerKey]?.signinUrl}
+                                method="POST"
+                            >
                                 <input
                                     type="hidden"
-                                    name="callbackUrl"
-                                    value={callbackUrl}
+                                    name="csrfToken"
+                                    value={csrfToken}
                                 />
-                            )}
+                                {providers[providerKey]?.callbackUrl && (
+                                    <input
+                                        type="hidden"
+                                        name="callbackUrl"
+                                        value={callbackUrl}
+                                    />
+                                )}
 
-                            <Button
-                                className="mt-2"
-                                intent="secondary"
-                                type="submit"
-                                rightIcon={
-                                    providers[providerKey]?.name === "Discord"
-                                        ? BsDiscord
-                                        : BsGithub
-                                }
+                                <Button
+                                    className="mt-2"
+                                    intent="secondary"
+                                    type="submit"
+                                    rightIcon={
+                                        providers[providerKey]?.name ===
+                                        "Discord"
+                                            ? BsDiscord
+                                            : BsGithub
+                                    }
+                                >
+                                    Sign in with
+                                </Button>
+                            </form>
+                        </div>
+                        <div className="lg:hidden" key={i}>
+                            <form
+                                action={providers[providerKey]?.signinUrl}
+                                method="POST"
                             >
-                                Sign in with
-                            </Button>
-                        </form>
-                    </div>
+                                <input
+                                    type="hidden"
+                                    name="csrfToken"
+                                    value={csrfToken}
+                                />
+                                {providers[providerKey]?.callbackUrl && (
+                                    <input
+                                        type="hidden"
+                                        name="callbackUrl"
+                                        value={callbackUrl}
+                                    />
+                                )}
+
+                                <Button
+                                    className="ml-2"
+                                    intent="secondary"
+                                    type="submit"
+                                >
+                                    {providers[providerKey]?.name ===
+                                    "Discord" ? (
+                                        <BsDiscord />
+                                    ) : (
+                                        <BsGithub />
+                                    )}
+                                </Button>
+                            </form>
+                        </div>
+                    </>
                 ))}
         </>
     );
