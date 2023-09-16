@@ -5,36 +5,48 @@ interface MovieStatsProps {
     watchedCount?: number;
     listCount?: number;
     likeCount?: number;
+    ratings?: number;
 }
 
 const MovieStats = ({
     watchedCount,
     listCount,
     likeCount,
+    ratings,
 }: MovieStatsProps) => {
     return (
-        <div className="ml-12 mt-5">
-            <div className="flex space-x-3">
-                <div className="flex space-x-1">
-                    <BsFillEyeFill className="fill-slate-600 dark:fill-slate-400" />
-                    <p className="text-xs dark:text-slate-300">
-                        {watchedCount
-                            ? numberFormatWithSuffix(watchedCount)
-                            : 0}
-                    </p>
-                </div>
-                <div className="flex space-x-1">
-                    <BsFillGridFill className=" fill-slate-600 dark:fill-slate-400" />
-                    <p className="text-xs dark:text-slate-300">
-                        {listCount ? numberFormatWithSuffix(listCount) : 0}
-                    </p>
-                </div>
-                <div className="flex space-x-1">
-                    <BsFillHeartFill className="fill-slate-600 dark:fill-slate-400" />
-                    <p className="text-xs dark:text-slate-300">
-                        {likeCount ? numberFormatWithSuffix(likeCount) : 0}
-                    </p>
-                </div>
+        <div className="mt-5 space-y-1">
+            <div className="flex w-full justify-between pl-5 pr-5">
+                <p className="pt-1 text-xs text-slate-600 dark:text-slate-400">
+                    Views
+                </p>
+                <p className="text-md font-semibold text-slate-700 dark:text-slate-200">
+                    {watchedCount ?? 0}
+                </p>
+            </div>
+            <div className="flex w-full justify-between pl-5 pr-5">
+                <p className="pt-1 text-xs text-slate-600 dark:text-slate-400">
+                    Likes
+                </p>
+                <p className="text-md font-semibold text-slate-700 dark:text-slate-200">
+                    {likeCount ?? 0}
+                </p>
+            </div>
+            <div className="flex w-full justify-between pl-5 pr-5">
+                <p className="pt-1 text-xs text-slate-600 dark:text-slate-400">
+                    Lists
+                </p>
+                <p className="text-md font-semibold text-slate-700 dark:text-slate-200">
+                    {listCount ?? 0}
+                </p>
+            </div>
+            <div className="flex w-full justify-between pl-5 pr-5">
+                <p className="pt-1 text-xs text-slate-600 dark:text-slate-400">
+                    Ratings
+                </p>
+                <p className="text-md font-semibold text-slate-700 dark:text-slate-200">
+                    {ratings ?? 0}
+                </p>
             </div>
         </div>
     );

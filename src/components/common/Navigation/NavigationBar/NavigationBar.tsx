@@ -57,7 +57,15 @@ const NavigationBar = () => {
                                 "group flex items-center rounded-md px-2 py-2 text-sm font-medium"
                             )}
                         >
-                            {item.icon && (
+                            {currentPath === item.href ? (
+                                <item.hoverIcon
+                                    className={clxsm(
+                                        "dark:fill-white",
+                                        "mr-3 h-6 w-6 flex-shrink-0 text-brand"
+                                    )}
+                                    aria-hidden="true"
+                                />
+                            ) : (
                                 <item.icon
                                     className={clxsm(
                                         "dark:fill-white",

@@ -26,7 +26,7 @@ interface MovieInfoTabsProps {
 
 const MovieInfoTabs = ({ movieInfo }: MovieInfoTabsProps) => {
     return (
-        <div className="float-right mr-5 mt-10 w-[93%]">
+        <div className="float-right mr-7 mt-10 w-[93%]">
             <Tabs defaultValue="cast" className="w-[100%]">
                 <TabsList className="grid w-full grid-cols-4">
                     <TabsTrigger value="cast">Cast</TabsTrigger>
@@ -34,7 +34,7 @@ const MovieInfoTabs = ({ movieInfo }: MovieInfoTabsProps) => {
                     <TabsTrigger value="details">Details</TabsTrigger>
                     <TabsTrigger value="genres">Genres</TabsTrigger>
                 </TabsList>
-                <TabsContent value="cast" className="mr-2">
+                <TabsContent value="cast">
                     <Cast cast={movieInfo.credits.cast} />
                 </TabsContent>
                 <TabsContent value="crew">
@@ -63,15 +63,20 @@ const Cast = ({
 }: {
     cast: MovieInfoTabsProps["movieInfo"]["credits"]["cast"];
 }) => {
-    const [amountShowed, setAmountShowed] = useState<number>(12);
+    const [amountShowed, setAmountShowed] = useState<number>(16);
 
     const handleShowMore = () => {
-        setAmountShowed(amountShowed + 12);
+        setAmountShowed(amountShowed + 16);
     };
 
     return (
         <div className="mt-[20px]">
-            <h3 className="ml-2">Cast</h3>
+            <div className="flex">
+                <h3>Cast</h3>
+                <p className="pl-2 pt-[12px] text-xs text-slate-500 dark:text-slate-400">
+                    {cast.length} cast members
+                </p>
+            </div>
             <div className="mb-[15px] mt-[10px] grid w-full grid-cols-8 gap-2">
                 {cast
                     ? cast
@@ -118,9 +123,9 @@ const Cast = ({
                         Show more...
                     </Button>
                 )}
-                {amountShowed > 12 && (
+                {amountShowed > 16 && (
                     <Button
-                        onClick={() => setAmountShowed(12)}
+                        onClick={() => setAmountShowed(16)}
                         size="sm"
                         intent="secondary"
                     >
@@ -156,13 +161,13 @@ const Crew = ({
 
     return (
         <div className="mt-[20px] w-[98%]">
-            <h3 className="ml-2">Crew</h3>
+            <h3>Crew</h3>
             <div className="mt-6">
                 {showJobs.map((job: { title: string; label: string }) => (
                     <div className="mt-2" key={job.title}>
                         {groupedJobs[job.title] && (
                             <div className="mb-[25px] mt-[-10px] flex  border-b-[1px] border-gray-300 dark:border-gray-800">
-                                <p className="text-sm text-slate-700 dark:text-slate-400">
+                                <p className="text-xs text-slate-700 dark:text-slate-400">
                                     {job.label.toLocaleUpperCase()}
                                 </p>
                                 <div className="align-right float-right ml-auto inline w-[200px] text-right">
@@ -204,11 +209,11 @@ const Details = ({
 }: DetailsProps) => {
     return (
         <div className="mt-[20px]">
-            <h3 className="ml-2">Details</h3>
+            <h3>Details</h3>
             <div className="mt-4 w-[100%]">
                 <div>
                     <div className="mb-[25px] flex  border-b-[1px] border-gray-300 dark:border-gray-800">
-                        <p className="text-sm text-slate-700 dark:text-slate-400">
+                        <p className="text-xs text-slate-700 dark:text-slate-400">
                             STUDIOS
                         </p>
 
@@ -229,7 +234,7 @@ const Details = ({
                 </div>
                 <div>
                     <div className="mb-[25px] mt-[-10px] flex  border-b-[1px] border-gray-300 dark:border-gray-800">
-                        <p className="text-sm text-slate-700 dark:text-slate-400">
+                        <p className="text-xs text-slate-700 dark:text-slate-400">
                             COUNTRIES
                         </p>
 
@@ -250,7 +255,7 @@ const Details = ({
                 </div>
                 <div>
                     <div className="mb-[25px] mt-[-10px] flex  border-b-[1px] border-gray-300 dark:border-gray-800">
-                        <p className="text-sm text-slate-700 dark:text-slate-400">
+                        <p className="text-xs text-slate-700 dark:text-slate-400">
                             LANGUAGES
                         </p>
 
@@ -271,7 +276,7 @@ const Details = ({
                 </div>
                 <div>
                     <div className="mb-[25px] mt-[-10px] flex  border-b-[1px] border-gray-300 dark:border-gray-800">
-                        <p className="text-sm text-slate-700 dark:text-slate-400">
+                        <p className="text-xs text-slate-700 dark:text-slate-400">
                             ALTERNATIVE TITLES
                         </p>
 
@@ -305,11 +310,11 @@ const Genres = ({
 }) => {
     return (
         <div className="mt-[20px]">
-            <h3 className="ml-2">Genres</h3>
+            <h3>Genres</h3>
             <div className="mt-4 w-[100%]">
                 <div>
                     <div className="mb-[25px] flex  border-b-[1px] border-gray-300 dark:border-gray-800">
-                        <p className="text-sm text-slate-700 dark:text-slate-400">
+                        <p className="text-xs text-slate-700 dark:text-slate-400">
                             GENRES
                         </p>
 
