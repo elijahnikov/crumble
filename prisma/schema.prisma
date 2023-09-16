@@ -58,8 +58,6 @@ model User {
   bio                String?
   bioLink            String?
   displayName        String?
-  followers          Int                 @default(0)
-  following          Int                 @default(0)
   header             String?
   totalHoursWatched  Int                 @default(0)
   totalListsCreated  Int                 @default(0)
@@ -80,6 +78,9 @@ model User {
   listComments   ListComment[]
   listLikes        ListLike[]
   listCommentLikes ListCommentLike[]
+
+  followers Subscription[] @relation("following")
+  following Subscription[] @relation("follower")
 }
 
 //-----------------------------------------------------------------
@@ -279,4 +280,18 @@ model ListEntry {
   list      List     @relation(fields: [listId], references: [id], onDelete: Cascade)
   @@index([listId])
   @@index([movieId])
+}
+
+//-----------------------------------------------------------------
+//------------------------- Subscription --------------------------
+//-----------------------------------------------------------------
+model Subscription { 
+  follower    User @relation("follower", fields: [followerId], references: [id])
+  followerId  String
+  following   User @relation("following", fields: [followingId], references: [id])
+  followingId String
+
+  @@id([followerId, followingId])
+  @@index([followingId])
+  @@index([followerId])
 }

@@ -14,6 +14,14 @@ export const userRouter = createTRPCRouter({
                 where: {
                     name: input.username,
                 },
+                include: {
+                    _count: {
+                        select: {
+                            followers: true,
+                            following: true,
+                        },
+                    },
+                },
             });
         }),
     //

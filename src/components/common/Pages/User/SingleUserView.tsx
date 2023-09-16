@@ -90,19 +90,19 @@ const UserInfo = ({
                         @{user.name}
                     </p>
                 </div>
-                <div>{isMe && <Button className="ml-5">Follow</Button>}</div>
+                <div>{!isMe && <Button className="ml-5">Follow</Button>}</div>
             </div>
 
             <div className="relative w-[100%]">
                 <div className="ml-5 flex w-[90%] w-full space-x-4 text-center text-sm text-slate-600 dark:text-slate-300">
                     <div>
-                        <h3>{user.followers}</h3>
+                        <h3>{user._count.followers}</h3>
                         <p className="text-slate-500 dark:text-slate-400">
                             followers
                         </p>
                     </div>
                     <div>
-                        <h3>{user.following}</h3>
+                        <h3>{user._count.following}</h3>
                         <p className="text-slate-500 dark:text-slate-400">
                             following
                         </p>
