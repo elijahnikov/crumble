@@ -21,7 +21,7 @@ interface Comment {
         image: string | null;
     };
     likeCount: number;
-    likedByMe: boolean;
+    likedByMe: string | false | undefined;
     createdAt: Date;
 }
 

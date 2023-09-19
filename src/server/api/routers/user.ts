@@ -2,6 +2,8 @@ import { z } from "zod";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import { editUserDetailsSchema } from "../schemas/user";
 import { TRPCError } from "@trpc/server";
+import { prisma } from "@/server/db";
+import { User } from "@prisma/client";
 
 export const userRouter = createTRPCRouter({
     //
@@ -10,7 +12,6 @@ export const userRouter = createTRPCRouter({
     getUser: publicProcedure
         .input(z.object({ username: z.string() }))
         .query(async ({ ctx, input }) => {
-            const currentUserId = ctx.session?.user.id;
             const user = await ctx.prisma.user.findFirst({
                 where: {
                     name: input.username,
@@ -28,37 +29,9 @@ export const userRouter = createTRPCRouter({
                                 name: input.username,
                             },
                         },
-                        select: {
-                            follower: {
-                                select: {
-                                    name: true,
-                                    image: true,
-                                    id: true,
-                                    displayName: true,
-                                },
-                            },
-                        },
-                    },
-                    following: {
-                        where: {
-                            follower: {
-                                name: input.username,
-                            },
-                        },
-                        select: {
-                            following: {
-                                select: {
-                                    name: true,
-                                    image: true,
-                                    id: true,
-                                    displayName: true,
-                                },
-                            },
-                        },
                     },
                 },
             });
-
             if (user) {
                 return {
                     ...user,

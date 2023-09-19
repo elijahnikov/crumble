@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { createTRPCRouter, protectedProcedure } from "../trpc";
+import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
 export const subscriptionRouter = createTRPCRouter({
     //
@@ -32,5 +32,53 @@ export const subscriptionRouter = createTRPCRouter({
                     },
                 });
             }
+        }),
+    //
+    // Get list of followers for a specific user
+    //
+    getFollowersForUser: publicProcedure
+        .input(z.object({ username: z.string() }))
+        .query(async ({ ctx, input }) => {
+            return ctx.prisma.subscription.findMany({
+                where: {
+                    follower: {
+                        name: input.username,
+                    },
+                },
+                select: {
+                    following: {
+                        select: {
+                            name: true,
+                            image: true,
+                            displayName: true,
+                            id: true,
+                        },
+                    },
+                },
+            });
+        }),
+    //
+    // Get list of following for a specific user
+    //
+    getFollowingForUser: publicProcedure
+        .input(z.object({ username: z.string() }))
+        .query(async ({ ctx, input }) => {
+            return ctx.prisma.subscription.findMany({
+                where: {
+                    following: {
+                        name: input.username,
+                    },
+                },
+                select: {
+                    follower: {
+                        select: {
+                            name: true,
+                            image: true,
+                            displayName: true,
+                            id: true,
+                        },
+                    },
+                },
+            });
         }),
 });

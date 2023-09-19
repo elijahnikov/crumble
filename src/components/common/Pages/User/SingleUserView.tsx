@@ -99,6 +99,7 @@ const UserInfo = ({
     return (
         <div className="mt-12 flex px-5">
             <FollowersModal
+                username={user.name!}
                 open={followersModalOpen}
                 setOpen={setFollowersModalOpen}
             />
@@ -134,7 +135,10 @@ const UserInfo = ({
                 <div className="ml-5 flex w-[90%] w-full space-x-4 text-center text-sm text-slate-600 dark:text-slate-300">
                     <div
                         className="cursor-pointer"
-                        onClick={() => setFollowersModalOpen(true)}
+                        onClick={() =>
+                            user.followersCount > 0 &&
+                            setFollowersModalOpen(true)
+                        }
                     >
                         <h3>{user.followersCount}</h3>
                         <p className="text-slate-500 dark:text-slate-400">
@@ -143,7 +147,10 @@ const UserInfo = ({
                     </div>
                     <div
                         className="cursor-pointer"
-                        onClick={() => setFollowingModalOpen(true)}
+                        onClick={() =>
+                            user.followingsCount > 0 &&
+                            setFollowingModalOpen(true)
+                        }
                     >
                         <h3>{user.followingsCount}</h3>
                         <p className="text-slate-500 dark:text-slate-400">
@@ -177,15 +184,22 @@ const UserInfo = ({
 const FollowersModal = ({
     open,
     setOpen,
+    username,
 }: {
     open: boolean;
     setOpen: (value: boolean) => void;
+    username: string;
 }) => {
+    const { data } = api.subscription.getFollowersForUser.useQuery({
+        username,
+    });
+    console.log({ data });
+
     return (
         <>
             <Modal open={open} onOpenChange={setOpen}>
-                <Modal.Content>
-                    <p>test</p>
+                <Modal.Content title="Followers">
+                    <></>
                 </Modal.Content>
             </Modal>
         </>
@@ -202,8 +216,8 @@ const FollowingModal = ({
     return (
         <>
             <Modal open={open} onOpenChange={setOpen}>
-                <Modal.Content>
-                    <p>test1</p>
+                <Modal.Content title="Following">
+                    <div className="text-center"></div>
                 </Modal.Content>
             </Modal>
         </>
