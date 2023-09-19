@@ -6,7 +6,7 @@ import {
     type DefaultSession,
 } from "next-auth";
 import DiscordProvider from "next-auth/providers/discord";
-import GitHubProvider from "next-auth/providers/github";
+import GitHubProvider, { GithubProfile } from "next-auth/providers/github";
 import { env } from "@/env.mjs";
 import { prisma } from "@/server/db";
 
@@ -55,6 +55,14 @@ export const authOptions: NextAuthOptions = {
         GitHubProvider({
             clientId: env.GITHUB_CLIENT_ID,
             clientSecret: env.GITHUB_CLIENT_SECRET,
+            profile(profile: GithubProfile) {
+                return {
+                    id: crypto.randomUUID(),
+                    name: profile.login,
+                    email: profile.email,
+                    image: profile.avatar_url,
+                };
+            },
         }),
         /**
          * ...add more providers here.

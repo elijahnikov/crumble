@@ -1,6 +1,8 @@
 import Button from "@/components/ui/Button/Button";
-import { type RouterOutputs } from "@/utils/api";
+import Modal from "@/components/ui/Modal/Modal";
+import { api, type RouterOutputs } from "@/utils/api";
 import Image from "next/image";
+import { useState } from "react";
 
 interface SingleUserViewProps {
     user: NonNullable<RouterOutputs["user"]["getUser"]>;
@@ -51,7 +53,7 @@ const UserHeader = ({ userHeaderData, isMe }: UserHeaderProps) => {
                         <Image
                             width={140}
                             height={140}
-                            className="absolute bottom-0 left-0 -mb-[30px] ml-4 rounded-full opacity-0 shadow-xl drop-shadow-[0_2px_2px_rgba(0,0,0,0.5)] duration-[0.5s]"
+                            className="shadow-xs absolute bottom-0 left-0 -mb-[30px] ml-4 rounded-full opacity-0 drop-shadow-[0_1px_1px_rgba(0,0,0,0.5)] duration-[0.5s]"
                             src={user.image}
                             priority
                             alt="Profile picture"
@@ -81,8 +83,29 @@ const UserInfo = ({
     user: SingleUserViewProps["user"];
     isMe: boolean;
 }) => {
+    const [followersModalOpen, setFollowersModalOpen] =
+        useState<boolean>(false);
+    const [followingModalOpen, setFollowingModalOpen] =
+        useState<boolean>(false);
+
+    const trpcUtils = api.useContext();
+
+    const { mutate } = api.subscription.toggleSubscription.useMutation({
+        onSuccess: async () => {
+            await trpcUtils.user.invalidate();
+        },
+    });
+
     return (
         <div className="mt-12 flex px-5">
+            <FollowersModal
+                open={followersModalOpen}
+                setOpen={setFollowersModalOpen}
+            />
+            <FollowingModal
+                open={followingModalOpen}
+                setOpen={setFollowingModalOpen}
+            />
             <div className="flex w-[80%]">
                 <div>
                     {<h3>{user.displayName ? user.displayName : user.name}</h3>}
@@ -90,19 +113,39 @@ const UserInfo = ({
                         @{user.name}
                     </p>
                 </div>
-                <div>{!isMe && <Button className="ml-5">Follow</Button>}</div>
+                <div>
+                    {!isMe && (
+                        <Button
+                            onClick={() =>
+                                mutate({
+                                    id: user.id,
+                                })
+                            }
+                            className="ml-5"
+                            intent={user.amIFollowing ? "secondary" : "primary"}
+                        >
+                            {user.amIFollowing ? "Unfollow" : "Follow"}
+                        </Button>
+                    )}
+                </div>
             </div>
 
             <div className="relative w-[100%]">
                 <div className="ml-5 flex w-[90%] w-full space-x-4 text-center text-sm text-slate-600 dark:text-slate-300">
-                    <div>
-                        <h3>{user._count.followers}</h3>
+                    <div
+                        className="cursor-pointer"
+                        onClick={() => setFollowersModalOpen(true)}
+                    >
+                        <h3>{user.followersCount}</h3>
                         <p className="text-slate-500 dark:text-slate-400">
                             followers
                         </p>
                     </div>
-                    <div>
-                        <h3>{user._count.following}</h3>
+                    <div
+                        className="cursor-pointer"
+                        onClick={() => setFollowingModalOpen(true)}
+                    >
+                        <h3>{user.followingsCount}</h3>
                         <p className="text-slate-500 dark:text-slate-400">
                             following
                         </p>
@@ -128,5 +171,41 @@ const UserInfo = ({
                 </div>
             </div>
         </div>
+    );
+};
+
+const FollowersModal = ({
+    open,
+    setOpen,
+}: {
+    open: boolean;
+    setOpen: (value: boolean) => void;
+}) => {
+    return (
+        <>
+            <Modal open={open} onOpenChange={setOpen}>
+                <Modal.Content>
+                    <p>test</p>
+                </Modal.Content>
+            </Modal>
+        </>
+    );
+};
+
+const FollowingModal = ({
+    open,
+    setOpen,
+}: {
+    open: boolean;
+    setOpen: (value: boolean) => void;
+}) => {
+    return (
+        <>
+            <Modal open={open} onOpenChange={setOpen}>
+                <Modal.Content>
+                    <p>test1</p>
+                </Modal.Content>
+            </Modal>
+        </>
     );
 };

@@ -10,7 +10,8 @@ export const userRouter = createTRPCRouter({
     getUser: publicProcedure
         .input(z.object({ username: z.string() }))
         .query(async ({ ctx, input }) => {
-            return ctx.prisma.user.findFirst({
+            const currentUserId = ctx.session?.user.id;
+            const user = await ctx.prisma.user.findFirst({
                 where: {
                     name: input.username,
                 },
@@ -21,8 +22,54 @@ export const userRouter = createTRPCRouter({
                             following: true,
                         },
                     },
+                    followers: {
+                        where: {
+                            following: {
+                                name: input.username,
+                            },
+                        },
+                        select: {
+                            follower: {
+                                select: {
+                                    name: true,
+                                    image: true,
+                                    id: true,
+                                    displayName: true,
+                                },
+                            },
+                        },
+                    },
+                    following: {
+                        where: {
+                            follower: {
+                                name: input.username,
+                            },
+                        },
+                        select: {
+                            following: {
+                                select: {
+                                    name: true,
+                                    image: true,
+                                    id: true,
+                                    displayName: true,
+                                },
+                            },
+                        },
+                    },
                 },
             });
+
+            if (user) {
+                return {
+                    ...user,
+                    followersCount: user._count.followers,
+                    followingsCount: user._count.following,
+                    amIFollowing:
+                        user?.followers.length > 0 && ctx.session?.user.id,
+                };
+            } else {
+                return null;
+            }
         }),
     //
     // Edit user details such as bio, bioLink, displayName etc..
