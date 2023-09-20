@@ -2,8 +2,6 @@ import { z } from "zod";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import { editUserDetailsSchema } from "../schemas/user";
 import { TRPCError } from "@trpc/server";
-import { prisma } from "@/server/db";
-import { User } from "@prisma/client";
 
 export const userRouter = createTRPCRouter({
     //

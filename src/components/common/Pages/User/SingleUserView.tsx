@@ -3,6 +3,7 @@ import Modal from "@/components/ui/Modal/Modal";
 import { api, type RouterOutputs } from "@/utils/api";
 import Image from "next/image";
 import { useState } from "react";
+import FollowersModal from "./FollowingFollowers/FollowersModal";
 
 interface SingleUserViewProps {
     user: NonNullable<RouterOutputs["user"]["getUser"]>;
@@ -93,6 +94,7 @@ const UserInfo = ({
     const { mutate } = api.subscription.toggleSubscription.useMutation({
         onSuccess: async () => {
             await trpcUtils.user.invalidate();
+            await trpcUtils.subscription.invalidate();
         },
     });
 
@@ -100,6 +102,7 @@ const UserInfo = ({
         <div className="mt-12 flex px-5">
             <FollowersModal
                 username={user.name!}
+                toggleSubscription={mutate}
                 open={followersModalOpen}
                 setOpen={setFollowersModalOpen}
             />
@@ -178,31 +181,6 @@ const UserInfo = ({
                 </div>
             </div>
         </div>
-    );
-};
-
-const FollowersModal = ({
-    open,
-    setOpen,
-    username,
-}: {
-    open: boolean;
-    setOpen: (value: boolean) => void;
-    username: string;
-}) => {
-    const { data } = api.subscription.getFollowersForUser.useQuery({
-        username,
-    });
-    console.log({ data });
-
-    return (
-        <>
-            <Modal open={open} onOpenChange={setOpen}>
-                <Modal.Content title="Followers">
-                    <></>
-                </Modal.Content>
-            </Modal>
-        </>
     );
 };
 

@@ -23,12 +23,10 @@ export const subscriptionRouter = createTRPCRouter({
                     },
                 });
             } else {
-                await ctx.prisma.subscription.delete({
+                await ctx.prisma.subscription.deleteMany({
                     where: {
-                        followerId_followingId: {
-                            followerId: me,
-                            followingId: input.id,
-                        },
+                        followerId: me,
+                        followingId: input.id,
                     },
                 });
             }
@@ -37,48 +35,67 @@ export const subscriptionRouter = createTRPCRouter({
     // Get list of followers for a specific user
     //
     getFollowersForUser: publicProcedure
-        .input(z.object({ username: z.string() }))
-        .query(async ({ ctx, input }) => {
-            return ctx.prisma.subscription.findMany({
-                where: {
-                    follower: {
-                        name: input.username,
-                    },
-                },
-                select: {
-                    following: {
-                        select: {
-                            name: true,
-                            image: true,
-                            displayName: true,
-                            id: true,
-                        },
-                    },
-                },
-            });
-        }),
-    //
-    // Get list of following for a specific user
-    //
-    getFollowingForUser: publicProcedure
-        .input(z.object({ username: z.string() }))
-        .query(async ({ ctx, input }) => {
-            return ctx.prisma.subscription.findMany({
+        .input(
+            z.object({
+                username: z.string(),
+                limit: z.number().optional(),
+                cursor: z
+                    .object({
+                        followerId: z.string(),
+                        followingId: z.string(),
+                    })
+                    .optional(),
+            })
+        )
+        .query(async ({ ctx, input: { limit = 3, username, cursor } }) => {
+            const currentUserId = ctx.session?.user.id;
+            const data = await ctx.prisma.subscription.findMany({
+                take: limit + 1,
                 where: {
                     following: {
-                        name: input.username,
+                        name: username,
                     },
                 },
-                select: {
+                cursor: cursor ? { followerId_followingId: cursor } : undefined,
+                orderBy: [{ followerId: "asc" }],
+                include: {
                     follower: {
                         select: {
                             name: true,
                             image: true,
                             displayName: true,
                             id: true,
+                            followers:
+                                currentUserId === null
+                                    ? false
+                                    : { where: { followerId: currentUserId } },
                         },
                     },
                 },
             });
+            let nextCursor: typeof cursor | undefined;
+            if (data.length > limit) {
+                const nextItem = data.pop();
+                if (nextItem != null) {
+                    nextCursor = {
+                        followerId: nextItem.followerId,
+                        followingId: nextItem.followingId,
+                    };
+                }
+            }
+            return {
+                followers: data.map((follower) => {
+                    return {
+                        name: follower.follower.name,
+                        displayName: follower.follower.displayName,
+                        image: follower.follower.image,
+                        userId: follower.follower.id,
+                        amIFollowing:
+                            follower.follower.followers.length > 0 &&
+                            currentUserId,
+                    };
+                }),
+                nextCursor,
+            };
         }),
 });
