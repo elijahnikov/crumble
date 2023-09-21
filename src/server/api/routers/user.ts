@@ -89,4 +89,16 @@ export const userRouter = createTRPCRouter({
                 });
             }
         }),
+    //
+    //  Check if username exists
+    //
+    checkUsername: protectedProcedure
+        .input(z.object({ username: z.string() }))
+        .query(async ({ ctx, input }) => {
+            return ctx.prisma.user.findFirst({
+                where: {
+                    name: input.username,
+                },
+            });
+        }),
 });

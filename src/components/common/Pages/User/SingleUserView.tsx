@@ -4,7 +4,6 @@ import { useState } from "react";
 import FollowersModal from "./FollowingFollowers/FollowersModal";
 import FollowingModal from "./FollowingFollowers/FollowingModal";
 import Image from "next/image";
-import { LOGO_URL } from "@/constants";
 
 interface SingleUserViewProps {
     user: NonNullable<RouterOutputs["user"]["getUser"]>;
