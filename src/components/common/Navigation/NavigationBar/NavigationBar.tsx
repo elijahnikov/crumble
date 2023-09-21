@@ -9,6 +9,7 @@ import SignIn from "../../SignIn/SignIn";
 import CreateModalMenu from "../../CreateModalMenu/CreateModalMenu";
 import AvatarMenu from "../AvatarMenu/AvatarMenu";
 import MoreMenu from "../MoreMenu/MoreMenu";
+import { LOGO_URL } from "@/constants";
 
 const NavigationBar = () => {
     const [currentPath, setCurrentPath] = useState("");
@@ -31,7 +32,7 @@ const NavigationBar = () => {
                             alt="Supercrumble logo"
                             width={40}
                             height={40}
-                            src="https://i.ibb.co/r4WtSVc/supercrumble800x800.png"
+                            src={LOGO_URL}
                         />
                         <h2 className="my-auto font-bold text-black dark:text-white">
                             Crumble{" "}

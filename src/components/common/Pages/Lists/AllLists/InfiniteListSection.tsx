@@ -11,7 +11,7 @@ export interface List {
     };
     likeCount: number;
     commentCount: number;
-    likedByMe: boolean;
+    likedByMe: string | false | undefined;
     createdAt: Date;
     title: string;
     description: string | null;

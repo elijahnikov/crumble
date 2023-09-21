@@ -33,6 +33,7 @@ export const userRouter = createTRPCRouter({
             if (user) {
                 return {
                     ...user,
+                    isDev: user.dev,
                     followersCount: user._count.followers,
                     followingsCount: user._count.following,
                     amIFollowing:

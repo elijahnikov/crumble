@@ -11,12 +11,12 @@ import type {
     NextPage,
 } from "next";
 import { useSession } from "next-auth/react";
-import Image from "next/image";
-import { Router, useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
 type PageProps = InferGetStaticPropsType<typeof getStaticProps>;
 
 const ProfilePage: NextPage<PageProps> = ({ username }) => {
+    const [tabFromURL, setTabFromURL] = useState<string>("");
     const { data: session } = useSession();
     const authenticated = !!session;
 
@@ -27,6 +27,16 @@ const ProfilePage: NextPage<PageProps> = ({ username }) => {
     } = api.user.getUser.useQuery({
         username: username!,
     });
+
+    const routeChange = (route: string) => {
+        window.history.replaceState(null, "", `/@${username}/${route}`);
+        setTabFromURL(route);
+    };
+
+    useEffect(() => {
+        if (typeof window !== "undefined")
+            setTabFromURL(window.location.pathname.split("/")[2]!);
+    }, []);
 
     if (isLoading) {
         return (
@@ -71,7 +81,10 @@ const ProfilePage: NextPage<PageProps> = ({ username }) => {
             </Container>
             <div className="-mb-[45px]" />
             <Container>
-                <MainUserInformation />
+                <MainUserInformation
+                    tabView={tabFromURL}
+                    routeChange={routeChange}
+                />
             </Container>
         </Layout>
     );

@@ -51,6 +51,13 @@ export const watchedRouter = createTRPCRouter({
                     },
                 },
                 update: {
+                    user: {
+                        update: {
+                            totalMoviesWatched: {
+                                increment: 1,
+                            },
+                        },
+                    },
                     createdAt: new Date(),
                 },
                 create: {

@@ -1,10 +1,10 @@
 import Button from "@/components/ui/Button/Button";
-import Modal from "@/components/ui/Modal/Modal";
 import { api, type RouterOutputs } from "@/utils/api";
-import Image from "next/image";
 import { useState } from "react";
 import FollowersModal from "./FollowingFollowers/FollowersModal";
 import FollowingModal from "./FollowingFollowers/FollowingModal";
+import Image from "next/image";
+import { LOGO_URL } from "@/constants";
 
 interface SingleUserViewProps {
     user: NonNullable<RouterOutputs["user"]["getUser"]>;
@@ -117,11 +117,15 @@ const UserInfo = ({
                 setOpen={setFollowingModalOpen}
             />
             <div className="flex w-[80%]">
-                <div>
-                    {<h3>{user.displayName ? user.displayName : user.name}</h3>}
-                    <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">
-                        @{user.name}
-                    </p>
+                <div className="flex">
+                    <div>
+                        <h3>
+                            {user.displayName ? user.displayName : user.name}
+                        </h3>
+                        <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">
+                            @{user.name}
+                        </p>
+                    </div>
                 </div>
                 <div>
                     {!isMe && authenticated && (

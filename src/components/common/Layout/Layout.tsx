@@ -29,7 +29,7 @@ const Layout = ({ children, fullWidth }: LayoutProps) => {
                         fullWidth
                             ? "w-full"
                             : "w-[80vw] max-w-[1000px] lg:w-[60vw]",
-                        "flex flex-col gap-6 lg:gap-8"
+                        "flex flex-col gap-8"
                     )}
                 >
                     {children}

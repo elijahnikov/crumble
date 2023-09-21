@@ -62,7 +62,8 @@ model User {
   totalHoursWatched  Int                 @default(0)
   totalListsCreated  Int                 @default(0)
   usernameChangeDate DateTime?
-  verified           Boolean?
+  verified           Boolean?            @default(false)
+  dev                Boolean?            @default(false)
   totalMoviesWatched Int                 @default(0)
 
   // relations

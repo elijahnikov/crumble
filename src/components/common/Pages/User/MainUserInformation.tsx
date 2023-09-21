@@ -6,10 +6,20 @@ import {
 } from "@/components/ui/Tabs/Tabs";
 import ProfileTab from "./UserPageTabs/ProfileTab";
 
-const MainUserInformation = () => {
+const MainUserInformation = ({
+    tabView,
+    routeChange,
+}: {
+    tabView: string;
+    routeChange: (route: string) => void;
+}) => {
     return (
         <h1>
-            <Tabs defaultValue="profile" className="w-[100%]">
+            <Tabs
+                onValueChange={routeChange}
+                value={tabView}
+                className="w-[100%]"
+            >
                 <TabsList className="grid w-full grid-cols-6">
                     <TabsTrigger value="profile">Profile</TabsTrigger>
                     <TabsTrigger value="activity">Activity</TabsTrigger>
