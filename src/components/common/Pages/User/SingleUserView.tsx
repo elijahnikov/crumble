@@ -4,17 +4,19 @@ import { api, type RouterOutputs } from "@/utils/api";
 import Image from "next/image";
 import { useState } from "react";
 import FollowersModal from "./FollowingFollowers/FollowersModal";
+import FollowingModal from "./FollowingFollowers/FollowingModal";
 
 interface SingleUserViewProps {
     user: NonNullable<RouterOutputs["user"]["getUser"]>;
     isMe: boolean;
+    authenticated: boolean;
 }
 
-const SingleUserView = ({ user, isMe }: SingleUserViewProps) => {
+const SingleUserView = ({ user, isMe, authenticated }: SingleUserViewProps) => {
     return (
         <div>
             <UserHeader isMe={isMe} userHeaderData={user} />
-            <UserInfo user={user} isMe={isMe} />
+            <UserInfo authenticated={authenticated} user={user} isMe={isMe} />
         </div>
     );
 };
@@ -80,9 +82,11 @@ const UserHeader = ({ userHeaderData, isMe }: UserHeaderProps) => {
 const UserInfo = ({
     user,
     isMe,
+    authenticated,
 }: {
     user: SingleUserViewProps["user"];
     isMe: boolean;
+    authenticated: boolean;
 }) => {
     const [followersModalOpen, setFollowersModalOpen] =
         useState<boolean>(false);
@@ -107,6 +111,8 @@ const UserInfo = ({
                 setOpen={setFollowersModalOpen}
             />
             <FollowingModal
+                username={user.name!}
+                toggleSubscription={mutate}
                 open={followingModalOpen}
                 setOpen={setFollowingModalOpen}
             />
@@ -118,7 +124,7 @@ const UserInfo = ({
                     </p>
                 </div>
                 <div>
-                    {!isMe && (
+                    {!isMe && authenticated && (
                         <Button
                             onClick={() =>
                                 mutate({
@@ -181,23 +187,5 @@ const UserInfo = ({
                 </div>
             </div>
         </div>
-    );
-};
-
-const FollowingModal = ({
-    open,
-    setOpen,
-}: {
-    open: boolean;
-    setOpen: (value: boolean) => void;
-}) => {
-    return (
-        <>
-            <Modal open={open} onOpenChange={setOpen}>
-                <Modal.Content title="Following">
-                    <div className="text-center"></div>
-                </Modal.Content>
-            </Modal>
-        </>
     );
 };

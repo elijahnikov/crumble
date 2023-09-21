@@ -286,13 +286,14 @@ model ListEntry {
 //------------------------- Subscription --------------------------
 //-----------------------------------------------------------------
 model Subscription { 
-  follower    User @relation("follower", fields: [followerId], references: [id])
+  follower    User @relation("follower", fields: [followerId], references: [id], onDelete: Cascade)
   followerId  String
-  following   User @relation("following", fields: [followingId], references: [id])
+  following   User @relation("following", fields: [followingId], references: [id], onDelete: Cascade)
   followingId String
 
   @@id([followerId, followingId])
   @@unique([followerId, followingId])
+  @@unique([followingId, followerId])
   @@index([followingId])
   @@index([followerId])
 }

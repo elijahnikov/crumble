@@ -4,7 +4,7 @@ import { api } from "@/utils/api";
 import InfiniteScroll from "react-infinite-scroll-component";
 import UserEntry from "./Entry";
 
-const FollowersModal = ({
+const FollowingModal = ({
     open,
     setOpen,
     username,
@@ -17,7 +17,7 @@ const FollowersModal = ({
 }) => {
     let data;
     if (open) {
-        data = api.subscription.getFollowersForUser.useInfiniteQuery(
+        data = api.subscription.getFollowingForUser.useInfiniteQuery(
             {
                 username,
                 limit: 5,
@@ -32,9 +32,9 @@ const FollowersModal = ({
         return null;
     }
 
-    const followers = data.data?.pages.flatMap((page) => page.followers);
+    const following = data.data?.pages.flatMap((page) => page.following);
 
-    if (!followers) {
+    if (!following) {
         return null;
     }
     return (
@@ -50,7 +50,7 @@ const FollowersModal = ({
                             <div className="max-h-[300px] min-h-[300px] overflow-y-auto">
                                 {data?.data && (
                                     <InfiniteScroll
-                                        dataLength={followers?.length}
+                                        dataLength={following?.length}
                                         next={data.fetchNextPage}
                                         hasMore={data.hasNextPage!}
                                         loader={
@@ -60,18 +60,18 @@ const FollowersModal = ({
                                         }
                                         height="300px"
                                     >
-                                        {followers.length > 0 &&
+                                        {following.length > 0 &&
                                             data.data?.pages
                                                 .flatMap(
-                                                    (page) => page.followers
+                                                    (page) => page.following
                                                 )
-                                                .map((follower, index) => (
+                                                .map((following, index) => (
                                                     <UserEntry
                                                         key={
-                                                            follower.userId +
+                                                            following.userId +
                                                             index
                                                         }
-                                                        follower={follower}
+                                                        follower={following}
                                                         toggleSubscription={
                                                             toggleSubscription
                                                         }
@@ -88,4 +88,4 @@ const FollowersModal = ({
     );
 };
 
-export default FollowersModal;
+export default FollowingModal;

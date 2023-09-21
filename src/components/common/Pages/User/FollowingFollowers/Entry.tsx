@@ -1,4 +1,5 @@
 import Button from "@/components/ui/Button/Button";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 
 interface UserEntryProps {
@@ -13,6 +14,8 @@ interface UserEntryProps {
 }
 
 const UserEntry = ({ follower, toggleSubscription }: UserEntryProps) => {
+    const { data: session } = useSession();
+
     return (
         <>
             <div className="flex">
@@ -38,16 +41,20 @@ const UserEntry = ({ follower, toggleSubscription }: UserEntryProps) => {
                     </p>
                 </div>
                 <div className="mr-2 pt-[6px]">
-                    <Button
-                        onClick={() =>
-                            toggleSubscription({
-                                id: follower.userId,
-                            })
-                        }
-                        intent={follower.amIFollowing ? "secondary" : "primary"}
-                    >
-                        {follower.amIFollowing ? "Unfollow" : "Follow"}
-                    </Button>
+                    {session?.user.id !== follower.userId && (
+                        <Button
+                            onClick={() =>
+                                toggleSubscription({
+                                    id: follower.userId,
+                                })
+                            }
+                            intent={
+                                follower.amIFollowing ? "secondary" : "primary"
+                            }
+                        >
+                            {follower.amIFollowing ? "Unfollow" : "Follow"}
+                        </Button>
+                    )}
                 </div>
             </div>
             <hr className="my-2 dark:border-slate-800" />

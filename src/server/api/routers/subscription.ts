@@ -23,10 +23,12 @@ export const subscriptionRouter = createTRPCRouter({
                     },
                 });
             } else {
-                await ctx.prisma.subscription.deleteMany({
+                await ctx.prisma.subscription.delete({
                     where: {
-                        followerId: me,
-                        followingId: input.id,
+                        followerId_followingId: {
+                            followerId: me,
+                            followingId: input.id,
+                        },
                     },
                 });
             }
@@ -47,7 +49,7 @@ export const subscriptionRouter = createTRPCRouter({
                     .optional(),
             })
         )
-        .query(async ({ ctx, input: { limit = 3, username, cursor } }) => {
+        .query(async ({ ctx, input: { limit = 10, username, cursor } }) => {
             const currentUserId = ctx.session?.user.id;
             const data = await ctx.prisma.subscription.findMany({
                 take: limit + 1,
@@ -92,6 +94,73 @@ export const subscriptionRouter = createTRPCRouter({
                         userId: follower.follower.id,
                         amIFollowing:
                             follower.follower.followers.length > 0 &&
+                            currentUserId,
+                    };
+                }),
+                nextCursor,
+            };
+        }),
+    //
+    // Get list of following for specific user
+    //
+    getFollowingForUser: publicProcedure
+        .input(
+            z.object({
+                username: z.string(),
+                limit: z.number().optional(),
+                cursor: z
+                    .object({
+                        followingId: z.string(),
+                        followerId: z.string(),
+                    })
+                    .optional(),
+            })
+        )
+        .query(async ({ ctx, input: { limit = 10, username, cursor } }) => {
+            const currentUserId = ctx.session?.user.id;
+            const data = await ctx.prisma.subscription.findMany({
+                take: limit + 1,
+                where: {
+                    follower: {
+                        name: username,
+                    },
+                },
+                cursor: cursor ? { followingId_followerId: cursor } : undefined,
+                orderBy: [{ followingId: "asc" }],
+                include: {
+                    following: {
+                        select: {
+                            name: true,
+                            image: true,
+                            displayName: true,
+                            id: true,
+                            following:
+                                currentUserId === null
+                                    ? false
+                                    : { where: { followingId: currentUserId } },
+                        },
+                    },
+                },
+            });
+            let nextCursor: typeof cursor | undefined;
+            if (data.length > limit) {
+                const nextItem = data.pop();
+                if (nextItem != null) {
+                    nextCursor = {
+                        followingId: nextItem.followingId,
+                        followerId: nextItem.followerId,
+                    };
+                }
+            }
+            return {
+                following: data.map((following) => {
+                    return {
+                        name: following.following.name,
+                        displayName: following.following.displayName,
+                        image: following.following.image,
+                        userId: following.following.id,
+                        amIFollowing:
+                            following.following.following.length > 0 &&
                             currentUserId,
                     };
                 }),

@@ -63,7 +63,11 @@ const ProfilePage: NextPage<PageProps> = ({ username }) => {
     return (
         <Layout>
             <Container>
-                <SingleUserView user={user} isMe={isMe} />
+                <SingleUserView
+                    authenticated={authenticated}
+                    user={user}
+                    isMe={isMe}
+                />
             </Container>
             <div className="-mb-[45px]" />
             <Container>
