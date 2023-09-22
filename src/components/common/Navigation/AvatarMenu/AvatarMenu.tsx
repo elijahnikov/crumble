@@ -1,3 +1,4 @@
+import { PLACEHOLDER_USER_IMAGE_URL } from "@/constants";
 import { Menu, Transition } from "@headlessui/react";
 import { signOut } from "next-auth/react";
 import Image from "next/image";
@@ -8,7 +9,7 @@ const AvatarMenu = ({
     avatar,
     username,
 }: {
-    avatar: string;
+    avatar: string | null | undefined;
     username: string;
 }) => {
     return (
@@ -19,7 +20,7 @@ const AvatarMenu = ({
                         width={50}
                         height={50}
                         className="inline-block h-9 w-9 rounded-full"
-                        src={avatar}
+                        src={avatar ?? PLACEHOLDER_USER_IMAGE_URL}
                         alt={"Profile picture"}
                     />
                 </Menu.Button>

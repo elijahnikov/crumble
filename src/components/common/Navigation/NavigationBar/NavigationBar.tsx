@@ -91,12 +91,10 @@ const NavigationBar = () => {
                 <div className="flex flex-shrink-0 border-t border-gray-200 p-4 dark:border-gray-700">
                     <div className="group block w-full flex-shrink-0">
                         <div className="flex items-center">
-                            {session.user.image && (
-                                <AvatarMenu
-                                    username={session.user.name!}
-                                    avatar={session.user.image}
-                                />
-                            )}
+                            <AvatarMenu
+                                username={session.user.name!}
+                                avatar={session.user.image}
+                            />
                             <div className="ml-3 flex">
                                 <p className="mt-[5px] text-sm font-medium text-gray-700 dark:text-white">
                                     {session?.user.name}

@@ -3,6 +3,7 @@ import { useDropzone } from "react-dropzone";
 import axios from "axios";
 import { api } from "@/utils/api";
 import { useSession } from "next-auth/react";
+import Button from "@/components/ui/Button/Button";
 
 interface StandardDropzoneProps {
     children: React.ReactNode;
@@ -15,6 +16,7 @@ const StandardDropzone = ({ children, to }: StandardDropzoneProps) => {
         api.s3.getStandardUploadPresignedUrl.useMutation({
             onSuccess: (file) => {
                 console.log(file);
+                console.log(file.split("?X-Amz-Algorithm"));
             },
         });
     const [submitDisabled, setSubmitDisabled] = useState(true);
@@ -79,16 +81,18 @@ const StandardDropzone = ({ children, to }: StandardDropzoneProps) => {
                 </h4>
                 <ul>{files}</ul>
             </aside> */}
-            {/* <button
-                onClick={() => void handleSubmit()}
-                disabled={
-                    presignedUrl === null ||
-                    acceptedFiles.length === 0 ||
-                    submitDisabled
-                }
-            >
-                Upload
-            </button> */}
+            {/* {to === "image" && (
+                <button
+                    onClick={() => void handleSubmit()}
+                    disabled={
+                        presignedUrl === null ||
+                        acceptedFiles.length === 0 ||
+                        submitDisabled
+                    }
+                >
+                    Upload
+                </button>
+            )} */}
         </>
     );
 };

@@ -1,9 +1,13 @@
+import LoadingSpinner from "@/components/common/LoadingSpinner/LoadingSpinner";
 import StandardDropzone from "@/components/common/StandardDropzone/StandardDropzone";
+import Button from "@/components/ui/Button/Button";
 import Input from "@/components/ui/Input/Input";
 import InputArea from "@/components/ui/InputArea/InputArea";
+import { PLACEHOLDER_USER_IMAGE_URL } from "@/constants";
 import { api, type RouterOutputs } from "@/utils/api";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 interface ProfileTabProps {
     user: NonNullable<RouterOutputs["user"]["getUser"]>;
@@ -25,6 +29,43 @@ const ProfileTab = ({ user }: ProfileTabProps) => {
     const [usernameTaken, setUsernameTaken] = useState<
         "taken" | "available" | "none"
     >("none");
+    const [headerPreview, setHeaderPreview] = useState<string | undefined>("");
+    const [imagePreview, setImagePreview] = useState<string | undefined>("");
+    const [loadingUsernameCheck, setLoadingUsernameCheck] =
+        useState<boolean>(false);
+
+    const { mutate: usernameCheck } = api.user.checkUsername.useMutation({
+        onSuccess: (data) => {
+            if (data.usernameTaken) {
+                setUsernameTaken("taken");
+            } else {
+                setUsernameTaken("available");
+            }
+        },
+    });
+
+    const { mutate: editUserDetailsMutate } =
+        api.user.editUserDetails.useMutation({
+            onSuccess: () => {
+                toast.success(`Updated your user details.`, {
+                    position: "bottom-center",
+                    duration: 4000,
+                    className: "dark:bg-brand dark:text-white text-black",
+                });
+            },
+            onError: (error) => {
+                toast.error(
+                    error.message
+                        ? error.message
+                        : `Could not update your details, please try again later.`,
+                    {
+                        position: "bottom-center",
+                        duration: 4000,
+                        className: "dark:bg-brand dark:text-white text-black",
+                    }
+                );
+            },
+        });
 
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -34,28 +75,38 @@ const ProfileTab = ({ user }: ProfileTabProps) => {
             ...prevState,
             [e.target.name]: e.target.value,
         }));
-        checkIfUsernameExists(inputs.username);
     };
 
-    function checkIfUsernameExists(username: string) {
-        setUsernameTaken("none");
-        console.log("here");
-        const delayDebounceFn = setTimeout(() => {
-            if (username !== "" && username !== user.name) {
-                const { data } = api.user.checkUsername.useQuery(
-                    {
-                        username,
-                    },
-                    {
-                        enabled: username !== "" && username !== user.name,
-                    }
-                );
-                console.log(data);
-            }
-        }, 1000);
+    const handleCancel = () => {
+        setLoadingUsernameCheck(false);
+        setHasEdited(false);
+        setHeaderPreview("");
+        setImagePreview("");
+        setInputs({
+            bio: user.bio ?? "",
+            bioLink: user.bioLink ?? "",
+            displayName: user.displayName ?? "",
+            username: user.name ?? "",
+        });
+    };
 
-        return () => clearTimeout(delayDebounceFn);
-    }
+    useEffect(() => {
+        if (inputs.username !== "" && inputs.username !== user.name)
+            setLoadingUsernameCheck(true);
+        setUsernameTaken("none");
+        const delayDebounceFn = setTimeout(() => {
+            if (inputs.username !== "" && inputs.username !== user.name) {
+                usernameCheck({
+                    username: inputs.username,
+                });
+            }
+            setLoadingUsernameCheck(false);
+        }, 1000);
+        return () => {
+            clearTimeout(delayDebounceFn);
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [inputs.username]);
 
     return (
         <>
@@ -102,24 +153,57 @@ const ProfileTab = ({ user }: ProfileTabProps) => {
                         </StandardDropzone>
                     ) : (
                         <StandardDropzone to="image">
-                            <div className="shadow-xs absolute bottom-0 left-0 -mb-[30px] ml-4 h-20 w-20 rounded-full opacity-0 drop-shadow-[0_1px_1px_rgba(0,0,0,0.5)] duration-[0.5s]" />
+                            <Image
+                                width={110}
+                                height={110}
+                                className="shadow-xs absolute bottom-0 left-0 -mb-[20px] ml-4 rounded-full opacity-0 drop-shadow-[0_1px_1px_rgba(0,0,0,0.5)] duration-[0.5s]"
+                                src={PLACEHOLDER_USER_IMAGE_URL}
+                                priority
+                                alt="Profile picture"
+                                onLoadingComplete={(image) =>
+                                    image.classList.remove("opacity-0")
+                                }
+                            />
                         </StandardDropzone>
                     )}
                 </div>
             </div>
             <div className="h-[50px]" />
             <div className="space-y-5">
-                <div>
-                    <p className="ml-1 mt-2 text-sm">Username</p>
+                <div className="flex">
                     <div className="w-[50%]">
+                        <p className="ml-1 mt-2 text-sm">Username</p>
                         <Input
                             fullWidth
                             name="username"
                             placeholder="Username"
                             value={inputs.username}
                             onChange={handleChange}
+                            className={`${
+                                usernameTaken === "taken"
+                                    ? "border-red-400 dark:border-red-400"
+                                    : usernameTaken === "available"
+                                    ? "border-green-400 dark:border-green-400"
+                                    : usernameTaken === "none"
+                                    ? ""
+                                    : ""
+                            }`}
                         />
                     </div>
+                    <div className="ml-1 mt-10">
+                        {loadingUsernameCheck && <LoadingSpinner />}
+                    </div>
+                </div>
+                <div>
+                    {usernameTaken === "taken" ? (
+                        <p className="relative ml-2 mt-[-20px] text-sm text-crumble">
+                            Username is taken
+                        </p>
+                    ) : usernameTaken === "available" ? (
+                        <p className="relative ml-2 mt-[-20px] text-sm text-green-400">
+                            Username is available
+                        </p>
+                    ) : null}
                 </div>
                 <div>
                     <p className="ml-1 mt-2 text-sm">Display name</p>
@@ -156,6 +240,28 @@ const ProfileTab = ({ user }: ProfileTabProps) => {
                             onChange={handleChange}
                         />
                     </div>
+                </div>
+                <div className="flex space-x-2">
+                    <Button
+                        onClick={handleCancel}
+                        intent={"secondary"}
+                        disabled={!hasEdited}
+                    >
+                        Cancel
+                    </Button>
+                    <Button
+                        disabled={!hasEdited}
+                        onClick={() =>
+                            editUserDetailsMutate({
+                                ...inputs,
+                                name: inputs.username,
+                                header: headerPreview,
+                                image: imagePreview,
+                            })
+                        }
+                    >
+                        Save
+                    </Button>
                 </div>
             </div>
         </>

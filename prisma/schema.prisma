@@ -54,11 +54,11 @@ model User {
   email              String?             @unique
   emailVerified      DateTime?
   image              String?
-  name               String?
+  name               String?             @db.Text
   bio                String?
   bioLink            String?
   displayName        String?
-  header             String?
+  header             String?             @db.Text
   totalHoursWatched  Int                 @default(0)
   totalListsCreated  Int                 @default(0)
   usernameChangeDate DateTime?

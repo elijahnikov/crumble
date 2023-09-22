@@ -24,6 +24,7 @@ const config = {
             "cdn.discordapp.com",
             "image.tmdb.org",
             "avatars.githubusercontent.com",
+            "fitnessappstorage.s3.eu-west-2.amazonaws.com",
         ],
     },
 };
