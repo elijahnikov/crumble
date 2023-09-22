@@ -72,7 +72,6 @@ export const userRouter = createTRPCRouter({
                 },
                 data: {
                     ...rest,
-                    usernameChangeDate: new Date(),
                     ...(image && { image: image }),
                     ...(header && { image: header }),
                 },
@@ -85,13 +84,34 @@ export const userRouter = createTRPCRouter({
                 });
             }
             return {
-                name: updateUser.name,
                 displayName: updateUser.displayName,
                 header: updateUser.header,
                 image: updateUser.image,
                 bio: updateUser.bio,
                 bioLink: updateUser.bioLink,
                 id: updateUser.id,
+            };
+        }),
+    changeUsername: protectedProcedure
+        .input(z.object({ name: z.string() }))
+        .mutation(async ({ ctx, input }) => {
+            const updateUser = await ctx.prisma.user.update({
+                where: {
+                    id: ctx.session.user.id,
+                },
+                data: {
+                    name: input.name,
+                    usernameChangeDate: new Date(),
+                },
+            });
+            if (!updateUser) {
+                throw new TRPCError({
+                    code: "BAD_REQUEST",
+                    message: "Could not update username.",
+                });
+            }
+            return {
+                newUsername: updateUser.name,
             };
         }),
     //

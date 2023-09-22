@@ -5,7 +5,10 @@ import Input from "@/components/ui/Input/Input";
 import InputArea from "@/components/ui/InputArea/InputArea";
 import { PLACEHOLDER_USER_IMAGE_URL } from "@/constants";
 import { api, type RouterOutputs } from "@/utils/api";
+import dayjs from "dayjs";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
@@ -13,7 +16,14 @@ interface ProfileTabProps {
     user: NonNullable<RouterOutputs["user"]["getUser"]>;
 }
 
+const isOutside30Days = (lastChangedDate: Date | null) => {
+    if (!lastChangedDate) return true;
+    const daysDifference = dayjs().diff(lastChangedDate?.toDateString(), "day");
+    return daysDifference > 30;
+};
+
 const ProfileTab = ({ user }: ProfileTabProps) => {
+    const router = useRouter();
     const [inputs, setInputs] = useState<{
         bio: string;
         bioLink: string;
@@ -34,6 +44,8 @@ const ProfileTab = ({ user }: ProfileTabProps) => {
     const [loadingUsernameCheck, setLoadingUsernameCheck] =
         useState<boolean>(false);
 
+    const trpcUtils = api.useContext();
+    const { update } = useSession();
     const { mutate: usernameCheck } = api.user.checkUsername.useMutation({
         onSuccess: (data) => {
             if (data.usernameTaken) {
@@ -46,7 +58,7 @@ const ProfileTab = ({ user }: ProfileTabProps) => {
 
     const { mutate: editUserDetailsMutate } =
         api.user.editUserDetails.useMutation({
-            onSuccess: () => {
+            onSuccess: (data) => {
                 toast.success(`Updated your user details.`, {
                     position: "bottom-center",
                     duration: 4000,
@@ -66,6 +78,31 @@ const ProfileTab = ({ user }: ProfileTabProps) => {
                 );
             },
         });
+
+    const { mutate: changeUsername } = api.user.changeUsername.useMutation({
+        onSuccess: async (data) => {
+            toast.success(`Updated your username.`, {
+                position: "bottom-center",
+                duration: 4000,
+                className: "dark:bg-brand dark:text-white text-black",
+            });
+            void router.replace(`/@${data.newUsername}/profile`);
+            await trpcUtils.user.invalidate();
+            void update();
+        },
+        onError: (error) => {
+            toast.error(
+                error.message
+                    ? error.message
+                    : `Could not update your username, please try again later.`,
+                {
+                    position: "bottom-center",
+                    duration: 4000,
+                    className: "dark:bg-brand dark:text-white text-black",
+                }
+            );
+        },
+    });
 
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -193,6 +230,34 @@ const ProfileTab = ({ user }: ProfileTabProps) => {
                     <div className="ml-1 mt-10">
                         {loadingUsernameCheck && <LoadingSpinner />}
                     </div>
+                    {usernameTaken === "available" &&
+                        inputs.username !== user.name && (
+                            <div className="mt-8">
+                                <Button
+                                    disabled={
+                                        inputs.username === user.name ||
+                                        !isOutside30Days(
+                                            user.usernameChangeDate
+                                        )
+                                    }
+                                    onClick={() => {
+                                        if (
+                                            inputs.username !== user.name &&
+                                            isOutside30Days(
+                                                user.usernameChangeDate
+                                            )
+                                        ) {
+                                        }
+                                        changeUsername({
+                                            name: inputs.username,
+                                        });
+                                        setUsernameTaken("none");
+                                    }}
+                                >
+                                    Save
+                                </Button>
+                            </div>
+                        )}
                 </div>
                 <div>
                     {usernameTaken === "taken" ? (
@@ -250,11 +315,10 @@ const ProfileTab = ({ user }: ProfileTabProps) => {
                         Cancel
                     </Button>
                     <Button
-                        disabled={!hasEdited}
+                        disabled={!hasEdited || usernameTaken === "taken"}
                         onClick={() =>
                             editUserDetailsMutate({
                                 ...inputs,
-                                name: inputs.username,
                                 header: headerPreview,
                                 image: imagePreview,
                             })
