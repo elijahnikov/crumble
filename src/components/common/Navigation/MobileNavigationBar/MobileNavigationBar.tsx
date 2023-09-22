@@ -2,8 +2,8 @@ import classNames from "classnames";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 
-import { useState, useEffect, Fragment } from "react";
-import { Disclosure, Menu, Transition } from "@headlessui/react";
+import { useState, useEffect } from "react";
+import { Disclosure } from "@headlessui/react";
 import Image from "next/image";
 import navigation from "@/utils/data/navLinks";
 import SignIn from "../../SignIn/SignIn";

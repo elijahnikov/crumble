@@ -9,6 +9,7 @@ import type {
     InferGetStaticPropsType,
     NextPage,
 } from "next";
+
 import { useState } from "react";
 
 const settingsMenu = ["profile", "notifications", "privacy"];

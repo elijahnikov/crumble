@@ -54,7 +54,7 @@ const InputTags = ({
                     placeholder={placeholder}
                     type="text"
                     onKeyDown={handleKeyDown}
-                    change={setTag}
+                    onChange={(e) => setTag(e.target.value)}
                 />
             </div>
             <div className="mt-2 flex flex-wrap">

@@ -114,7 +114,7 @@ const AddMovieToList = ({ listId }: { listId: string }) => {
                             <Input
                                 className="mb-[10px] w-[25vw]"
                                 value={searchText}
-                                change={setSearchText}
+                                onChange={(e) => setSearchText(e.target.value)}
                                 placeholder="Search for a film"
                             />
                         )}

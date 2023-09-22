@@ -10,19 +10,34 @@ interface ProfileTabProps {
 }
 
 const ProfileTab = ({ user }: ProfileTabProps) => {
-    // state
-    const [bio, setBio] = useState<string>(user.bio ?? "");
-    const [bioLink, setBioLink] = useState<string>(user.bioLink ?? "");
-    const [displayName, setDisplayName] = useState<string>(
-        user.displayName ?? ""
-    );
-    const [username, setUsername] = useState<string>(user.name ?? "");
+    const [inputs, setInputs] = useState<{
+        bio: string;
+        bioLink: string;
+        displayName: string;
+        username: string;
+    }>({
+        bio: user.bio ?? "",
+        bioLink: user.bioLink ?? "",
+        displayName: user.displayName ?? "",
+        username: user.name ?? "",
+    });
     const [hasEdited, setHasEdited] = useState<boolean>(false);
     const [usernameTaken, setUsernameTaken] = useState<
         "taken" | "available" | "none"
     >("none");
 
-    const checkIfUsernameExists = () => {
+    const handleChange = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    ) => {
+        setHasEdited(true);
+        setInputs((prevState) => ({
+            ...prevState,
+            [e.target.name]: e.target.value,
+        }));
+        checkIfUsernameExists(inputs.username);
+    };
+
+    function checkIfUsernameExists(username: string) {
         setUsernameTaken("none");
         console.log("here");
         const delayDebounceFn = setTimeout(() => {
@@ -40,7 +55,7 @@ const ProfileTab = ({ user }: ProfileTabProps) => {
         }, 1000);
 
         return () => clearTimeout(delayDebounceFn);
-    };
+    }
 
     return (
         <>
@@ -101,8 +116,8 @@ const ProfileTab = ({ user }: ProfileTabProps) => {
                             fullWidth
                             name="username"
                             placeholder="Username"
-                            value={username}
-                            change={setUsername}
+                            value={inputs.username}
+                            onChange={handleChange}
                         />
                     </div>
                 </div>
@@ -113,8 +128,8 @@ const ProfileTab = ({ user }: ProfileTabProps) => {
                             fullWidth
                             name="displayName"
                             placeholder="Display name"
-                            value={displayName}
-                            change={setDisplayName}
+                            value={inputs.displayName}
+                            onChange={handleChange}
                         />
                     </div>
                 </div>
@@ -125,8 +140,8 @@ const ProfileTab = ({ user }: ProfileTabProps) => {
                             fullWidth
                             name="bioLink"
                             placeholder="Share something interesting"
-                            value={bioLink}
-                            change={setBioLink}
+                            value={inputs.bioLink}
+                            onChange={handleChange}
                         />
                     </div>
                 </div>
@@ -137,8 +152,8 @@ const ProfileTab = ({ user }: ProfileTabProps) => {
                             fullWidth
                             name="bio"
                             placeholder="Write a few words about yourself"
-                            value={bio}
-                            change={setBio}
+                            value={inputs.bio}
+                            onChange={handleChange}
                         />
                     </div>
                 </div>

@@ -54,7 +54,9 @@ const AvatarMenu = ({
                             </Menu.Item>
                             <Menu.Item>
                                 <div
-                                    onClick={() => void signOut()}
+                                    onClick={() =>
+                                        void signOut({ callbackUrl: "/" })
+                                    }
                                     className={`group flex w-full cursor-pointer items-center rounded-md px-2 py-2 text-sm text-crumble hover:bg-brand-light`}
                                 >
                                     Sign out

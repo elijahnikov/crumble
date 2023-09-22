@@ -167,7 +167,9 @@ const CreateListModal = ({
                                     autoFocus
                                     fullWidth
                                     value={listName}
-                                    change={setListName}
+                                    onChange={(e) =>
+                                        setListName(e.target.value)
+                                    }
                                     label="Name"
                                 />
                                 <InputTags
@@ -184,7 +186,9 @@ const CreateListModal = ({
                                     className="h-[150px]"
                                     label="Description"
                                     value={listDescription}
-                                    change={setListDescription}
+                                    onChange={(e) =>
+                                        setListDescription(e.target.value)
+                                    }
                                 />
                             </div>
                         </div>
@@ -193,7 +197,9 @@ const CreateListModal = ({
                             label="Add movies"
                             fullWidth
                             value={searchedMovieName}
-                            change={setSearchedMovieName}
+                            onChange={(e) =>
+                                setSearchedMovieName(e.target.value)
+                            }
                             placeholder="Search for a movie"
                         />
                         {movieFetchData.length > 0 && (

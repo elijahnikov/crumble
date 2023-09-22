@@ -142,7 +142,7 @@ const SingleListView = ({ list }: SingleListViewProps) => {
                             ) : (
                                 <Input
                                     value={title}
-                                    change={setTitle}
+                                    onChange={(e) => setTitle(e.target.value)}
                                     className="mt-3 w-[400px]"
                                 />
                             )}
@@ -195,7 +195,7 @@ const SingleListView = ({ list }: SingleListViewProps) => {
                         ) : (
                             <InputArea
                                 value={description ? description : ""}
-                                change={setDescription}
+                                onChange={(e) => setDescription(e.target.value)}
                                 className="mt-2 w-full"
                             />
                         )}

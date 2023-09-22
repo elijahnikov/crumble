@@ -84,7 +84,6 @@ interface InputProps
     prefix?: IconType | string;
     suffix?: IconType | string;
     clearable?: boolean;
-    change?: (text: string) => void;
     kbd?: JSX.Element;
 }
 
@@ -104,7 +103,6 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             placeholder,
             fullWidth,
             value,
-            change,
             label,
             kbd: Kbd,
             ...props
@@ -112,10 +110,6 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         _
     ) => {
         const inputRef = useRef<HTMLInputElement | null>(null);
-
-        const clearInput = () => {
-            change && change("");
-        };
 
         const kbdPadding = Kbd && Object.keys(Kbd.props).length;
 
@@ -157,7 +151,6 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
                         placeholder={placeholder}
                         {...props}
                         value={value}
-                        onChange={(e) => change && change(e.target.value)}
                         className={input({
                             intent,
                             size,
@@ -173,19 +166,6 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
                     >
                         {children}
                     </input>
-                    {/* if clearable is passed */}
-                    {clearable && value && !disabled && (
-                        <AiOutlineCloseCircle
-                            onClick={() => clearInput()}
-                            className={`${
-                                Suffix && fullWidth
-                                    ? "right-[20%] mr-12"
-                                    : Suffix
-                                    ? "right-[21%]"
-                                    : "right-[1%]"
-                            } absolute right-[1%] top-[50%] h-10 w-10 -translate-y-2/4 cursor-pointer rounded-lg bg-white fill-ink-light pl-2 pr-3 dark:bg-black dark:fill-slate-500`}
-                        />
-                    )}
                     {Kbd && (
                         <div
                             className={`${

@@ -78,7 +78,7 @@ const CommentSection = ({
                                 className="mt-2 h-[80px]"
                                 fullWidth
                                 value={commentText}
-                                change={setCommentText}
+                                onChange={(e) => setCommentText(e.target.value)}
                                 placeholder={`Leave a comment as ${session?.user.name}`}
                             />
                             <Button onClick={handlePostComment}>Post</Button>

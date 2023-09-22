@@ -82,7 +82,6 @@ interface InputAreaProps
     error?: boolean;
     errorText?: string;
     disabled?: boolean;
-    change?: (text: string) => void;
 }
 
 const InputArea = React.forwardRef<HTMLTextAreaElement, InputAreaProps>(
@@ -95,7 +94,6 @@ const InputArea = React.forwardRef<HTMLTextAreaElement, InputAreaProps>(
         errorText,
         placeholder,
         value,
-        change,
         fullWidth,
         fullHeight,
         label,
@@ -120,7 +118,6 @@ const InputArea = React.forwardRef<HTMLTextAreaElement, InputAreaProps>(
                         placeholder={placeholder}
                         {...props}
                         value={value}
-                        onChange={(e) => change && change(e.target.value)}
                         className={input({
                             fullWidth,
                             fullHeight,

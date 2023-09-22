@@ -69,7 +69,7 @@ const Select = ({
                                 size={"sm"}
                                 placeholder="Search"
                                 value={searchText}
-                                change={setSearchText}
+                                onChange={(e) => setSearchText(e.target.value)}
                             />
                         )}
                         {React.Children.map(children, (child) => {

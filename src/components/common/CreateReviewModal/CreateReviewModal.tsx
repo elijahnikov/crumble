@@ -203,7 +203,9 @@ const CreateReviewModal = ({
                         <Input
                             className="mb-[10px] w-[25vw]"
                             value={searchedMovieName}
-                            change={setSearchedMovieName}
+                            onChange={(e) =>
+                                setSearchedMovieName(e.target.value)
+                            }
                             placeholder="Search for a film"
                         />
                     ) : null}
@@ -438,7 +440,7 @@ const SelectedFilmForm = ({
                             fullWidth
                             className="h-[170px]"
                             value={reviewText}
-                            change={setReviewText}
+                            onChange={(e) => setReviewText(e.target.value)}
                             placeholder="Write your thoughts"
                         />
                     </div>
