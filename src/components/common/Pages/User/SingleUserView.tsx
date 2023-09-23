@@ -4,6 +4,7 @@ import { useState } from "react";
 import FollowersModal from "./FollowingFollowers/FollowersModal";
 import FollowingModal from "./FollowingFollowers/FollowingModal";
 import Image from "next/image";
+import Link from "next/link";
 
 interface SingleUserViewProps {
     user: NonNullable<RouterOutputs["user"]["getUser"]>;
@@ -66,12 +67,17 @@ const UserHeader = ({ userHeaderData, isMe }: UserHeaderProps) => {
                     </>
                 )}
                 {isMe && (
-                    <Button
-                        intent={"secondary"}
-                        className="absolute bottom-0 right-0 mb-[20px] mr-[20px]"
+                    <Link
+                        href="/[username]/settings"
+                        as={`/@${user.name}/settings`}
                     >
-                        Edit profile
-                    </Button>
+                        <Button
+                            intent={"secondary"}
+                            className="absolute bottom-0 right-0 mb-[20px] mr-[20px]"
+                        >
+                            Edit profile
+                        </Button>
+                    </Link>
                 )}
             </div>
         </div>

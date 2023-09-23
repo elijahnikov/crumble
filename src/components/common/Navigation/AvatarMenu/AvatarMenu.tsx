@@ -37,8 +37,8 @@ const AvatarMenu = ({
                         <div className="px-1 py-1 ">
                             <Menu.Item>
                                 <Link
-                                    href="/[username]"
-                                    as={`/@${username}`}
+                                    href="/[username]/profile"
+                                    as={`/@${username}/profile`}
                                     className={`group flex w-[100%] items-center rounded-md px-2 py-2 text-sm text-gray-200 hover:bg-brand-light`}
                                 >
                                     Profile

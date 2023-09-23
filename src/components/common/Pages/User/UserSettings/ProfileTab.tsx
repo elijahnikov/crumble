@@ -8,9 +8,11 @@ import { api, type RouterOutputs } from "@/utils/api";
 import dayjs from "dayjs";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { BsChevronLeft } from "react-icons/bs";
 
 interface ProfileTabProps {
     user: NonNullable<RouterOutputs["user"]["getUser"]>;
@@ -153,7 +155,14 @@ const ProfileTab = ({ user }: ProfileTabProps) => {
 
     return (
         <>
-            <h2>Profile</h2>
+            <div className="flex">
+                <h2 className="w-[80%]">Profile</h2>
+                <Link href="/[username]/profile" as={`/@${user.name}/profile`}>
+                    <Button className="mt-[5px]" size="sm" intent={"secondary"}>
+                        Back to profile
+                    </Button>
+                </Link>
+            </div>
             <div className="relative mt-[20px]">
                 <p className="pb-2 text-sm">
                     Change your profile picture and header.
@@ -168,7 +177,7 @@ const ProfileTab = ({ user }: ProfileTabProps) => {
                                 sizes="100vw"
                                 src={headerPreview}
                                 alt={user.name!}
-                                className="h-[200px] rounded-lg object-cover opacity-0 duration-[0.5s]"
+                                className="h-[200px] cursor-pointer rounded-lg object-cover opacity-0 duration-[0.5s]"
                                 priority
                                 style={{ width: "100%" }}
                                 onLoadingComplete={(image) =>
@@ -182,7 +191,7 @@ const ProfileTab = ({ user }: ProfileTabProps) => {
                                 sizes="100vw"
                                 src={user.header}
                                 alt={user.name!}
-                                className="h-[200px] rounded-lg object-cover opacity-0 duration-[0.5s]"
+                                className="h-[200px] cursor-pointer rounded-lg object-cover opacity-0 duration-[0.5s]"
                                 priority
                                 style={{ width: "100%" }}
                                 onLoadingComplete={(image) =>
@@ -190,7 +199,7 @@ const ProfileTab = ({ user }: ProfileTabProps) => {
                                 }
                             />
                         ) : (
-                            <div className="h-[200px] w-full rounded-lg bg-gradient-to-r from-indigo-200 via-red-200 to-yellow-100" />
+                            <div className="h-[200px] w-full cursor-pointer rounded-lg bg-gradient-to-r from-indigo-200 via-red-200 to-yellow-100" />
                         )}
                     </StandardDropzone>
                     <StandardDropzone callback={setPreviews} to="image">
@@ -198,7 +207,7 @@ const ProfileTab = ({ user }: ProfileTabProps) => {
                             <Image
                                 width={110}
                                 height={110}
-                                className="shadow-xs absolute bottom-0 left-0 -mb-[20px] ml-4 rounded-full opacity-0 drop-shadow-[0_1px_1px_rgba(0,0,0,0.5)] duration-[0.5s]"
+                                className="shadow-xs absolute bottom-0 left-0 -mb-[20px] ml-4 cursor-pointer rounded-full opacity-0 drop-shadow-[0_1px_1px_rgba(0,0,0,0.5)] duration-[0.5s]"
                                 src={imagePreview ? imagePreview : user.image}
                                 priority
                                 alt="Profile picture"
@@ -210,7 +219,7 @@ const ProfileTab = ({ user }: ProfileTabProps) => {
                             <Image
                                 width={110}
                                 height={110}
-                                className="shadow-xs absolute bottom-0 left-0 -mb-[20px] ml-4 rounded-full opacity-0 drop-shadow-[0_1px_1px_rgba(0,0,0,0.5)] duration-[0.5s]"
+                                className="shadow-xs absolute bottom-0 left-0 -mb-[20px] ml-4 cursor-pointer rounded-full opacity-0 drop-shadow-[0_1px_1px_rgba(0,0,0,0.5)] duration-[0.5s]"
                                 src={PLACEHOLDER_USER_IMAGE_URL}
                                 priority
                                 alt="Profile picture"
