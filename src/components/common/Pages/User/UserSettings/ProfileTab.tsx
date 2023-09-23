@@ -12,7 +12,6 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { BsChevronLeft } from "react-icons/bs";
 
 interface ProfileTabProps {
     user: NonNullable<RouterOutputs["user"]["getUser"]>;

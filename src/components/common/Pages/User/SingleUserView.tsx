@@ -5,6 +5,7 @@ import FollowersModal from "./FollowingFollowers/FollowersModal";
 import FollowingModal from "./FollowingFollowers/FollowingModal";
 import Image from "next/image";
 import Link from "next/link";
+import { BsLink } from "react-icons/bs";
 
 interface SingleUserViewProps {
     user: NonNullable<RouterOutputs["user"]["getUser"]>;
@@ -121,34 +122,56 @@ const UserInfo = ({
                 open={followingModalOpen}
                 setOpen={setFollowingModalOpen}
             />
-            <div className="flex w-[80%]">
+            <div className="w-[80%]">
                 <div className="flex">
+                    <div className="flex">
+                        <div>
+                            <h3>
+                                {user.displayName
+                                    ? user.displayName
+                                    : user.name}
+                            </h3>
+                            <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">
+                                @{user.name}
+                            </p>
+                        </div>
+                    </div>
                     <div>
-                        <h3>
-                            {user.displayName ? user.displayName : user.name}
-                        </h3>
-                        <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">
-                            @{user.name}
-                        </p>
+                        {!isMe && authenticated && (
+                            <Button
+                                onClick={() =>
+                                    mutate({
+                                        id: user.id,
+                                    })
+                                }
+                                className="ml-5"
+                                intent={
+                                    user.amIFollowing ? "secondary" : "primary"
+                                }
+                            >
+                                {user.amIFollowing ? "Unfollow" : "Follow"}
+                            </Button>
+                        )}
                     </div>
                 </div>
-                <div>
-                    {!isMe && authenticated && (
-                        <Button
-                            onClick={() =>
-                                mutate({
-                                    id: user.id,
-                                })
-                            }
-                            className="ml-5"
-                            intent={user.amIFollowing ? "secondary" : "primary"}
-                        >
-                            {user.amIFollowing ? "Unfollow" : "Follow"}
-                        </Button>
-                    )}
+                <div className="mt-5 ">
+                    <p className="text-[14px] font-semibold text-slate-700 dark:text-slate-300">
+                        {user.bio}
+                    </p>
+                    <div className="flex">
+                        <BsLink className="mr-1 mt-1" />
+                        {user.bioLink && (
+                            <a
+                                target="_blank"
+                                href={`http://${user.bioLink}`}
+                                className=" text-[12px] text-crumble"
+                            >
+                                {user.bioLink}
+                            </a>
+                        )}
+                    </div>
                 </div>
             </div>
-
             <div className="relative w-[100%]">
                 <div className="ml-5 flex w-[90%] w-full space-x-4 text-center text-sm text-slate-600 dark:text-slate-300">
                     <div
@@ -176,22 +199,37 @@ const UserInfo = ({
                         </p>
                     </div>
                     <div>
-                        <h3>{user.totalHoursWatched}</h3>
-                        <p className="text-slate-500 dark:text-slate-400">
-                            hours watched
-                        </p>
+                        <Link
+                            href="/[username]/movies"
+                            as={`/@${user.name}/movies`}
+                        >
+                            <h3>{user.totalHoursWatched}</h3>
+                            <p className="text-slate-500 dark:text-slate-400">
+                                hours watched
+                            </p>
+                        </Link>
                     </div>
                     <div>
-                        <h3>{user.totalListsCreated}</h3>
-                        <p className="text-slate-500 dark:text-slate-400">
-                            lists created
-                        </p>
+                        <Link
+                            href="/[username]/lists"
+                            as={`/@${user.name}/lists`}
+                        >
+                            <h3>{user.totalListsCreated}</h3>
+                            <p className="text-slate-500 dark:text-slate-400">
+                                lists created
+                            </p>
+                        </Link>
                     </div>
                     <div>
-                        <h3>{user.totalMoviesWatched}</h3>
-                        <p className="text-slate-500 dark:text-slate-400">
-                            movies watched
-                        </p>
+                        <Link
+                            href="/[username]/movies"
+                            as={`/@${user.name}/movies`}
+                        >
+                            <h3>{user.totalMoviesWatched}</h3>
+                            <p className="text-slate-500 dark:text-slate-400">
+                                movies watched
+                            </p>
+                        </Link>
                     </div>
                 </div>
             </div>

@@ -4,14 +4,19 @@ import {
     TabsList,
     TabsTrigger,
 } from "@/components/ui/Tabs/Tabs";
-import ProfileTab from "./UserPageTabs/ProfileTab";
+import ProfileTab from "./UserPageTabs/ProfileTab/ProfileTab";
+import type { RouterOutputs } from "@/utils/api";
 
 const MainUserInformation = ({
     tabView,
     routeChange,
+    user,
+    isMe,
 }: {
     tabView: string;
     routeChange: (route: string) => void;
+    user: NonNullable<RouterOutputs["user"]["getUser"]>;
+    isMe: boolean;
 }) => {
     return (
         <h1>
@@ -20,16 +25,17 @@ const MainUserInformation = ({
                 value={tabView}
                 className="w-[100%]"
             >
-                <TabsList className="grid w-full grid-cols-6">
+                <TabsList className="grid w-full grid-cols-7">
                     <TabsTrigger value="profile">Profile</TabsTrigger>
                     <TabsTrigger value="activity">Activity</TabsTrigger>
                     <TabsTrigger value="movies">Movies</TabsTrigger>
                     <TabsTrigger value="diary">Diary</TabsTrigger>
                     <TabsTrigger value="watchlist">Watchlist</TabsTrigger>
                     <TabsTrigger value="reviews">Reviews</TabsTrigger>
+                    <TabsTrigger value="lists">Lists</TabsTrigger>
                 </TabsList>
                 <TabsContent value="profile">
-                    <ProfileTab />
+                    <ProfileTab user={user} isMe={isMe} />
                 </TabsContent>
                 <TabsContent value="activity">
                     <h1>Activity</h1>
