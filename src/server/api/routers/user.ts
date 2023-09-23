@@ -73,7 +73,7 @@ export const userRouter = createTRPCRouter({
                 data: {
                     ...rest,
                     ...(image && { image: image }),
-                    ...(header && { image: header }),
+                    ...(header && { header: header }),
                 },
             });
 

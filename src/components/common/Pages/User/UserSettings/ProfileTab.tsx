@@ -58,12 +58,13 @@ const ProfileTab = ({ user }: ProfileTabProps) => {
 
     const { mutate: editUserDetailsMutate } =
         api.user.editUserDetails.useMutation({
-            onSuccess: (data) => {
+            onSuccess: async () => {
                 toast.success(`Updated your user details.`, {
                     position: "bottom-center",
                     duration: 4000,
                     className: "dark:bg-brand dark:text-white text-black",
                 });
+                await trpcUtils.user.invalidate();
             },
             onError: (error) => {
                 toast.error(
@@ -127,6 +128,11 @@ const ProfileTab = ({ user }: ProfileTabProps) => {
         });
     };
 
+    const setPreviews = (from: "header" | "image", url: string) => {
+        if (from === "header") setHeaderPreview(url);
+        else if (from === "image") setImagePreview(url);
+    };
+
     useEffect(() => {
         if (inputs.username !== "" && inputs.username !== user.name)
             setLoadingUsernameCheck(true);
@@ -153,8 +159,23 @@ const ProfileTab = ({ user }: ProfileTabProps) => {
                     Change your profile picture and header.
                 </p>
                 <div>
-                    {user.header ? (
-                        <StandardDropzone to="header">
+                    <StandardDropzone callback={setPreviews} to="header">
+                        {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing */}
+                        {headerPreview ? (
+                            <Image
+                                width={0}
+                                height={0}
+                                sizes="100vw"
+                                src={headerPreview}
+                                alt={user.name!}
+                                className="h-[200px] rounded-lg object-cover opacity-0 duration-[0.5s]"
+                                priority
+                                style={{ width: "100%" }}
+                                onLoadingComplete={(image) =>
+                                    image.classList.remove("opacity-0")
+                                }
+                            />
+                        ) : user.header ? (
                             <Image
                                 width={0}
                                 height={0}
@@ -168,28 +189,24 @@ const ProfileTab = ({ user }: ProfileTabProps) => {
                                     image.classList.remove("opacity-0")
                                 }
                             />
-                        </StandardDropzone>
-                    ) : (
-                        <StandardDropzone to="header">
+                        ) : (
                             <div className="h-[200px] w-full rounded-lg bg-gradient-to-r from-indigo-200 via-red-200 to-yellow-100" />
-                        </StandardDropzone>
-                    )}
-                    {user.image ? (
-                        <StandardDropzone to="image">
+                        )}
+                    </StandardDropzone>
+                    <StandardDropzone callback={setPreviews} to="image">
+                        {user.image ? (
                             <Image
                                 width={110}
                                 height={110}
                                 className="shadow-xs absolute bottom-0 left-0 -mb-[20px] ml-4 rounded-full opacity-0 drop-shadow-[0_1px_1px_rgba(0,0,0,0.5)] duration-[0.5s]"
-                                src={user.image}
+                                src={imagePreview ? imagePreview : user.image}
                                 priority
                                 alt="Profile picture"
                                 onLoadingComplete={(image) =>
                                     image.classList.remove("opacity-0")
                                 }
                             />
-                        </StandardDropzone>
-                    ) : (
-                        <StandardDropzone to="image">
+                        ) : (
                             <Image
                                 width={110}
                                 height={110}
@@ -201,8 +218,8 @@ const ProfileTab = ({ user }: ProfileTabProps) => {
                                     image.classList.remove("opacity-0")
                                 }
                             />
-                        </StandardDropzone>
-                    )}
+                        )}
+                    </StandardDropzone>
                 </div>
             </div>
             <div className="h-[50px]" />
@@ -310,19 +327,29 @@ const ProfileTab = ({ user }: ProfileTabProps) => {
                     <Button
                         onClick={handleCancel}
                         intent={"secondary"}
-                        disabled={!hasEdited}
+                        disabled={
+                            !hasEdited &&
+                            (headerPreview === "" || imagePreview === "")
+                        }
                     >
                         Cancel
                     </Button>
                     <Button
-                        disabled={!hasEdited || usernameTaken === "taken"}
-                        onClick={() =>
+                        disabled={
+                            !hasEdited &&
+                            headerPreview === "" &&
+                            imagePreview === ""
+                        }
+                        onClick={() => {
                             editUserDetailsMutate({
                                 ...inputs,
                                 header: headerPreview,
                                 image: imagePreview,
-                            })
-                        }
+                            });
+                            setHasEdited(false);
+                            setHeaderPreview("");
+                            setImagePreview("");
+                        }}
                     >
                         Save
                     </Button>
