@@ -74,6 +74,7 @@ model User {
   reviewComments     ReviewComment[]
   reviewCommentLikes  ReviewCommentLike[]
   watched            Watched[]
+  favouriteMovies            FavouriteMovies[]
 
   lists          List[]
   listComments   ListComment[]
@@ -177,7 +178,19 @@ model Movie {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
+  FavouriteMovies FavouriteMovies[]
   ListEntries ListEntry[]
+}
+
+model FavouriteMovies {
+  id String @id @default(cuid())
+  movieId Int 
+  userId String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  movie        Movie     @relation(fields: [movieId], references: [movieId], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([movieId])
 }
 
 //-----------------------------------------------------------------

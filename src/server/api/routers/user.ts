@@ -135,4 +135,49 @@ export const userRouter = createTRPCRouter({
                 };
             }
         }),
+    //
+    // Add entry to favourite movies
+    //
+    addToFavouriteMovies: protectedProcedure
+        .input(z.object({ movieId: z.number() }))
+        .mutation(async ({ ctx, input }) => {
+            const currentUserId = ctx.session.user.id;
+            const entry = await ctx.prisma.favouriteMovies.create({
+                data: {
+                    movieId: input.movieId,
+                    userId: currentUserId,
+                },
+            });
+            if (entry) {
+                return entry;
+            } else {
+                return null;
+            }
+        }),
+    //
+    // Get favourite movies for specific user
+    //
+    getFavouriteMoviesForUser: publicProcedure
+        .input(z.object({ username: z.string() }))
+        .query(async ({ ctx, input }) => {
+            const user = await ctx.prisma.user.findFirst({
+                where: {
+                    name: input.username,
+                },
+            });
+            if (!user)
+                throw new TRPCError({
+                    code: "BAD_REQUEST",
+                    message: "User not found",
+                });
+            return await ctx.prisma.favouriteMovies.findMany({
+                take: 5,
+                where: {
+                    userId: user.id,
+                },
+                include: {
+                    movie: true,
+                },
+            });
+        }),
 });

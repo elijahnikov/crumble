@@ -6,7 +6,7 @@ async def main(connection):
     app = await iterm2.async_get_app(connection)
     window = app.current_terminal_window
 
-    await window.current_tab.current_session.async_send_text('cd ~/Desktop/code/crumble/\nnpm run dev\n')
+    await window.current_tab.current_session.async_send_text('cd ~/Desktop/code/crumble/\nbun run dev\n')
 
     tab = await window.async_create_tab()
 

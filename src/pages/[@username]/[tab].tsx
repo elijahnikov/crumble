@@ -82,6 +82,8 @@ const ProfilePage: NextPage<PageProps> = ({ username }) => {
             <div className="-mb-[45px]" />
             <Container>
                 <MainUserInformation
+                    isMe={isMe}
+                    user={user}
                     tabView={tabFromURL}
                     routeChange={routeChange}
                 />
