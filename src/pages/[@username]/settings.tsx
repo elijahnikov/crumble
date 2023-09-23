@@ -16,7 +16,6 @@ const UserSettingsPage = () => {
         "@",
         ""
     );
-    console.log({ sessionName: session?.user.name, formattedUsername });
     const isCurrentUser = session?.user.name === formattedUsername;
 
     const [selectedTab, setSelectedTab] = useState(settingsMenu[0]);

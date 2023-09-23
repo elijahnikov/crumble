@@ -12,6 +12,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import FavouriteMovies from "../UserPageTabs/ProfileTab/FavouriteMovies";
 
 interface ProfileTabProps {
     user: NonNullable<RouterOutputs["user"]["getUser"]>;
@@ -47,6 +48,12 @@ const ProfileTab = ({ user }: ProfileTabProps) => {
 
     const trpcUtils = api.useContext();
     const { update } = useSession();
+
+    const { data: favouriteMovies } =
+        api.user.getFavouriteMoviesForUser.useQuery({
+            username: user.name!,
+        });
+
     const { mutate: usernameCheck } = api.user.checkUsername.useMutation({
         onSuccess: (data) => {
             if (data.usernameTaken) {
@@ -330,6 +337,16 @@ const ProfileTab = ({ user }: ProfileTabProps) => {
                             onChange={handleChange}
                         />
                     </div>
+                </div>
+                <div>
+                    <p className="ml-1 mt-2 text-sm">Your favourite movies</p>
+                    {favouriteMovies && (
+                        <FavouriteMovies
+                            fromSettings
+                            data={favouriteMovies}
+                            user={user}
+                        />
+                    )}
                 </div>
                 <div className="flex space-x-2">
                     <Button

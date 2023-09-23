@@ -139,14 +139,17 @@ export const userRouter = createTRPCRouter({
     // Add entry to favourite movies
     //
     addToFavouriteMovies: protectedProcedure
-        .input(z.object({ movieId: z.number() }))
+        .input(z.object({ movieIds: z.number().array() }))
         .mutation(async ({ ctx, input }) => {
             const currentUserId = ctx.session.user.id;
-            const entry = await ctx.prisma.favouriteMovies.create({
-                data: {
-                    movieId: input.movieId,
+            const entryObject = input.movieIds.map((movieId) => {
+                return {
+                    movieId,
                     userId: currentUserId,
-                },
+                };
+            });
+            const entry = await ctx.prisma.favouriteMovies.createMany({
+                data: entryObject,
             });
             if (entry) {
                 return entry;
