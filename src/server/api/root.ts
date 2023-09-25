@@ -9,8 +9,12 @@ import { reviewRouter } from "./routers/review";
 import { watchedRouter } from "./routers/watched";
 // List
 import { listRouter } from "./routers/list";
+// S3
 import { s3Router } from "./routers/s3";
+// Subscription
 import { subscriptionRouter } from "./routers/subscription";
+// Activity
+import { activityRouter } from "./routers/activity";
 
 export const appRouter = createTRPCRouter({
     user: userRouter,
@@ -20,6 +24,7 @@ export const appRouter = createTRPCRouter({
     list: listRouter,
     s3: s3Router,
     subscription: subscriptionRouter,
+    activity: activityRouter,
 });
 
 export type AppRouter = typeof appRouter;

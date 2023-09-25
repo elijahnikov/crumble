@@ -1,3 +1,4 @@
+import { createNewActivity } from "@/server/helpers/createActivity";
 import { createWatchedSchema, watchedSchema } from "../schemas/watched";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
@@ -64,6 +65,12 @@ export const watchedRouter = createTRPCRouter({
                     userId,
                     ...input,
                 },
+            });
+            await createNewActivity({
+                currentUserId: userId,
+                action: "Watched {1}",
+                activity: "watchedId",
+                id: watched.id,
             });
             return watched;
         }),

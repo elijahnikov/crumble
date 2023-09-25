@@ -1,10 +1,17 @@
-import { type RouterOutputs } from "@/utils/api";
+import { api, type RouterOutputs } from "@/utils/api";
 
 interface RecentActivityCardProps {
     user: NonNullable<RouterOutputs["user"]["getUser"]>;
 }
 
 const RecentActivityCard = ({ user }: RecentActivityCardProps) => {
+    const { data } = api.activity.getActivityForUser.useQuery({
+        username: user.name!,
+        limit: 5,
+    });
+
+    data && console.log(data);
+
     return (
         <div>
             <div className="flex">

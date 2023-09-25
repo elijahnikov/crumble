@@ -25,11 +25,7 @@ interface FavouriteMoviesEditableProps {
     setHasEdited: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const FavouriteMoviesEditable = ({
-    user,
-    isMe,
-    data,
-}: FavouriteMoviesEditableProps) => {
+const FavouriteMoviesEditable = ({ data }: FavouriteMoviesEditableProps) => {
     const [showAddMovieToFavouriteModal, setShowAddMovieToFavouriteModal] =
         useState<boolean>(false);
 
@@ -37,6 +33,7 @@ const FavouriteMoviesEditable = ({
         useState<Array<PickedMovieEntry>>(data);
 
     const trpcUtils = api.useContext();
+
     const { mutate: add } = api.user.addToFavouriteMovies.useMutation({
         onSuccess: async () => {
             toast.success(`Successfully added to your favourite movies`, {

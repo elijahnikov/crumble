@@ -4,6 +4,7 @@ import { editUserDetailsSchema } from "../schemas/user";
 import { TRPCError } from "@trpc/server";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis/nodejs";
+import { createNewActivity } from "@/server/helpers/createActivity";
 
 const ratelimit = new Ratelimit({
     redis: Redis.fromEnv(),
@@ -160,6 +161,12 @@ export const userRouter = createTRPCRouter({
                 },
             });
             if (entry) {
+                await createNewActivity({
+                    currentUserId,
+                    action: "Added {1} to their favourites list",
+                    activity: "favouriteMovieId",
+                    id: entry.id,
+                });
                 return entry;
             } else {
                 return null;

@@ -4,6 +4,7 @@ import { newReviewSchema, reviewsSchema } from "../schemas/review";
 // import { Ratelimit } from "@upstash/ratelimit";
 // import { Redis } from "@upstash/redis";
 import { TRPCError } from "@trpc/server";
+import { createNewActivity } from "@/server/helpers/createActivity";
 
 // const ratelimit = new Ratelimit({
 //     redis: Redis.fromEnv(),
@@ -187,6 +188,12 @@ export const reviewRouter = createTRPCRouter({
                     userId,
                     ...input,
                 },
+            });
+            await createNewActivity({
+                currentUserId: userId,
+                action: "Created a new review for {1} and rated it {2}/5",
+                activity: "reviewId",
+                id: review.id,
             });
 
             return review;

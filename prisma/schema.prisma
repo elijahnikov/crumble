@@ -329,24 +329,28 @@ model Activity {
   id     String @id @default(cuid())
   action String
 
-  review   Review @relation("review", fields: [reviewId], references: [id], onDelete: Cascade)
-  reviewId String
+  review   Review? @relation("review", fields: [reviewId], references: [id], onDelete: Cascade)
+  reviewId String?
 
-  favouriteMovie   FavouriteMovies @relation("favouriteMovie", fields: [favouriteMovieId], references: [id], onDelete: Cascade)
-  favouriteMovieId String
+  favouriteMovie   FavouriteMovies? @relation("favouriteMovie", fields: [favouriteMovieId], references: [id], onDelete: Cascade)
+  favouriteMovieId String?
 
-  watched   Watched @relation("watched", fields: [watchedId], references: [id], onDelete: Cascade)
-  watchedId String
+  watched   Watched? @relation("watched", fields: [watchedId], references: [id], onDelete: Cascade)
+  watchedId String?
 
-  list   List   @relation("list", fields: [listId], references: [id], onDelete: Cascade)
-  listId String
+  list   List?   @relation("list", fields: [listId], references: [id], onDelete: Cascade)
+  listId String?
 
-  listEntry   ListEntry @relation("listEntry", fields: [listEntryId], references: [id], onDelete: Cascade)
-  listEntryId String
+  listEntry   ListEntry? @relation("listEntry", fields: [listEntryId], references: [id], onDelete: Cascade)
+  listEntryId String?
 
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([createdAt, id])
   @@index([userId])
   @@index([listId])
   @@index([watchedId])

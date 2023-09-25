@@ -11,7 +11,7 @@ export type IListsSchema = z.infer<typeof listsSchema>;
 
 export const createListSchema = z.object({
     title: z.string(),
-    description: z.string(),
+    description: z.string().optional(),
     tags: z.string().optional(),
     movieIds: z.array(z.number()),
 });

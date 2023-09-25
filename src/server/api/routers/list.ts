@@ -6,6 +6,7 @@ import {
     listsSchema,
     updateListSchema,
 } from "../schemas/list";
+import { createNewActivity } from "@/server/helpers/createActivity";
 
 export const listRouter = createTRPCRouter({
     //
@@ -241,6 +242,14 @@ export const listRouter = createTRPCRouter({
                     numberOfFilms: movieIds.length,
                 },
             });
+
+            await createNewActivity({
+                currentUserId: userId,
+                action: `Created a new list containing ${list.numberOfFilms} movies.`,
+                activity: "listId",
+                id: list.id,
+            });
+
             const listId = list.id;
 
             await ctx.prisma.user.update({
@@ -303,7 +312,7 @@ export const listRouter = createTRPCRouter({
         .input(z.object({ listId: z.string(), movieId: z.number() }))
         .mutation(async ({ ctx, input }) => {
             const { listId, movieId } = input;
-
+            const currentUserId = ctx.session.user.id;
             const listEntry = await ctx.prisma.listEntry.findFirst({
                 where: {
                     listId,
@@ -318,11 +327,21 @@ export const listRouter = createTRPCRouter({
                 });
             }
 
-            await ctx.prisma.listEntry.create({
+            const newListEntry = await ctx.prisma.listEntry.create({
                 data: {
                     listId,
                     movieId,
                 },
+                include: {
+                    list: true,
+                    movie: true,
+                },
+            });
+            await createNewActivity({
+                currentUserId,
+                action: `Added {1} to their list titled ${newListEntry.list.title}`,
+                activity: "listEntryId",
+                id: newListEntry.id,
             });
             return {
                 entryCreated: true,
