@@ -9,20 +9,20 @@ datasource db {
 }
 
 model Account {
-  id                String  @id @default(cuid())
-  userId            String
-  type              String
-  provider          String
-  providerAccountId String
-  refresh_token     String?
-  access_token      String?
-  expires_at        Int?
-  token_type        String?
-  scope             String?
-  id_token          String?
-  session_state     String?
+  id                       String  @id @default(cuid())
+  userId                   String
+  type                     String
+  provider                 String
+  providerAccountId        String
+  refresh_token            String?
+  access_token             String?
+  expires_at               Int?
+  token_type               String?
+  scope                    String?
+  id_token                 String?
+  session_state            String?
   refresh_token_expires_in Int?
-  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user                     User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
   @@index([userId])
@@ -50,21 +50,21 @@ model Session {
 //----------------------------- User ------------------------------
 //-----------------------------------------------------------------
 model User {
-  id                 String              @id @default(cuid())
-  email              String?             @unique
+  id                 String    @id @default(cuid())
+  email              String?   @unique
   emailVerified      DateTime?
   image              String?
-  name               String?             @db.Text
+  name               String?   @db.Text
   bio                String?
   bioLink            String?
   displayName        String?
-  header             String?             @db.Text
-  totalHoursWatched  Int                 @default(0)
-  totalListsCreated  Int                 @default(0)
+  header             String?   @db.Text
+  totalHoursWatched  Int       @default(0)
+  totalListsCreated  Int       @default(0)
   usernameChangeDate DateTime?
-  verified           Boolean?            @default(false)
-  dev                Boolean?            @default(false)
-  totalMoviesWatched Int                 @default(0)
+  verified           Boolean?  @default(false)
+  dev                Boolean?  @default(false)
+  totalMoviesWatched Int       @default(0)
 
   // relations
   accounts           Account[]
@@ -72,12 +72,13 @@ model User {
   reviews            Review[]
   reviewLikes        ReviewLike[]
   reviewComments     ReviewComment[]
-  reviewCommentLikes  ReviewCommentLike[]
+  reviewCommentLikes ReviewCommentLike[]
   watched            Watched[]
-  favouriteMovies            FavouriteMovies[]
+  favouriteMovies    FavouriteMovies[]
+  activity           Activity[]
 
-  lists          List[]
-  listComments   ListComment[]
+  lists            List[]
+  listComments     ListComment[]
   listLikes        ListLike[]
   listCommentLikes ListCommentLike[]
 
@@ -89,24 +90,25 @@ model User {
 //---------------------------- Review -----------------------------
 //-----------------------------------------------------------------
 model Review {
-  id               String          @id @default(cuid())
+  id               String    @id @default(cuid())
   movieId          Int
-  text             String          @db.LongText
-  containsSpoilers Boolean         @default(false)
+  text             String    @db.LongText
+  containsSpoilers Boolean   @default(false)
   tags             String?
   moviePoster      String?
   backdrop         String?
   movieTitle       String
   movieReleaseYear String
-  ratingGiven      Float           @default(0)
+  ratingGiven      Float     @default(0)
   watchedOn        DateTime?
-  createdAt        DateTime        @default(now())
-  updatedAt        DateTime        @updatedAt
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
   userId           String
 
-  user             User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  reviewLikes      ReviewLike[]
-  reviewComments   ReviewComment[]
+  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reviewLikes    ReviewLike[]
+  reviewComments ReviewComment[]
+  activity       Activity[]      @relation("review")
 
   @@unique([createdAt, id])
   @@index([userId])
@@ -179,15 +181,17 @@ model Movie {
   updatedAt       DateTime @updatedAt
 
   FavouriteMovies FavouriteMovies[]
-  ListEntries ListEntry[]
+  ListEntries     ListEntry[]
 }
 
 model FavouriteMovies {
-  id String @id @default(cuid())
-  movieId Int 
-  userId String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  movie        Movie     @relation(fields: [movieId], references: [movieId], onDelete: Cascade)
+  id      String @id @default(cuid())
+  movieId Int
+  userId  String
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  movie   Movie  @relation(fields: [movieId], references: [movieId], onDelete: Cascade)
+
+  activity Activity[] @relation("favouriteMovie")
 
   @@unique([movieId, userId])
   @@index([userId])
@@ -208,6 +212,8 @@ model Watched {
   updatedAt   DateTime @updatedAt
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  activity Activity[] @relation("watched")
+
   @@unique([createdAt, id])
   @@unique([userId, movieId])
   @@index([userId])
@@ -217,30 +223,30 @@ model Watched {
 //----------------------------- List ------------------------------
 //-----------------------------------------------------------------
 model List {
-  id String @id @default(cuid())
-  userId String
-  title String
-  description String?
-  tags String?
-  numberOfFilms Int @default(0)
-  createdAt        DateTime        @default(now())
-  updatedAt        DateTime        @updatedAt
-  
-    user             User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  listComments   ListComment[]
-    listLikes      ListLike[]
-    listEntries   ListEntry[]
+  id            String   @id @default(cuid())
+  userId        String
+  title         String
+  description   String?
+  tags          String?
+  numberOfFilms Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  listComments ListComment[]
+  listLikes    ListLike[]
+  listEntries  ListEntry[]
+  activity     Activity[]    @relation("list")
 
   @@unique([createdAt, id])
   @@index([userId])
 }
 
 model ListLike {
-    userId   String
+  userId String
   listId String
-  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  list   List @relation(fields: [listId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  list   List   @relation(fields: [listId], references: [id], onDelete: Cascade)
 
   @@id([userId, listId])
   @@index([userId])
@@ -254,9 +260,9 @@ model ListComment {
   text      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  
+
   list             List              @relation(fields: [listId], references: [id], onDelete: Cascade)
-  user               User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   listCommentLikes ListCommentLike[]
 
   @@unique([createdAt, id])
@@ -265,9 +271,9 @@ model ListComment {
 }
 
 model ListCommentLike {
-  userId          String
+  userId        String
   listCommentId String
-  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   listComment   ListComment @relation(fields: [listCommentId], references: [id], onDelete: Cascade)
 
   @@id([userId, listCommentId])
@@ -275,10 +281,10 @@ model ListCommentLike {
   @@index([listCommentId])
 }
 
-model ListTags {  
-  id String @id @default(cuid())
-  text String
-  count Int @default(1)
+model ListTags {
+  id        String   @id @default(cuid())
+  text      String
+  count     Int      @default(1)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -286,13 +292,16 @@ model ListTags {
 model ListEntry {
   id String @id @default(cuid())
 
-  movieId Int
-  listId String
+  movieId   Int
+  listId    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  
-  movie     Movie    @relation(fields: [movieId], references: [movieId], onDelete: Cascade)
-  list      List     @relation(fields: [listId], references: [id], onDelete: Cascade)
+
+  activity Activity[] @relation("listEntry")
+
+  movie Movie @relation(fields: [movieId], references: [movieId], onDelete: Cascade)
+  list  List  @relation(fields: [listId], references: [id], onDelete: Cascade)
+
   @@index([listId])
   @@index([movieId])
 }
@@ -300,10 +309,10 @@ model ListEntry {
 //-----------------------------------------------------------------
 //------------------------- Subscription --------------------------
 //-----------------------------------------------------------------
-model Subscription { 
-  follower    User @relation("follower", fields: [followerId], references: [id], onDelete: Cascade)
+model Subscription {
+  follower    User   @relation("follower", fields: [followerId], references: [id], onDelete: Cascade)
   followerId  String
-  following   User @relation("following", fields: [followingId], references: [id], onDelete: Cascade)
+  following   User   @relation("following", fields: [followingId], references: [id], onDelete: Cascade)
   followingId String
 
   @@id([followerId, followingId])
@@ -311,4 +320,37 @@ model Subscription {
   @@unique([followingId, followerId])
   @@index([followingId])
   @@index([followerId])
+}
+
+//-----------------------------------------------------------------
+//--------------------------- Activity ----------------------------
+//-----------------------------------------------------------------
+model Activity {
+  id     String @id @default(cuid())
+  action String
+
+  review   Review @relation("review", fields: [reviewId], references: [id], onDelete: Cascade)
+  reviewId String
+
+  favouriteMovie   FavouriteMovies @relation("favouriteMovie", fields: [favouriteMovieId], references: [id], onDelete: Cascade)
+  favouriteMovieId String
+
+  watched   Watched @relation("watched", fields: [watchedId], references: [id], onDelete: Cascade)
+  watchedId String
+
+  list   List   @relation("list", fields: [listId], references: [id], onDelete: Cascade)
+  listId String
+
+  listEntry   ListEntry @relation("listEntry", fields: [listEntryId], references: [id], onDelete: Cascade)
+  listEntryId String
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([listId])
+  @@index([watchedId])
+  @@index([favouriteMovieId])
+  @@index([reviewId])
+  @@index([listEntryId])
 }
