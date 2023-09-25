@@ -1,6 +1,7 @@
 import { api, type RouterOutputs } from "@/utils/api";
 import FavouriteMovies from "./FavouriteMovies";
 import LoadingSpinner from "@/components/common/LoadingSpinner/LoadingSpinner";
+import RecentActivityCard from "./RecentActivityCard";
 
 const ProfileTab = ({
     user,
@@ -13,6 +14,7 @@ const ProfileTab = ({
         api.user.getFavouriteMoviesForUser.useQuery({
             username: user.name!,
         });
+
     return (
         <div className="w-full">
             <div className="flex">
@@ -29,6 +31,8 @@ const ProfileTab = ({
                             />
                         )
                     )}
+                    <div className="h-[20px]" />
+                    <RecentActivityCard user={user} />
                 </div>
             </div>
         </div>
