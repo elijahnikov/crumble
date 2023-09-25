@@ -6,35 +6,32 @@ const FavouriteMovies = ({
     user,
     isMe,
     data,
-    fromSettings = false,
 }: {
     user: NonNullable<RouterOutputs["user"]["getUser"]>;
     isMe?: boolean;
     data: RouterOutputs["user"]["getFavouriteMoviesForUser"];
-    fromSettings?: boolean;
 }) => {
     return (
         <div>
-            {!fromSettings ? (
-                <>
-                    <div className="flex">
-                        <p className="w-full text-sm text-slate-600 dark:text-slate-300">
-                            Favourite movies
-                        </p>
-                        {isMe && (
-                            <Link
-                                href="/[username]/settings"
-                                as={`/@${user.name}/settings`}
-                            >
-                                <p className="mt-1 cursor-pointer text-xs font-normal text-crumble underline">
-                                    Edit
-                                </p>
-                            </Link>
-                        )}
-                    </div>
-                    <div className="border-b pt-1 dark:border-slate-500" />
-                </>
-            ) : null}
+            <>
+                <div className="flex">
+                    <p className="w-full text-sm text-slate-600 dark:text-slate-300">
+                        Favourite movies
+                    </p>
+                    {isMe && (
+                        <Link
+                            href="/[username]/settings"
+                            as={`/@${user.name}/settings`}
+                        >
+                            <p className="mt-1 cursor-pointer text-xs font-normal text-crumble underline">
+                                Edit
+                            </p>
+                        </Link>
+                    )}
+                </div>
+                <div className="border-b pt-1 dark:border-slate-500" />
+            </>
+
             {data.length === 0 ? (
                 <p className="pt-1 text-sm font-normal">
                     Showcase your favourite films here...

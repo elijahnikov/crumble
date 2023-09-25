@@ -12,7 +12,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import FavouriteMovies from "../UserPageTabs/ProfileTab/FavouriteMovies";
+import FavouriteMoviesEditable from "./FavouriteMoviesEditable";
 
 interface ProfileTabProps {
     user: NonNullable<RouterOutputs["user"]["getUser"]>;
@@ -45,6 +45,7 @@ const ProfileTab = ({ user }: ProfileTabProps) => {
     const [imagePreview, setImagePreview] = useState<string | undefined>("");
     const [loadingUsernameCheck, setLoadingUsernameCheck] =
         useState<boolean>(false);
+    const [deletedMovieIds, setDeletedMovieIds] = useState<Array<number>>([]);
 
     const trpcUtils = api.useContext();
     const { update } = useSession();
@@ -341,10 +342,10 @@ const ProfileTab = ({ user }: ProfileTabProps) => {
                 <div>
                     <p className="ml-1 mt-2 text-sm">Your favourite movies</p>
                     {favouriteMovies && (
-                        <FavouriteMovies
-                            fromSettings
+                        <FavouriteMoviesEditable
                             data={favouriteMovies}
                             user={user}
+                            setHasEdited={setHasEdited}
                         />
                     )}
                 </div>
