@@ -142,6 +142,17 @@ export const userRouter = createTRPCRouter({
         .input(z.object({ movieId: z.number() }))
         .mutation(async ({ ctx, input }) => {
             const currentUserId = ctx.session.user.id;
+            const existing = await ctx.prisma.favouriteMovies.findFirst({
+                where: {
+                    movieId: input.movieId,
+                    userId: currentUserId,
+                },
+            });
+            if (existing)
+                throw new TRPCError({
+                    code: "CONFLICT",
+                    message: "Movie is already in your favourites.",
+                });
             const entry = await ctx.prisma.favouriteMovies.create({
                 data: {
                     movieId: input.movieId,
@@ -152,6 +163,30 @@ export const userRouter = createTRPCRouter({
                 return entry;
             } else {
                 return null;
+            }
+        }),
+    deleteFromFavouriteMovies: protectedProcedure
+        .input(z.object({ movieId: z.number() }))
+        .mutation(async ({ ctx, input }) => {
+            const currentUserId = ctx.session.user.id;
+            const deleted = await ctx.prisma.favouriteMovies.delete({
+                where: {
+                    movieId_userId: {
+                        movieId: input.movieId,
+                        userId: currentUserId,
+                    },
+                },
+                select: {
+                    movie: true,
+                },
+            });
+            if (deleted)
+                return {
+                    deleted: true,
+                    movie: deleted.movie.title,
+                };
+            else {
+                return false;
             }
         }),
     //

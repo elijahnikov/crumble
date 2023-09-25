@@ -1,6 +1,6 @@
 import Layout, { Container } from "@/components/common/Layout/Layout";
 import { LoadingPage } from "@/components/common/LoadingSpinner/LoadingSpinner";
-import ProfileTab from "@/components/common/Pages/User/UserSettings/ProfileTab";
+import ProfileTab from "@/components/common/Pages/User/UserSettings/ProfileTab/ProfileTab";
 import { api } from "@/utils/api";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
@@ -16,7 +16,6 @@ const UserSettingsPage = () => {
         "@",
         ""
     );
-    console.log({ sessionName: session?.user.name, formattedUsername });
     const isCurrentUser = session?.user.name === formattedUsername;
 
     const [selectedTab, setSelectedTab] = useState(settingsMenu[0]);
