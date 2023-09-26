@@ -1,15 +1,18 @@
 import { fromNow } from "@/utils/general/dateFormat";
+import Link from "next/link";
 
 const WatchedActivity = ({
     small,
     movieTitle,
     createdAt,
     username,
+    movieId,
 }: {
     small: boolean;
     movieTitle: string;
     username: string;
     createdAt: Date;
+    movieId: number;
 }) => {
     return (
         <div>
@@ -23,9 +26,18 @@ const WatchedActivity = ({
                     {username}{" "}
                 </span>
                 watched{" "}
-                <span className="font-bold text-black dark:text-white">
-                    {movieTitle}
-                </span>
+                <Link
+                    href={{
+                        pathname: "/film/[id]",
+                        query: {
+                            id: movieId,
+                        },
+                    }}
+                >
+                    <span className="font-bold text-black hover:underline dark:text-white">
+                        {movieTitle}
+                    </span>
+                </Link>
             </p>
         </div>
     );

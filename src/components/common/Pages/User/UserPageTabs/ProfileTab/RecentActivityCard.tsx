@@ -15,7 +15,6 @@ const RecentActivityCard = ({ user }: RecentActivityCardProps) => {
         specificActivity: ["favouriteMovie", "watched", "review", "listEntry"],
         limit: 5,
     });
-    console.log(data);
 
     return (
         <div>
@@ -44,6 +43,10 @@ const RecentActivityCard = ({ user }: RecentActivityCardProps) => {
                                                     activity.favouriteMovie
                                                         .movie.title
                                                 }
+                                                movieId={
+                                                    activity.favouriteMovie
+                                                        .movieId
+                                                }
                                             />
                                         )}
                                         {activity.watched && (
@@ -51,6 +54,9 @@ const RecentActivityCard = ({ user }: RecentActivityCardProps) => {
                                                 username={user.name!}
                                                 createdAt={activity.createdAt}
                                                 small
+                                                movieId={
+                                                    activity.watched.movieId
+                                                }
                                                 movieTitle={
                                                     activity.watched.movieTitle
                                                 }
@@ -65,9 +71,15 @@ const RecentActivityCard = ({ user }: RecentActivityCardProps) => {
                                                     activity.listEntry.movie
                                                         .title
                                                 }
+                                                movieId={
+                                                    activity.listEntry.movieId
+                                                }
                                                 listTitle={
                                                     activity.listEntry.list
                                                         .title
+                                                }
+                                                listId={
+                                                    activity.listEntry.listId
                                                 }
                                             />
                                         )}
@@ -78,6 +90,9 @@ const RecentActivityCard = ({ user }: RecentActivityCardProps) => {
                                                 small
                                                 movieTitle={
                                                     activity.review.movieTitle
+                                                }
+                                                movieId={
+                                                    activity.review.movieId
                                                 }
                                                 rating={
                                                     activity.review.ratingGiven

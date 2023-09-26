@@ -1,17 +1,22 @@
 import { fromNow } from "@/utils/general/dateFormat";
+import Link from "next/link";
 
 const ListEntryActivity = ({
     small,
     movieTitle,
+    movieId,
     listTitle,
     createdAt,
     username,
+    listId,
 }: {
     small: boolean;
     movieTitle: string;
     listTitle: string;
     createdAt: Date;
     username: string;
+    movieId: number;
+    listId: string;
 }) => {
     return (
         <div>
@@ -25,13 +30,31 @@ const ListEntryActivity = ({
                     {username}{" "}
                 </span>
                 added{" "}
-                <span className="font-bold text-black dark:text-white">
-                    {movieTitle}{" "}
-                </span>
+                <Link
+                    href={{
+                        pathname: "/film/[id]",
+                        query: {
+                            id: movieId,
+                        },
+                    }}
+                >
+                    <span className="font-bold text-black hover:underline dark:text-white">
+                        {movieTitle}
+                    </span>
+                </Link>{" "}
                 to their list{" "}
-                <span className="font-bold text-black dark:text-white">
-                    {listTitle}
-                </span>
+                <Link
+                    href={{
+                        pathname: "/list/[id]",
+                        query: {
+                            id: listId,
+                        },
+                    }}
+                >
+                    <span className="font-bold text-black hover:underline dark:text-white">
+                        {listTitle}
+                    </span>
+                </Link>
             </p>
         </div>
     );

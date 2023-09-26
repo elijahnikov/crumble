@@ -1,4 +1,5 @@
 import { fromNow } from "@/utils/general/dateFormat";
+import Link from "next/link";
 import { Rating } from "react-simple-star-rating";
 
 const ReviewActivity = ({
@@ -7,12 +8,14 @@ const ReviewActivity = ({
     createdAt,
     username,
     rating,
+    movieId,
 }: {
     small: boolean;
     movieTitle: string;
     rating: number;
     createdAt: Date;
     username: string;
+    movieId: number;
 }) => {
     return (
         <div>
@@ -26,9 +29,18 @@ const ReviewActivity = ({
                     {username}{" "}
                 </span>
                 reviewed{" "}
-                <span className="font-bold text-black dark:text-white">
-                    {movieTitle}{" "}
-                </span>
+                <Link
+                    href={{
+                        pathname: "/film/[id]",
+                        query: {
+                            id: movieId,
+                        },
+                    }}
+                >
+                    <span className="font-bold text-black hover:underline dark:text-white">
+                        {movieTitle}
+                    </span>
+                </Link>{" "}
                 and rated it
                 <Rating
                     style={{ marginBottom: "2px", marginLeft: "5px" }}
