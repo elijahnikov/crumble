@@ -11,4 +11,5 @@ export const createWatchedSchema = z.object({
     movieTitle: z.string(),
     ratingGiven: z.number().optional(),
     poster: z.string().optional(),
+    withReview: z.boolean().optional(),
 });

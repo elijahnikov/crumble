@@ -1,13 +1,15 @@
 import { fromNow } from "@/utils/general/dateFormat";
 
-const FavouriteMovieActivity = ({
+const ListEntryActivity = ({
     small,
     movieTitle,
+    listTitle,
     createdAt,
     username,
 }: {
     small: boolean;
     movieTitle: string;
+    listTitle: string;
     createdAt: Date;
     username: string;
 }) => {
@@ -26,10 +28,13 @@ const FavouriteMovieActivity = ({
                 <span className="font-bold text-black dark:text-white">
                     {movieTitle}{" "}
                 </span>
-                to their favourite movie list.
+                to their list{" "}
+                <span className="font-bold text-black dark:text-white">
+                    {listTitle}
+                </span>
             </p>
         </div>
     );
 };
 
-export default FavouriteMovieActivity;
+export default ListEntryActivity;

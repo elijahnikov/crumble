@@ -43,18 +43,7 @@ export const activityRouter = createTRPCRouter({
                     take: limit + 1,
                     where: specificActivity
                         ? {
-                              OR: [
-                                  {
-                                      watched: {
-                                          isNot: null,
-                                      },
-                                  },
-                                  {
-                                      favouriteMovie: {
-                                          isNot: null,
-                                      },
-                                  },
-                              ],
+                              OR: where,
                               AND: [
                                   {
                                       user: {
@@ -68,6 +57,7 @@ export const activityRouter = createTRPCRouter({
                                   name: username,
                               },
                           },
+                    orderBy: { createdAt: "desc" },
                     cursor: cursor ? { createdAt_id: cursor } : undefined,
                     select: {
                         favouriteMovie: {

@@ -122,6 +122,7 @@ const CreateReviewModal = ({
                 movieTitle: chosenMovieDetails.title,
                 movieId: chosenMovieDetails.movieId,
                 poster: chosenMovieDetails.poster,
+                withReview: Boolean(reviewText) || reviewText !== "",
             });
             if (reviewText) {
                 reviewMutate({
