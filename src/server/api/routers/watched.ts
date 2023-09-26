@@ -43,7 +43,7 @@ export const watchedRouter = createTRPCRouter({
         .input(createWatchedSchema)
         .mutation(async ({ ctx, input }) => {
             const userId = ctx.session.user.id;
-            const { withReview, ...restInput } = input;
+            const { withReview, runtime, ...restInput } = input;
             const watched = await ctx.prisma.watched.upsert({
                 where: {
                     userId_movieId: {
@@ -56,6 +56,9 @@ export const watchedRouter = createTRPCRouter({
                         update: {
                             totalMoviesWatched: {
                                 increment: 1,
+                            },
+                            totalHoursWatched: {
+                                increment: runtime,
                             },
                         },
                     },

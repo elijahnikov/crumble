@@ -7,6 +7,8 @@ import {
     type IMovie,
     type IMovieFetch,
     movieFetchSchema,
+    movieDetailsFetchSchema,
+    IMovieDetails,
 } from "@/server/api/schemas/movie";
 import { fetchWithZod } from "@/utils/fetch/zodFetch";
 import { type SetStateType } from "@/utils/types/helpers";
@@ -41,6 +43,8 @@ const CreateReviewModal = ({
     const [chosenMovieDetails, setChosenMovieDetails] = useState<IMovie | null>(
         null
     );
+    const [extraMovieDetails, setExtraMovieDetails] =
+        useState<IMovieDetails | null>(null);
     const [movieFetchData, setMovieFetchData] = useState<IMovieFetch[]>([]);
 
     const [reviewText, setReviewText] = useState<string>("");
@@ -78,12 +82,22 @@ const CreateReviewModal = ({
     const fetchMoviesFromSearchTerm = useCallback(async () => {
         if (searchedMovieName !== "") {
             const data = await fetchWithZod(
-                `https://api.themoviedb.org/3/search/movie?query=${searchedMovieName}&include_adult=false&language=en-US'`,
+                `https://api.themoviedb.org/3/search/movie?query=${searchedMovieName}&include_adult=false&language=en-US&append_to_response=runtime'`,
                 movieFetchSchema as ZodType
             );
             setMovieFetchData(data);
         } else setMovieFetchData([]);
     }, [searchedMovieName]);
+
+    const fetchExtraDetailsAboutMovie = useCallback(async () => {
+        if (chosenMovieDetails?.movieId) {
+            const data = await fetchWithZod(
+                `https://api.themoviedb.org/3/movie/${chosenMovieDetails.movieId}?language=en-US`,
+                movieDetailsFetchSchema as ZodType
+            );
+            setExtraMovieDetails(data);
+        } else setExtraMovieDetails(null);
+    }, [chosenMovieDetails]);
 
     useEffect(() => {
         const delaySearch = setTimeout(() => {
@@ -92,6 +106,14 @@ const CreateReviewModal = ({
 
         return () => clearTimeout(delaySearch);
     }, [fetchMoviesFromSearchTerm, searchedMovieName]);
+
+    useEffect(() => {
+        const delaySearch = setTimeout(() => {
+            void fetchExtraDetailsAboutMovie();
+        }, 100);
+
+        return () => clearTimeout(delaySearch);
+    }, [chosenMovieDetails, fetchExtraDetailsAboutMovie]);
 
     const handleFilmSelect = (movie: IMovie) => {
         setChosenMovieDetails(movie);
@@ -122,6 +144,7 @@ const CreateReviewModal = ({
                 movieTitle: chosenMovieDetails.title,
                 movieId: chosenMovieDetails.movieId,
                 poster: chosenMovieDetails.poster,
+                runtime: extraMovieDetails?.runtime ?? 0,
                 withReview: Boolean(reviewText) || reviewText !== "",
             });
             if (reviewText) {

@@ -1,41 +1,36 @@
+import { type RouterOutputs } from "@/utils/api";
 import { fromNow } from "@/utils/general/dateFormat";
 import Link from "next/link";
 
 const WatchedActivity = ({
     small,
-    movieTitle,
-    createdAt,
-    username,
-    movieId,
+    activity,
 }: {
     small: boolean;
-    movieTitle: string;
-    username: string;
-    createdAt: Date;
-    movieId: number;
+    activity: RouterOutputs["activity"]["getActivityForUser"]["activities"][number];
 }) => {
     return (
         <div>
             <div>
                 <p className="text-xs font-normal text-crumble">
-                    {fromNow(createdAt)}
+                    {fromNow(activity.createdAt)}
                 </p>
             </div>
             <p className="text-sm font-normal text-slate-500 dark:text-slate-400">
                 <span className="font-semibold text-slate-600 dark:text-slate-300">
-                    {username}{" "}
+                    {activity.user.name}{" "}
                 </span>
                 watched{" "}
                 <Link
                     href={{
                         pathname: "/film/[id]",
                         query: {
-                            id: movieId,
+                            id: activity.watched?.movieId,
                         },
                     }}
                 >
                     <span className="font-bold text-black hover:underline dark:text-white">
-                        {movieTitle}
+                        {activity.watched?.movieTitle}
                     </span>
                 </Link>
             </p>

@@ -1,44 +1,37 @@
+import { type RouterOutputs } from "@/utils/api";
 import { fromNow } from "@/utils/general/dateFormat";
 import Link from "next/link";
 import { Rating } from "react-simple-star-rating";
 
 const ReviewActivity = ({
     small,
-    movieTitle,
-    createdAt,
-    username,
-    rating,
-    movieId,
+    activity,
 }: {
     small: boolean;
-    movieTitle: string;
-    rating: number;
-    createdAt: Date;
-    username: string;
-    movieId: number;
+    activity: RouterOutputs["activity"]["getActivityForUser"]["activities"][number];
 }) => {
     return (
         <div>
             <div>
                 <p className="text-xs font-normal text-crumble">
-                    {fromNow(createdAt)}
+                    {fromNow(activity.createdAt)}
                 </p>
             </div>
             <div className="text-sm font-normal text-slate-500 dark:text-slate-400">
                 <span className="font-semibold text-slate-600 dark:text-slate-300">
-                    {username}{" "}
+                    {activity.user.name}{" "}
                 </span>
                 reviewed{" "}
                 <Link
                     href={{
                         pathname: "/film/[id]",
                         query: {
-                            id: movieId,
+                            id: activity.review?.movieId,
                         },
                     }}
                 >
                     <span className="font-bold text-black hover:underline dark:text-white">
-                        {movieTitle}
+                        {activity.review?.movieTitle}
                     </span>
                 </Link>{" "}
                 and rated it
@@ -49,7 +42,7 @@ const ReviewActivity = ({
                         display: "-webkit-inline-box",
                     }}
                     allowFraction={true}
-                    initialValue={rating}
+                    initialValue={activity.review?.ratingGiven}
                     size={14}
                     readonly
                     emptyColor="#404446"

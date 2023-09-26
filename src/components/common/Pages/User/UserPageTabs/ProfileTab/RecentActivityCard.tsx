@@ -12,7 +12,6 @@ interface RecentActivityCardProps {
 const RecentActivityCard = ({ user }: RecentActivityCardProps) => {
     const { data, isLoading } = api.activity.getActivityForUser.useQuery({
         username: user.name!,
-        specificActivity: ["favouriteMovie", "watched", "review", "listEntry"],
         limit: 5,
     });
 
@@ -37,66 +36,25 @@ const RecentActivityCard = ({ user }: RecentActivityCardProps) => {
                                         {activity.favouriteMovie && (
                                             <FavouriteMovieActivity
                                                 small
-                                                username={user.name!}
-                                                createdAt={activity.createdAt}
-                                                movieTitle={
-                                                    activity.favouriteMovie
-                                                        .movie.title
-                                                }
-                                                movieId={
-                                                    activity.favouriteMovie
-                                                        .movieId
-                                                }
+                                                activity={activity}
                                             />
                                         )}
                                         {activity.watched && (
                                             <WatchedActivity
-                                                username={user.name!}
-                                                createdAt={activity.createdAt}
                                                 small
-                                                movieId={
-                                                    activity.watched.movieId
-                                                }
-                                                movieTitle={
-                                                    activity.watched.movieTitle
-                                                }
+                                                activity={activity}
                                             />
                                         )}
                                         {activity.listEntry && (
                                             <ListEntryActivity
-                                                username={user.name!}
-                                                createdAt={activity.createdAt}
+                                                activity={activity}
                                                 small
-                                                movieTitle={
-                                                    activity.listEntry.movie
-                                                        .title
-                                                }
-                                                movieId={
-                                                    activity.listEntry.movieId
-                                                }
-                                                listTitle={
-                                                    activity.listEntry.list
-                                                        .title
-                                                }
-                                                listId={
-                                                    activity.listEntry.listId
-                                                }
                                             />
                                         )}
                                         {activity.review && (
                                             <ReviewActivity
-                                                username={user.name!}
-                                                createdAt={activity.createdAt}
+                                                activity={activity}
                                                 small
-                                                movieTitle={
-                                                    activity.review.movieTitle
-                                                }
-                                                movieId={
-                                                    activity.review.movieId
-                                                }
-                                                rating={
-                                                    activity.review.ratingGiven
-                                                }
                                             />
                                         )}
                                     </div>
