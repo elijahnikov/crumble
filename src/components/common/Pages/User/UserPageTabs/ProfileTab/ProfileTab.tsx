@@ -32,6 +32,8 @@ const ProfileTab = ({
                         )
                     )}
                     <div className="h-[20px]" />
+                </div>
+                <div className="w-[30%] px-4 pt-2">
                     <RecentActivityCard user={user} />
                 </div>
             </div>
