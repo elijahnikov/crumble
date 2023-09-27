@@ -18,9 +18,14 @@ const RecentListsCard = ({ user }: RecentActivityCardProps) => {
     return (
         <div>
             <div className="flex">
-                <p className="w-[82%] text-sm text-slate-600 dark:text-slate-300">
+                <p className="w-[77%] text-sm text-slate-600 dark:text-slate-300">
                     Recent lists
                 </p>
+                <Link href="/[username]/lists" as={`/@${user.name}/lists`}>
+                    <p className="ml-1 mt-1 cursor-pointer text-xs font-normal text-crumble underline">
+                        See more
+                    </p>
+                </Link>
             </div>
             <div className="border-b pt-1 dark:border-slate-500" />
             <div>

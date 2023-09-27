@@ -4,6 +4,7 @@ import FavouriteMovieActivity from "../ActivityTab/Activities/FavouriteMovieActi
 import WatchedActivity from "../ActivityTab/Activities/WatchedActivity";
 import ListEntryActivity from "../ActivityTab/Activities/ListEntryActivity";
 import ReviewActivity from "../ActivityTab/Activities/ReviewActivity";
+import Link from "next/link";
 
 interface RecentActivityCardProps {
     user: NonNullable<RouterOutputs["user"]["getUser"]>;
@@ -18,9 +19,17 @@ const RecentActivityCard = ({ user }: RecentActivityCardProps) => {
     return (
         <div>
             <div className="flex">
-                <p className="w-[82%] text-sm text-slate-600 dark:text-slate-300">
+                <p className="w-[77%] text-sm text-slate-600 dark:text-slate-300">
                     Recent activity
                 </p>
+                <Link
+                    href="/[username]/activity"
+                    as={`/@${user.name}/activity`}
+                >
+                    <p className="ml-1 mt-1 cursor-pointer text-xs font-normal text-crumble underline">
+                        See more
+                    </p>
+                </Link>
             </div>
             <div className="border-b pt-1 dark:border-slate-500" />
             <div>
