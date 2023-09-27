@@ -6,6 +6,7 @@ import FollowingModal from "./FollowingFollowers/FollowingModal";
 import Image from "next/image";
 import Link from "next/link";
 import { BsLink } from "react-icons/bs";
+import { convertToHoursAndMinutes } from "@/utils/date/convertToHoursAndMinutes";
 
 interface SingleUserViewProps {
     user: NonNullable<RouterOutputs["user"]["getUser"]>;
@@ -203,7 +204,11 @@ const UserInfo = ({
                             href="/[username]/movies"
                             as={`/@${user.name}/movies`}
                         >
-                            <h3>{user.totalHoursWatched}</h3>
+                            <h3>
+                                {convertToHoursAndMinutes(
+                                    user.totalHoursWatched
+                                )}
+                            </h3>
                             <p className="text-slate-500 dark:text-slate-400">
                                 hours watched
                             </p>

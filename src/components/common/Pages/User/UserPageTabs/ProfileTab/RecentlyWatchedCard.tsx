@@ -44,8 +44,8 @@ const RecentlyWatched = ({
 
     return (
         <div>
-            <div className="flex">
-                <p className="w-[91%] text-sm text-slate-600 dark:text-slate-300">
+            <div className="flex w-full">
+                <p className="w-[90%] text-sm text-slate-600 dark:text-slate-300">
                     Recently watched
                 </p>
                 <Link href="/[username]/watched" as={`/@${user.name}/watched`}>
@@ -58,15 +58,7 @@ const RecentlyWatched = ({
 
             {watched.watched.length === 0 ? (
                 <p className="pt-1 text-sm font-normal">
-                    Showcase your favourite films here...
-                    <Link
-                        href="/[username]/settings"
-                        as={`/@${user.name}/settings`}
-                    >
-                        <span className="pl-1 text-crumble underline">
-                            Settings
-                        </span>
-                    </Link>
+                    {user.name} has not watched any movies recently
                 </p>
             ) : (
                 <div className="mt-2 h-max w-full columns-5 gap-2">
