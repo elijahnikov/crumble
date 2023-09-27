@@ -43,7 +43,7 @@ const UserHeader = ({ userHeaderData, isMe }: UserHeaderProps) => {
                         sizes="100vw"
                         src={user.header}
                         alt={user.name!}
-                        className="h-[250px] rounded-lg object-cover opacity-0 duration-[0.5s]"
+                        className="h-[200px] rounded-lg object-cover opacity-0 duration-[0.5s]"
                         priority
                         style={{ width: "100%" }}
                         onLoadingComplete={(image) =>
@@ -51,7 +51,7 @@ const UserHeader = ({ userHeaderData, isMe }: UserHeaderProps) => {
                         }
                     />
                 ) : (
-                    <div className="h-[250px] w-full rounded-lg bg-gradient-to-r from-indigo-200 via-red-200 to-yellow-100" />
+                    <div className="h-[200px] w-full rounded-lg bg-gradient-to-r from-indigo-200 via-red-200 to-yellow-100" />
                 )}
                 {user.image && (
                     <>

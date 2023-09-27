@@ -19,14 +19,14 @@ const RecentActivityCard = ({ user }: RecentActivityCardProps) => {
     return (
         <div>
             <div className="flex">
-                <p className="w-[77%] text-sm text-slate-600 dark:text-slate-300">
+                <p className="text-sm text-slate-600 dark:text-slate-300">
                     Recent activity
                 </p>
                 <Link
                     href="/[username]/activity"
                     as={`/@${user.name}/activity`}
                 >
-                    <p className="ml-1 mt-1 cursor-pointer text-xs font-normal text-crumble underline">
+                    <p className="ml-4 mt-[2px] flex cursor-pointer text-xs font-normal text-crumble underline">
                         See more
                     </p>
                 </Link>

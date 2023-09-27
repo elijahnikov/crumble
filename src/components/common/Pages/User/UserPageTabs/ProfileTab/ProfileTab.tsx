@@ -18,6 +18,8 @@ const ProfileTab = ({
                     <FavouriteMovies user={user} isMe={isMe} />
                     <div className="h-[20px]" />
                     <RecentlyWatched user={user} isMe={isMe} />
+                    <div className="h-[20px]" />
+                    <RecentlyWatched user={user} isMe={isMe} />
                 </div>
                 <div className="w-[30%] px-4 pt-2">
                     <RecentActivityCard user={user} />

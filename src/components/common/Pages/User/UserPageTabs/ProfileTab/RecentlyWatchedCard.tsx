@@ -44,12 +44,12 @@ const RecentlyWatched = ({
 
     return (
         <div>
-            <div className="flex w-full">
-                <p className="w-[90%] text-sm text-slate-600 dark:text-slate-300">
+            <div className="flex">
+                <p className="text-sm text-slate-600 dark:text-slate-300">
                     Recently watched
                 </p>
                 <Link href="/[username]/watched" as={`/@${user.name}/watched`}>
-                    <p className="ml-1 mt-1 cursor-pointer text-xs font-normal text-crumble underline">
+                    <p className="ml-4 mt-[2px] flex cursor-pointer text-xs font-normal text-crumble underline">
                         See more
                     </p>
                 </Link>
