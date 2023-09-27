@@ -2,6 +2,7 @@ import { z } from "zod";
 
 export const listsSchema = z.object({
     limit: z.number().optional(),
+    username: z.string().optional(),
     cursor: z.object({ id: z.string(), createdAt: z.date() }).optional(),
     orderBy: z.string().optional(),
     orderDirection: z.enum(["desc", "asc"]).optional(),

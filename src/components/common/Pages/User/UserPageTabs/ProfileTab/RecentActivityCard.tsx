@@ -19,13 +19,13 @@ const RecentActivityCard = ({ user }: RecentActivityCardProps) => {
         <div>
             <div className="flex">
                 <p className="w-[82%] text-sm text-slate-600 dark:text-slate-300">
-                    Recent Activity
+                    Recent activity
                 </p>
             </div>
             <div className="border-b pt-1 dark:border-slate-500" />
             <div>
                 <div className="mx-auto flex justify-center pt-2 text-center">
-                    {isLoading && <LoadingSpinner />}
+                    {isLoading && <LoadingSpinner size={30} />}
                 </div>
                 {data && (
                     <div>

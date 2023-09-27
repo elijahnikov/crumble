@@ -1,7 +1,8 @@
 import { type RouterOutputs } from "@/utils/api";
-import FavouriteMovies from "./FavouriteMovies";
+import FavouriteMovies from "./FavouriteMoviesCard";
 import RecentActivityCard from "./RecentActivityCard";
 import RecentlyWatched from "./RecentlyWatchedCard";
+import RecentListsCard from "./RecentListsCard";
 
 const ProfileTab = ({
     user,
@@ -20,6 +21,8 @@ const ProfileTab = ({
                 </div>
                 <div className="w-[30%] px-4 pt-2">
                     <RecentActivityCard user={user} />
+                    <div className="h-[40px]" />
+                    <RecentListsCard user={user} />
                 </div>
             </div>
         </div>

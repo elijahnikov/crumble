@@ -23,6 +23,7 @@ export const listRouter = createTRPCRouter({
                     orderBy,
                     dateSortBy,
                     orderDirection = "desc",
+                    username,
                 },
             }) => {
                 const currentUserId = ctx.session?.user.id;
@@ -45,6 +46,12 @@ export const listRouter = createTRPCRouter({
                                   createdAt: {
                                       lte: new Date(),
                                       gte: dateSortBy,
+                                  },
+                              }
+                            : username
+                            ? {
+                                  user: {
+                                      name: username,
                                   },
                               }
                             : {},
