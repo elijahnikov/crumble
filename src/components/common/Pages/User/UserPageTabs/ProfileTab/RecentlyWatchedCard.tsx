@@ -3,24 +3,25 @@ import Link from "next/link";
 import Image from "next/image";
 import LoadingSpinner from "@/components/common/LoadingSpinner/LoadingSpinner";
 
-const FavouriteMovies = ({
+const RecentlyWatched = ({
     user,
     isMe,
 }: {
     user: NonNullable<RouterOutputs["user"]["getUser"]>;
     isMe?: boolean;
 }) => {
-    const { data: favouriteMovies, isLoading: favouriteMoviesLoading } =
-        api.user.getFavouriteMoviesForUser.useQuery({
+    const { data: watched, isLoading: recentlyWatchedLoading } =
+        api.watched.watched.useQuery({
             username: user.name!,
+            limit: 5,
         });
 
-    if (favouriteMoviesLoading) {
+    if (recentlyWatchedLoading) {
         return (
             <div>
                 <div className="flex">
                     <p className="w-full text-sm text-slate-600 dark:text-slate-300">
-                        Favourite movies
+                        Recently watched
                     </p>
                 </div>
                 <div className="border-b pt-1 dark:border-slate-500" />
@@ -31,11 +32,11 @@ const FavouriteMovies = ({
         );
     }
 
-    if (!favouriteMovies) {
+    if (!watched) {
         return (
             <div className="flex">
                 <p className="w-full text-sm text-slate-600 dark:text-slate-300">
-                    Favourite movies
+                    Recently watched
                 </p>
             </div>
         );
@@ -44,23 +45,18 @@ const FavouriteMovies = ({
     return (
         <div>
             <div className="flex">
-                <p className="w-full text-sm text-slate-600 dark:text-slate-300">
-                    Favourite movies
+                <p className="w-[91%] text-sm text-slate-600 dark:text-slate-300">
+                    Recently watched
                 </p>
-                {isMe && (
-                    <Link
-                        href="/[username]/settings"
-                        as={`/@${user.name}/settings`}
-                    >
-                        <p className="mt-1 cursor-pointer text-xs font-normal text-crumble underline">
-                            Edit
-                        </p>
-                    </Link>
-                )}
+                <Link href="/[username]/watched" as={`/@${user.name}/watched`}>
+                    <p className="ml-1 mt-1 cursor-pointer text-xs font-normal text-crumble underline">
+                        See more
+                    </p>
+                </Link>
             </div>
             <div className="border-b pt-1 dark:border-slate-500" />
 
-            {favouriteMovies.length === 0 ? (
+            {watched.watched.length === 0 ? (
                 <p className="pt-1 text-sm font-normal">
                     Showcase your favourite films here...
                     <Link
@@ -74,16 +70,16 @@ const FavouriteMovies = ({
                 </p>
             ) : (
                 <div className="mt-2 h-max w-full columns-5 gap-2">
-                    {favouriteMovies?.slice(0, 5).map(({ movie, id }) => (
+                    {watched.watched.slice(0, 5).map((w) => (
                         <div
-                            key={id}
+                            key={w.id}
                             className=" break-inside-avoid-column pb-5"
                         >
                             <div className="column group flow-root cursor-pointer rounded-md border-[1px] border-gray-200 dark:border-brand-light">
-                                {movie.poster ? (
+                                {w.poster ? (
                                     <Link
                                         href="/movie/[id]/"
-                                        as={`/movie/${movie.movieId}`}
+                                        as={`/movie/${w.movieId}`}
                                     >
                                         <Image
                                             className="rounded-md"
@@ -94,8 +90,8 @@ const FavouriteMovies = ({
                                                 width: "100%",
                                                 height: "auto",
                                             }}
-                                            alt={`${movie.title}`}
-                                            src={`https://image.tmdb.org/t/p/w500${movie.poster}`}
+                                            alt={`${w.movieTitle}`}
+                                            src={`https://image.tmdb.org/t/p/w500${w.poster}`}
                                         />
                                     </Link>
                                 ) : (
@@ -112,4 +108,4 @@ const FavouriteMovies = ({
     );
 };
 
-export default FavouriteMovies;
+export default RecentlyWatched;

@@ -23,7 +23,7 @@ const ListEntryActivity = ({
                 added{" "}
                 <Link
                     href={{
-                        pathname: "/film/[id]",
+                        pathname: "/movie/[id]",
                         query: {
                             id: activity.listEntry?.movie.movieId,
                         },

@@ -78,7 +78,7 @@ const SingleReviewView = ({ review }: SingleReviewViewProps) => {
                         <div className="flex space-x-2">
                             <Link
                                 href={{
-                                    pathname: "/film/[id]",
+                                    pathname: "/movie/[id]",
                                     query: {
                                         id: reviewData.movieId,
                                     },

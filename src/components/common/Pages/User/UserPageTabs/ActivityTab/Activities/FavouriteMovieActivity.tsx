@@ -23,7 +23,7 @@ const FavouriteMovieActivity = ({
                 added{" "}
                 <Link
                     href={{
-                        pathname: "/film/[id]",
+                        pathname: "/movie/[id]",
                         query: {
                             id: activity.favouriteMovie?.movieId,
                         },

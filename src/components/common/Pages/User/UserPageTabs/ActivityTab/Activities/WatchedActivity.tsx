@@ -23,7 +23,7 @@ const WatchedActivity = ({
                 watched{" "}
                 <Link
                     href={{
-                        pathname: "/film/[id]",
+                        pathname: "/movie/[id]",
                         query: {
                             id: activity.watched?.movieId,
                         },

@@ -223,7 +223,7 @@ const SingleListView = ({ list }: SingleListViewProps) => {
                                                             <Link
                                                                 href={{
                                                                     pathname:
-                                                                        "/film/[id]",
+                                                                        "/movie/[id]",
                                                                     query: {
                                                                         id: movie.movieId,
                                                                     },

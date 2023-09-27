@@ -24,7 +24,7 @@ const ReviewActivity = ({
                 reviewed{" "}
                 <Link
                     href={{
-                        pathname: "/film/[id]",
+                        pathname: "/movie/[id]",
                         query: {
                             id: activity.review?.movieId,
                         },
