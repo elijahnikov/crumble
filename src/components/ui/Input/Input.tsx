@@ -5,61 +5,69 @@ import { type InputHTMLAttributes } from "react";
 import { type IconType } from "react-icons";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 
-const input = cva(["py-2 px-3", "rounded-lg", "border-[1px]", "outline-none"], {
-    variants: {
-        intent: {
-            default: [
-                "placeholder-ink-lighter text-black",
-                "dark:placeholder-sky-dark dark:bg-black dark:text-white",
-            ],
-        },
-        size: {
-            base: "py-2",
-            sm: "text-sm",
-            large: "py-4",
-        },
-        fullWidth: {
-            true: "w-[100%]",
-        },
-        disabled: {
-            true: [
-                "placeholder-sky-base text-sky-dark border-sky-lighter bg-sky-lightest cursor-not-allowed pointer-events-none",
-                "dark:placeholder:ink-base dark:text-ink-base dark:border-ink-dark dark:bg-ink-darker",
-            ],
-        },
-        error: {
-            true: "border-red-500 dark:border-red-500",
-        },
-    },
-    compoundVariants: [
-        {
-            disabled: true,
-            intent: "default",
-            className: " bg-gray-200 dark:bg-gray-950 text-red-400",
-        },
-        {
-            disabled: false,
-            intent: "default",
-            className: "bg-white dark:bg-black",
-        },
-        {
-            error: true,
-            intent: "default",
-            className:
-                "border-red-500 dark:border-red-500 focus:border-red-500 dark:focus:border-red-500",
-        },
-        {
-            error: false,
-            intent: "default",
-            className:
-                "border-sky-light dark:border-slate-800 dark:border-slate-800",
-        },
+const input = cva(
+    [
+        "py-2 px-3",
+        "rounded-lg",
+        "border-[1px] dark:border-[#212227]",
+        "outline-none",
     ],
-    defaultVariants: {
-        size: "base",
-        intent: "default",
-    },
-});
+    {
+        variants: {
+            intent: {
+                default: [
+                    "placeholder-ink-lighter text-black",
+                    "dark:placeholder-sky-dark dark:bg-black bg-brand-white dark:text-white",
+                ],
+            },
+            size: {
+                base: "py-2",
+                sm: "text-sm",
+                large: "py-4",
+            },
+            fullWidth: {
+                true: "w-[100%]",
+            },
+            disabled: {
+                true: [
+                    "placeholder-sky-base text-sky-dark border-sky-lighter bg-sky-lightest cursor-not-allowed pointer-events-none",
+                    "dark:placeholder:ink-base dark:text-ink-base dark:border-ink-dark dark:bg-ink-darker",
+                ],
+            },
+            error: {
+                true: "border-red-500 dark:border-red-500",
+            },
+        },
+        compoundVariants: [
+            {
+                disabled: true,
+                intent: "default",
+                className: " bg-gray-200 dark:bg-gray-950 text-red-400",
+            },
+            {
+                disabled: false,
+                intent: "default",
+                className: "bg-white dark:bg-black",
+            },
+            {
+                error: true,
+                intent: "default",
+                className:
+                    "border-red-500 dark:border-red-500 focus:border-red-500 dark:focus:border-red-500",
+            },
+            {
+                error: false,
+                intent: "default",
+                className:
+                    "border-sky-light dark:border-slate-800 dark:border-slate-800",
+            },
+        ],
+        defaultVariants: {
+            size: "base",
+            intent: "default",
+        },
+    }
+);
 
 interface InputProps
     extends Omit<
@@ -76,7 +84,6 @@ interface InputProps
     prefix?: IconType | string;
     suffix?: IconType | string;
     clearable?: boolean;
-    change?: (text: string) => void;
     kbd?: JSX.Element;
 }
 
@@ -96,23 +103,18 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             placeholder,
             fullWidth,
             value,
-            change,
             label,
             kbd: Kbd,
             ...props
         },
-        ref
+        _
     ) => {
         const inputRef = useRef<HTMLInputElement | null>(null);
-
-        const clearInput = () => {
-            change && change("");
-        };
 
         const kbdPadding = Kbd && Object.keys(Kbd.props).length;
 
         return (
-            <>
+            <div>
                 {/* if label is passed */}
                 {label && (
                     <div className="relative top-[-2px] ml-1">
@@ -149,7 +151,6 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
                         placeholder={placeholder}
                         {...props}
                         value={value}
-                        onChange={(e) => change && change(e.target.value)}
                         className={input({
                             intent,
                             size,
@@ -165,19 +166,6 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
                     >
                         {children}
                     </input>
-                    {/* if clearable is passed */}
-                    {clearable && value && !disabled && (
-                        <AiOutlineCloseCircle
-                            onClick={() => clearInput()}
-                            className={`${
-                                Suffix && fullWidth
-                                    ? "right-[20%] mr-12"
-                                    : Suffix
-                                    ? "right-[21%]"
-                                    : "right-[1%]"
-                            } absolute right-[1%] top-[50%] h-10 w-10 -translate-y-2/4 cursor-pointer rounded-lg bg-white fill-ink-light pl-2 pr-3 dark:bg-black dark:fill-slate-500`}
-                        />
-                    )}
                     {Kbd && (
                         <div
                             className={`${
@@ -218,7 +206,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
                         </p>
                     )}
                 </div>
-            </>
+            </div>
         );
     }
 );

@@ -16,5 +16,5 @@ export default function useKeyPress(key: string, execute: () => void) {
         return () => {
             document.removeEventListener("keydown", executeFunction, false);
         };
-    }, []);
+    }, [executeFunction]);
 }

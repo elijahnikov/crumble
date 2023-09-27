@@ -1,16 +1,17 @@
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import { newReviewSchema, reviewsSchema } from "../schemas/review";
-import { Ratelimit } from "@upstash/ratelimit";
-import { Redis } from "@upstash/redis";
+// import { Ratelimit } from "@upstash/ratelimit";
+// import { Redis } from "@upstash/redis";
 import { TRPCError } from "@trpc/server";
+import { createNewActivity } from "@/server/helpers/createActivity";
 
-const ratelimit = new Ratelimit({
-    redis: Redis.fromEnv(),
-    limiter: Ratelimit.slidingWindow(1, "30 s"),
-    analytics: true,
-    prefix: "@upstash/ratelimit",
-});
+// const ratelimit = new Ratelimit({
+//     redis: Redis.fromEnv(),
+//     limiter: Ratelimit.slidingWindow(1, "30 s"),
+//     analytics: true,
+//     prefix: "@upstash/ratelimit",
+// });
 
 export const reviewRouter = createTRPCRouter({
     //
@@ -18,53 +19,85 @@ export const reviewRouter = createTRPCRouter({
     //
     reviews: publicProcedure
         .input(reviewsSchema)
-        .query(async ({ ctx, input: { limit = 10, cursor } }) => {
-            const currentUserId = ctx.session?.user.id;
-            const data = await ctx.prisma.review.findMany({
-                take: limit + 1,
-                cursor: cursor ? { createdAt_id: cursor } : undefined,
-                orderBy: [{ createdAt: "desc" }, { id: "desc" }],
-                include: {
-                    _count: {
-                        select: { reviewLikes: true, reviewComments: true },
-                    },
-                    reviewLikes:
-                        currentUserId === null
-                            ? false
-                            : { where: { userId: currentUserId } },
-                    user: {
-                        select: {
-                            id: true,
-                            name: true,
-                            displayName: true,
-                            image: true,
+        .query(
+            async ({
+                ctx,
+                input: {
+                    limit = 10,
+                    cursor,
+                    movieId,
+                    orderBy,
+                    dateSortBy,
+                    orderDirection = "desc",
+                },
+            }) => {
+                const currentUserId = ctx.session?.user.id;
+                const data = await ctx.prisma.review.findMany({
+                    take: limit + 1,
+                    where:
+                        dateSortBy && orderBy !== "createdAt"
+                            ? {
+                                  createdAt: {
+                                      lte: new Date(),
+                                      gte: dateSortBy,
+                                  },
+                              }
+                            : movieId
+                            ? { movieId }
+                            : {},
+                    cursor: cursor ? { createdAt_id: cursor } : undefined,
+                    orderBy:
+                        orderBy && orderBy !== "createdAt"
+                            ? {
+                                  [orderBy]: {
+                                      _count: orderDirection,
+                                  },
+                              }
+                            : [{ createdAt: orderDirection }, { id: "desc" }],
+                    include: {
+                        _count: {
+                            select: { reviewLikes: true, reviewComments: true },
+                        },
+                        reviewLikes:
+                            currentUserId === null
+                                ? false
+                                : { where: { userId: currentUserId } },
+                        user: {
+                            select: {
+                                id: true,
+                                name: true,
+                                displayName: true,
+                                image: true,
+                            },
                         },
                     },
-                },
-            });
-            let nextCursor: typeof cursor | undefined;
-            if (data.length > limit) {
-                const nextItem = data.pop();
-                if (nextItem != null) {
-                    nextCursor = {
-                        id: nextItem.id,
-                        createdAt: nextItem.createdAt,
-                    };
+                });
+                let nextCursor: typeof cursor | undefined;
+                if (data.length > limit) {
+                    const nextItem = data.pop();
+                    if (nextItem != null) {
+                        nextCursor = {
+                            id: nextItem.id,
+                            createdAt: nextItem.createdAt,
+                        };
+                    }
                 }
+                return {
+                    reviews: data.map((review) => {
+                        return {
+                            ...review,
+                            likeCount: review._count.reviewLikes,
+                            commentCount: review._count.reviewComments,
+                            user: { ...review.user },
+                            likedByMe:
+                                review.reviewLikes.length > 0 &&
+                                ctx.session?.user.id,
+                        };
+                    }),
+                    nextCursor,
+                };
             }
-            return {
-                reviews: data.map((review) => {
-                    return {
-                        ...review,
-                        likeCount: review._count.reviewLikes,
-                        commentCount: review._count.reviewComments,
-                        user: { ...review.user },
-                        likedByMe: review.reviewLikes.length > 0,
-                    };
-                }),
-                nextCursor,
-            };
-        }),
+        ),
     //
     // Get specific review by id
     //
@@ -107,7 +140,8 @@ export const reviewRouter = createTRPCRouter({
                     likeCount: data?._count.reviewLikes,
                     commentCount: data._count.reviewComments,
                     user: { ...data.user },
-                    likedByMe: data.reviewLikes.length > 0,
+                    likedByMe:
+                        data.reviewLikes.length > 0 && ctx.session?.user.id,
                 },
             };
         }),
@@ -155,6 +189,13 @@ export const reviewRouter = createTRPCRouter({
                     ...input,
                 },
             });
+            await createNewActivity({
+                currentUserId: userId,
+                action: "Created a new review for {1} and rated it {2}/5",
+                activity: "reviewId",
+                id: review.id,
+            });
+
             return review;
         }),
     //
@@ -224,10 +265,13 @@ export const reviewRouter = createTRPCRouter({
                     .optional(),
             })
         )
-        .query(async ({ input: { limit = 10, cursor }, ctx }) => {
+        .query(async ({ input: { limit = 10, cursor, id }, ctx }) => {
             const currentUserId = ctx.session?.user.id;
 
             const reviewComments = await ctx.prisma.reviewComment.findMany({
+                where: {
+                    reviewId: id,
+                },
                 take: limit + 1,
                 cursor: cursor ? { createdAt_id: cursor } : undefined,
                 orderBy: [{ createdAt: "desc" }, { id: "desc" }],
@@ -272,7 +316,9 @@ export const reviewRouter = createTRPCRouter({
                         linkedToId: comment.reviewId,
                         user: comment.user,
                         likeCount: comment._count.reviewCommentLikes,
-                        likedByMe: comment.reviewCommentLikes?.length > 0,
+                        likedByMe:
+                            comment.reviewCommentLikes?.length > 0 &&
+                            ctx.session?.user.id,
                         createdAt: comment.createdAt,
                     };
                 }),
@@ -316,6 +362,7 @@ export const reviewRouter = createTRPCRouter({
                 },
             });
         }),
+    //
     // Toggle like for review comment
     //
     toggleReviewCommentLike: protectedProcedure

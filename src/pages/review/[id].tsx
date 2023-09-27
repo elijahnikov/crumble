@@ -27,7 +27,7 @@ const SingleReviewPage: NextPage<PageProps> = ({ id }) => {
     } = api.review.infiniteCommentFeed.useInfiniteQuery(
         {
             limit: 10,
-            id: data!.review.id!,
+            id: data!.review.id,
         },
         {
             getNextPageParam: (lastPage) => lastPage.nextCursor,
@@ -46,7 +46,7 @@ const SingleReviewPage: NextPage<PageProps> = ({ id }) => {
                 toast.success(`Deleted your comment.`, {
                     position: "bottom-center",
                     duration: 4000,
-                    className: "dark:bg-brand-light dark:text-white text-black",
+                    className: "dark:bg-brand dark:text-white text-black",
                 });
                 await trpcUtils.review.infiniteCommentFeed.invalidate();
             },
@@ -63,7 +63,12 @@ const SingleReviewPage: NextPage<PageProps> = ({ id }) => {
     return (
         <>
             <Head>
-                <title>{`@${data.review.user.name} - ${data.review.movieTitle}`}</title>
+                <title>{`@${data.review.user.name}'s ${
+                    data.review.movieTitle
+                } (${data.review.movieReleaseYear.slice(
+                    0,
+                    4
+                )}) Review • Crumble`}</title>
             </Head>
             <Layout>
                 <SingleReviewView review={data} />

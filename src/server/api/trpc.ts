@@ -1,3 +1,4 @@
+import { s3 } from "../aws/s3";
 /**
  * YOU PROBABLY DON'T NEED TO EDIT THIS FILE, UNLESS:
  * 1. You want to modify request context (see Part 1).
@@ -9,7 +10,7 @@
 
 import { initTRPC, TRPCError } from "@trpc/server";
 import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
-import { type Session } from "next-auth";
+// import { type Session } from "next-auth";
 import superjson from "superjson";
 import { ZodError } from "zod";
 import { getServerAuthSession } from "@/server/auth";
@@ -23,9 +24,9 @@ import { prisma } from "@/server/db";
  * These allow you to access things when processing a request, like the database, the session, etc.
  */
 
-interface CreateContextOptions {
-    session: Session | null;
-}
+// interface CreateContextOptions {
+//     session: Session | null;
+// }
 
 /**
  * This helper generates the "internals" for a tRPC context. If you need to use it, you can export
@@ -60,6 +61,7 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
         session,
         userId,
         prisma,
+        s3,
     };
 };
 

@@ -1,4 +1,4 @@
-import { TRPCError } from "@trpc/server";
+import { createNewActivity } from "@/server/helpers/createActivity";
 import { createWatchedSchema, watchedSchema } from "../schemas/watched";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
@@ -44,27 +44,13 @@ export const watchedRouter = createTRPCRouter({
         .mutation(async ({ ctx, input }) => {
             const userId = ctx.session.user.id;
 
-            const check = await ctx.prisma.watched.findUnique({
-                where: {
-                    userId_movieId: {
-                        userId,
-                        movieId: input.movieId,
-                    },
-                },
-            });
-
-            if (check) {
-                throw new TRPCError({
-                    code: "BAD_REQUEST",
-                    message: "Movie is already watched.",
-                });
-            }
+            const { withReview, runtime, ...restInput } = input;
 
             const watched = await ctx.prisma.watched.upsert({
                 where: {
                     userId_movieId: {
                         userId,
-                        movieId: input.movieId,
+                        movieId: restInput.movieId,
                     },
                 },
                 update: {
@@ -72,9 +58,31 @@ export const watchedRouter = createTRPCRouter({
                 },
                 create: {
                     userId,
-                    ...input,
+                    ...restInput,
                 },
             });
+            if (watched) {
+                await ctx.prisma.user.update({
+                    where: {
+                        id: userId,
+                    },
+                    data: {
+                        totalHoursWatched: {
+                            increment: runtime,
+                        },
+                        totalMoviesWatched: {
+                            increment: 1,
+                        },
+                    },
+                });
+            }
+            if (!withReview)
+                await createNewActivity({
+                    currentUserId: userId,
+                    action: "Watched {1}",
+                    activity: "watchedId",
+                    id: watched.id,
+                });
             return watched;
         }),
 });

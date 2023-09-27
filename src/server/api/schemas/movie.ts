@@ -8,6 +8,27 @@ export const movieSchema = z.object({
     overview: z.string().nullable(),
     backdrop: z.string().optional(),
 });
+
+export const createMovieSchema = z.object({
+    movieId: z.number(),
+    title: z.string(),
+    releaseDate: z.string(),
+    poster: z.string().optional(),
+    overview: z.string().nullable(),
+    backdrop: z.string().optional(),
+    fromReview: z.boolean().default(false),
+    rating: z.number().default(0),
+});
+
+export const extraMovieDetailsSchema = z.object({
+    runtime: z.number(),
+});
+
+export const createManyMoviesSchema = createMovieSchema
+    .omit({ fromReview: true })
+    .array();
+
+export type IMovieDetails = z.infer<typeof extraMovieDetailsSchema>;
 export type IMovie = z.infer<typeof movieSchema>;
 
 export const movieFetchSchema = z
@@ -39,3 +60,8 @@ export const movieFetchSchema = z
         })
     );
 export type IMovieFetch = z.infer<typeof movieFetchSchema>;
+
+export const movieDetailsFetchSchema = z.object({
+    runtime: z.number(),
+});
+export type IMovieDetailsFetch = z.infer<typeof movieDetailsFetchSchema>;

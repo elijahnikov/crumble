@@ -1,12 +1,13 @@
 import { api, type RouterOutputs } from "@/utils/api";
 import clxsm from "@/utils/clsxm";
 import { shortMonthDateFormat } from "@/utils/general/dateFormat";
-import useIsAuthenticated from "@/utils/hooks/useIsAuthenticated";
 import Image from "next/image";
 import React from "react";
 import { BsHeartFill } from "react-icons/bs";
 import { Rating } from "react-simple-star-rating";
-import Tags from "../../../Tags/Tags";
+import ShowTags from "../../../Tags/ShowTags";
+import Link from "next/link";
+import { Container } from "@/components/common/Layout/Layout";
 
 interface SingleReviewViewProps {
     review: RouterOutputs["review"]["review"];
@@ -22,32 +23,29 @@ const SingleReviewView = ({ review }: SingleReviewViewProps) => {
             await trpcUtils.review.review.invalidate();
         },
     });
-    const isAuthed = useIsAuthenticated();
 
     const handleToggleLike = () => {
         toggleLike.mutate({ id: review.review.id });
     };
     return (
         <>
-            <div className="rounded-md border-[1px] border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-brand-light">
-                <div className="w-[100%] pb-5">
-                    <span className="flex w-[100%] text-sm dark:text-slate-200">
-                        Review by{" "}
-                        <p className="ml-1 font-semibold dark:text-slate-300">
-                            {" "}
-                            {author.name}
-                        </p>
-                        {author.image && (
-                            <Image
-                                className="ml-1 rounded-full"
-                                src={author.image}
-                                alt={author.name!}
-                                width={20}
-                                height={20}
-                            />
-                        )}
-                    </span>
-                </div>
+            <Container>
+                <span className="mb-5 flex w-[100%] text-sm dark:text-slate-200">
+                    Review by{" "}
+                    <p className="ml-1 font-semibold dark:text-slate-300">
+                        {" "}
+                        {author.name}
+                    </p>
+                    {author.image && (
+                        <Image
+                            className="ml-1 rounded-full"
+                            src={author.image}
+                            alt={author.name!}
+                            width={20}
+                            height={20}
+                        />
+                    )}
+                </span>
                 <div className="flex">
                     <div className="w-[25%]">
                         {reviewData.moviePoster && (
@@ -74,11 +72,20 @@ const SingleReviewView = ({ review }: SingleReviewViewProps) => {
                                 <p>likes</p>
                             </div>
                         </div>
-                        {reviewData.tags && <Tags tags={reviewData.tags} />}
+                        {reviewData.tags && <ShowTags tags={reviewData.tags} />}
                     </div>
-                    <div className="ml-10 w-[80%]">
+                    <div className="ml-5 w-[80%]">
                         <div className="flex space-x-2">
-                            <h2>{reviewData.movieTitle}</h2>
+                            <Link
+                                href={{
+                                    pathname: "/movie/[id]",
+                                    query: {
+                                        id: reviewData.movieId,
+                                    },
+                                }}
+                            >
+                                <h2>{reviewData.movieTitle}</h2>
+                            </Link>
                             <p className="mt-[7px] text-lg text-slate-500 dark:text-slate-400">
                                 {reviewData.movieReleaseYear.slice(0, 4)}
                             </p>
@@ -104,7 +111,7 @@ const SingleReviewView = ({ review }: SingleReviewViewProps) => {
                         </p>
                     </div>
                 </div>
-            </div>
+            </Container>
         </>
     );
 };

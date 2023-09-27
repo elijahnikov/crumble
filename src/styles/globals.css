@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Serif+Display&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -53,9 +54,16 @@
     .min-h-main {
         @apply min-h-[calc(100vh-56px)];
     }
+
+    html {
+        @apply bg-brand-white dark:bg-brand;
+    }
 }
 
 @layer utilities {
+    .z-60 {
+        z-index: 60;
+    }
     .animated-underline {
         background-image: linear-gradient(#33333300, #33333300),
             linear-gradient(

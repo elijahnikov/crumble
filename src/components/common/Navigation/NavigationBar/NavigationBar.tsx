@@ -3,9 +3,13 @@ import Image from "next/image";
 import { useSession } from "next-auth/react";
 import clxsm from "@/utils/clsxm";
 import { useEffect, useState } from "react";
-import CreateReviewModal from "../CreateReviewModal/CreateReviewModal";
-import DarkModeSwitch from "../DarkModeSwitch/DarkModeSwitch";
+import DarkModeSwitch from "../../DarkModeSwitch/DarkModeSwitch";
 import navigation from "@/utils/data/navLinks";
+import SignIn from "../../SignIn/SignIn";
+import CreateModalMenu from "../../CreateModalMenu/CreateModalMenu";
+import AvatarMenu from "../AvatarMenu/AvatarMenu";
+import MoreMenu from "../MoreMenu/MoreMenu";
+import { LOGO_URL } from "@/constants";
 
 const NavigationBar = () => {
     const [currentPath, setCurrentPath] = useState("");
@@ -28,7 +32,7 @@ const NavigationBar = () => {
                             alt="Supercrumble logo"
                             width={40}
                             height={40}
-                            src="https://i.ibb.co/r4WtSVc/supercrumble800x800.png"
+                            src={LOGO_URL}
                         />
                         <h2 className="my-auto font-bold text-black dark:text-white">
                             Crumble{" "}
@@ -44,18 +48,28 @@ const NavigationBar = () => {
                             key={item.name}
                             href={item.href}
                             className={clxsm(
-                                currentPath === item.href
-                                    ? "bg-gray-100 text-gray-900 hover:bg-gray-100 hover:text-gray-900"
+                                currentPath === item.href ||
+                                    (item.includeUrls &&
+                                        item.includeUrls?.includes(
+                                            currentPath.split("/")[1] ?? ""
+                                        ))
+                                    ? "bg-gray-100 text-gray-900 hover:bg-gray-100 hover:text-gray-900 dark:bg-brand dark:text-white"
                                     : "text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-white dark:hover:bg-brand",
                                 "group flex items-center rounded-md px-2 py-2 text-sm font-medium"
                             )}
                         >
-                            {item.icon && (
+                            {currentPath === item.href ? (
+                                <item.hoverIcon
+                                    className={clxsm(
+                                        "dark:fill-white",
+                                        "mr-3 h-6 w-6 flex-shrink-0 text-brand"
+                                    )}
+                                    aria-hidden="true"
+                                />
+                            ) : (
                                 <item.icon
                                     className={clxsm(
-                                        currentPath === item.href
-                                            ? "text-gray-500"
-                                            : " dark:text-white",
+                                        "dark:fill-white",
                                         "mr-3 h-6 w-6 flex-shrink-0 text-brand"
                                     )}
                                     aria-hidden="true"
@@ -65,24 +79,22 @@ const NavigationBar = () => {
                             <span className="flex-1">{item.name}</span>
                         </Link>
                     ))}
+                    <MoreMenu />
                 </nav>
             </div>
-            <div className="mb-5 text-center">
-                <CreateReviewModal />
-            </div>
-            {authenticated && (
+            {authenticated ? (
+                <div className="mb-5 text-center">
+                    <CreateModalMenu />
+                </div>
+            ) : null}
+            {authenticated ? (
                 <div className="flex flex-shrink-0 border-t border-gray-200 p-4 dark:border-gray-700">
                     <div className="group block w-full flex-shrink-0">
                         <div className="flex items-center">
-                            {session.user.image && (
-                                <Image
-                                    width={50}
-                                    height={50}
-                                    className="inline-block h-9 w-9 rounded-full"
-                                    src={session.user.image}
-                                    alt={"Profile picture"}
-                                />
-                            )}
+                            <AvatarMenu
+                                username={session.user.name!}
+                                avatar={session.user.image}
+                            />
                             <div className="ml-3 flex">
                                 <p className="mt-[5px] text-sm font-medium text-gray-700 dark:text-white">
                                     {session?.user.name}
@@ -91,6 +103,10 @@ const NavigationBar = () => {
                             </div>
                         </div>
                     </div>
+                </div>
+            ) : (
+                <div className="mb-5 text-center">
+                    <SignIn callbackUrl={"/"} />
                 </div>
             )}
         </div>

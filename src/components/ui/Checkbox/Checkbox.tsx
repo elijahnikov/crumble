@@ -1,5 +1,5 @@
-import { VariantProps, cva } from "class-variance-authority";
-import React, { InputHTMLAttributes, useRef } from "react";
+import { type VariantProps, cva } from "class-variance-authority";
+import React, { type InputHTMLAttributes, useRef } from "react";
 
 const checkbox = cva([], {
     variants: {

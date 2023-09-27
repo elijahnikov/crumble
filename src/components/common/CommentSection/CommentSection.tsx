@@ -8,6 +8,7 @@ import { BsHeartFill, BsThreeDots } from "react-icons/bs";
 import { Menu, Transition } from "@headlessui/react";
 import clxsm from "@/utils/clsxm";
 import InfiniteScroll from "react-infinite-scroll-component";
+import toast from "react-hot-toast";
 
 interface Comment {
     id: string;
@@ -20,7 +21,7 @@ interface Comment {
         image: string | null;
     };
     likeCount: number;
-    likedByMe: boolean;
+    likedByMe: string | false | undefined;
     createdAt: Date;
 }
 
@@ -68,42 +69,41 @@ const CommentSection = ({
 
     return (
         <>
-            <div className="rounded-md border-[1px] border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-brand-light">
-                <p>{commentCount} comments</p>
-                {authenticated && (
-                    <>
-                        <InputArea
-                            className="mt-2 h-[80px]"
-                            fullWidth
-                            value={commentText}
-                            change={setCommentText}
-                            placeholder={`Leave a comment as ${session?.user.name}`}
-                        />
-                        <Button
-                            className="float-right"
-                            onClick={handlePostComment}
-                        >
-                            Post
-                        </Button>
-                    </>
-                )}
-                <hr className="mt-12 border-gray-200 dark:border-gray-700" />
-                <InfiniteScroll
-                    dataLength={comments.length}
-                    next={fetchNewComments}
-                    hasMore={hasMore!}
-                    loader={"Loading..."}
-                >
-                    {comments.map((comment) => (
-                        <SingleComment
-                            deleteComment={deleteComment}
-                            toggleLike={toggleLike}
-                            comment={comment}
-                            currentUserId={session?.user.id}
-                            key={comment.id}
-                        />
-                    ))}
-                </InfiniteScroll>
+            <div className="align-center flex justify-center rounded-md border-[1px] border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-brand-light">
+                <div className="w-[90%]">
+                    <p>{commentCount} comments</p>
+                    {authenticated && (
+                        <div>
+                            <InputArea
+                                className="mt-2 h-[80px]"
+                                fullWidth
+                                value={commentText}
+                                onChange={(e) => setCommentText(e.target.value)}
+                                placeholder={`Leave a comment as ${session?.user.name}`}
+                            />
+                            <Button onClick={handlePostComment}>Post</Button>
+                        </div>
+                    )}
+
+                    <InfiniteScroll
+                        dataLength={comments.length}
+                        next={fetchNewComments}
+                        hasMore={hasMore!}
+                        loader={"Loading..."}
+                    >
+                        {comments.length > 0 &&
+                            comments.map((comment) => (
+                                <SingleComment
+                                    deleteComment={deleteComment}
+                                    toggleLike={toggleLike}
+                                    comment={comment}
+                                    currentUserId={session?.user.id}
+                                    key={comment.id}
+                                    authenticated={authenticated}
+                                />
+                            ))}
+                    </InfiniteScroll>
+                </div>
             </div>
         </>
     );
@@ -116,6 +116,7 @@ interface SingleCommentProps {
     deleteComment: (variables: { id: string }) => void;
     toggleLike: (variables: { id: string }) => void;
     currentUserId?: string;
+    authenticated: boolean;
 }
 
 const SingleComment = ({
@@ -123,15 +124,23 @@ const SingleComment = ({
     currentUserId,
     deleteComment,
     toggleLike,
+    authenticated,
 }: SingleCommentProps) => {
     const handleToggleLike = () => {
-        toggleLike({ id: comment.id });
+        if (authenticated) toggleLike({ id: comment.id });
+        else {
+            toast.error(`Please sign in to perform that action`, {
+                position: "bottom-center",
+                duration: 4000,
+                className: "dark:bg-brand dark:text-white text-black",
+            });
+        }
     };
 
     return (
-        <div className="mt-2 rounded-lg  p-2">
+        <div className="mt-10 w-full rounded-lg p-2">
             <div className="flex">
-                <div className="flex w-[100%]">
+                <div className="flex">
                     {comment.user.image && (
                         <Image
                             src={comment.user.image}

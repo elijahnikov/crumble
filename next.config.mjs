@@ -19,7 +19,13 @@ const config = {
         defaultLocale: "en",
     },
     images: {
-        domains: ["i.ibb.co", "cdn.discordapp.com", "image.tmdb.org"],
+        domains: [
+            "i.ibb.co",
+            "cdn.discordapp.com",
+            "image.tmdb.org",
+            "avatars.githubusercontent.com",
+            "fitnessappstorage.s3.eu-west-2.amazonaws.com",
+        ],
     },
 };
 
