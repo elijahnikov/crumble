@@ -13,7 +13,7 @@ const RecentlyWatched = ({
     const { data: watched, isLoading: recentlyWatchedLoading } =
         api.watched.watched.useQuery({
             username: user.name!,
-            limit: 5,
+            limit: 4,
         });
 
     if (recentlyWatchedLoading) {
@@ -61,7 +61,7 @@ const RecentlyWatched = ({
                     {user.name} has not watched any movies recently
                 </p>
             ) : (
-                <div className="mt-2 h-max w-full columns-5 gap-2">
+                <div className="mt-2 h-max w-full columns-4 gap-2">
                     {watched.watched.slice(0, 5).map((w) => (
                         <div
                             key={w.id}
