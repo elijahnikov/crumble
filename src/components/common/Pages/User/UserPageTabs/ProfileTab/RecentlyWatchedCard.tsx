@@ -48,7 +48,7 @@ const RecentlyWatched = ({
                 <p className="text-sm text-slate-600 dark:text-slate-300">
                     Recently watched
                 </p>
-                <Link href="/[username]/watched" as={`/@${user.name}/watched`}>
+                <Link href="/[username]/movies" as={`/@${user.name}/movies`}>
                     <p className="ml-4 mt-[2px] flex cursor-pointer text-xs font-normal text-crumble underline">
                         See more
                     </p>

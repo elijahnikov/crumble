@@ -3,6 +3,7 @@ import FavouriteMovies from "./FavouriteMoviesCard";
 import RecentActivityCard from "./RecentActivityCard";
 import RecentlyWatched from "./RecentlyWatchedCard";
 import RecentListsCard from "./RecentListsCard";
+import RecentReviewsCard from "./RecentReviewsCard";
 
 const ProfileTab = ({
     user,
@@ -19,7 +20,7 @@ const ProfileTab = ({
                     <div className="h-[20px]" />
                     <RecentlyWatched user={user} isMe={isMe} />
                     <div className="h-[20px]" />
-                    <RecentlyWatched user={user} isMe={isMe} />
+                    <RecentReviewsCard user={user} isMe={isMe} />
                 </div>
                 <div className="w-[2%]" />
                 <div className="w-[30%] px-4 pt-2">

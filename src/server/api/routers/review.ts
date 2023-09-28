@@ -13,6 +13,14 @@ import { createNewActivity } from "@/server/helpers/createActivity";
 //     prefix: "@upstash/ratelimit",
 // });
 
+type ReviewWhereType = Record<
+    string,
+    | object
+    | { lte: Date; gte: Date }
+    | { user: { name: string | undefined } }
+    | number
+>;
+
 export const reviewRouter = createTRPCRouter({
     //
     // Get all reviews
@@ -29,22 +37,27 @@ export const reviewRouter = createTRPCRouter({
                     orderBy,
                     dateSortBy,
                     orderDirection = "desc",
+                    username,
                 },
             }) => {
                 const currentUserId = ctx.session?.user.id;
+                const where: ReviewWhereType = {};
+                if (username) {
+                    where.user = {
+                        name: username,
+                    };
+                }
+                if (dateSortBy && orderBy !== "createdAt") {
+                    where.createdAt = {
+                        lte: new Date(),
+                    };
+                }
+                if (movieId) {
+                    where.movieId = movieId;
+                }
                 const data = await ctx.prisma.review.findMany({
                     take: limit + 1,
-                    where:
-                        dateSortBy && orderBy !== "createdAt"
-                            ? {
-                                  createdAt: {
-                                      lte: new Date(),
-                                      gte: dateSortBy,
-                                  },
-                              }
-                            : movieId
-                            ? { movieId }
-                            : {},
+                    where: where,
                     cursor: cursor ? { createdAt_id: cursor } : undefined,
                     orderBy:
                         orderBy && orderBy !== "createdAt"

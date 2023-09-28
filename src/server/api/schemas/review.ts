@@ -21,5 +21,6 @@ export const reviewsSchema = z.object({
     orderBy: z.string().optional(),
     orderDirection: z.enum(["desc", "asc"]).optional(),
     dateSortBy: z.date().optional(),
+    username: z.string().optional(),
 });
 export type IReviewsSchema = z.infer<typeof reviewsSchema>;
