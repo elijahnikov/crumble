@@ -40,7 +40,7 @@ const FollowingModal = ({
     return (
         <>
             <Modal open={open} onOpenChange={setOpen}>
-                <Modal.Content title="Followers">
+                <Modal.Content title="Following">
                     <>
                         {data?.isLoading ? (
                             <div className="flex w-full justify-center text-center">
