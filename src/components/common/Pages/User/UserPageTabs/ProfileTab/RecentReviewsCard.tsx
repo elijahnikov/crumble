@@ -16,6 +16,8 @@ const RecentReviewsCard = ({
     const { data: reviews, isLoading: recentlyWatchedLoading } =
         api.review.reviews.useQuery({
             limit: 5,
+            orderBy: "watchedOn",
+            orderDirection: "asc",
             username: user.name!,
         });
 
@@ -82,7 +84,7 @@ const ReviewRow = ({
     return (
         <>
             <div className="mt-5 flex">
-                <div className="cursor-pointer rounded-md border-[1px] border-gray-200 dark:border-brand-light">
+                <div className=" cursor-pointer rounded-md border-[1px] border-gray-200 dark:border-brand-light">
                     {review.moviePoster ? (
                         <Link
                             href="/movie/[id]/"
@@ -100,7 +102,7 @@ const ReviewRow = ({
                         <div className="mb-5 mt-5 text-center">?</div>
                     )}
                 </div>
-                <div className="ml-4">
+                <div className="ml-4 w-[80%]">
                     <Link href="/review/[id]/" as={`/review/${review.id}`}>
                         <div className="flex">
                             <h4 className="text-slate-700 dark:text-slate-200">
@@ -125,12 +127,14 @@ const ReviewRow = ({
                             fillColor="#EF4444"
                         />
                         <p className="ml-2 mt-[3px] text-xs font-normal text-slate-500  dark:text-slate-200 dark:text-slate-400">
-                            Watched on {shortMonthDateFormat(review.createdAt)}
+                            Watched on {shortMonthDateFormat(review.watchedOn!)}
                         </p>
                     </div>
                     <div>
                         <p className="text-md text-sm font-semibold text-slate-700 dark:text-slate-200 dark:text-slate-200">
-                            {review.text}
+                            {review.text.length > 150
+                                ? `${review.text.slice(0, 150)}...`
+                                : review.text}
                         </p>
                     </div>
                     <div className=" mb-2 mt-2 flex space-x-4">

@@ -61,11 +61,11 @@ export const reviewRouter = createTRPCRouter({
                     cursor: cursor ? { createdAt_id: cursor } : undefined,
                     orderBy:
                         orderBy && orderBy !== "createdAt"
-                            ? {
-                                  [orderBy]: {
-                                      _count: orderDirection,
+                            ? [
+                                  {
+                                      [orderBy]: orderDirection,
                                   },
-                              }
+                              ]
                             : [{ createdAt: orderDirection }, { id: "desc" }],
                     include: {
                         _count: {
