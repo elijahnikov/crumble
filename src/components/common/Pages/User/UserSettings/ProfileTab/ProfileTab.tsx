@@ -45,7 +45,6 @@ const ProfileTab = ({ user }: ProfileTabProps) => {
     const [imagePreview, setImagePreview] = useState<string | undefined>("");
     const [loadingUsernameCheck, setLoadingUsernameCheck] =
         useState<boolean>(false);
-    const [deletedMovieIds, setDeletedMovieIds] = useState<Array<number>>([]);
 
     const trpcUtils = api.useContext();
     const { update } = useSession();

@@ -1,5 +1,6 @@
 import Layout, { Container } from "@/components/common/Layout/Layout";
 import { LoadingPage } from "@/components/common/LoadingSpinner/LoadingSpinner";
+import PrivacyTab from "@/components/common/Pages/User/UserSettings/PrivacyTab/PrivacyTab";
 import ProfileTab from "@/components/common/Pages/User/UserSettings/ProfileTab/ProfileTab";
 import { api } from "@/utils/api";
 import { useSession } from "next-auth/react";
@@ -99,7 +100,9 @@ const UserSettingsPage = () => {
                                 {selectedTab === "notifications" && (
                                     <p>notifications</p>
                                 )}
-                                {selectedTab === "privacy" && <p>privacy</p>}
+                                {selectedTab === "privacy" && (
+                                    <PrivacyTab user={user!} />
+                                )}
                             </div>
                         </div>
                     </div>
