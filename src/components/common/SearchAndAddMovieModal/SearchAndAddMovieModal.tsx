@@ -13,9 +13,10 @@ import { useCallback, useEffect, useState } from "react";
 import { BsArrowLeft, BsPlus } from "react-icons/bs";
 import type { ZodType } from "zod";
 import Image from "next/image";
+import { api } from "@/utils/api";
 
 interface SearchAndAddMovieModalProps {
-    callback: (modal: IMovie | undefined) => void;
+    callback: (modal: IMovie | undefined) => Promise<void>;
     open: boolean;
     setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -30,6 +31,8 @@ const SearchAndAddMovieModal = ({
     const [blockInput, setBlockInput] = useState<boolean>(false);
 
     const [searchText, setSearchText] = useState<string>("");
+
+    const { mutate: createMovie } = api.movie.createFilm.useMutation();
 
     const fetchMoviesFromSearchTerm = useCallback(async () => {
         if (searchText !== "") {
@@ -51,6 +54,9 @@ const SearchAndAddMovieModal = ({
 
     const handleFilmSelect = (movie: IMovie) => {
         setChosenMovie(movie);
+        createMovie({
+            ...movie,
+        });
         setMovieFetchData([]);
         setSearchText("");
         setBlockInput(true);
@@ -130,7 +136,10 @@ const SearchAndAddMovieModal = ({
                     <div className="flex-end float-right space-x-2">
                         <Button
                             disabled={!chosenMovie}
-                            onClick={() => callback(chosenMovie)}
+                            onClick={() => {
+                                setChosenMovie(undefined);
+                                void callback(chosenMovie);
+                            }}
                         >
                             Save
                         </Button>

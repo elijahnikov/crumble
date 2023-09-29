@@ -88,7 +88,9 @@ const RecentListsCard = ({ user }: RecentActivityCardProps) => {
                                 ))}
                             </div>
                         ) : (
-                            <p>No activity recorded.</p>
+                            <p className="text-sm font-normal">
+                                No activity recorded.
+                            </p>
                         )}
                     </div>
                 )}

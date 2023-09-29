@@ -34,7 +34,7 @@ const FavouriteMoviesEditable = ({ data }: FavouriteMoviesEditableProps) => {
 
     const trpcUtils = api.useContext();
 
-    const { mutate: add } = api.user.addToFavouriteMovies.useMutation({
+    const { mutateAsync: add } = api.user.addToFavouriteMovies.useMutation({
         onSuccess: async () => {
             toast.success(`Successfully added to your favourite movies`, {
                 position: "bottom-center",
@@ -43,12 +43,8 @@ const FavouriteMoviesEditable = ({ data }: FavouriteMoviesEditableProps) => {
             });
             await trpcUtils.user.getFavouriteMoviesForUser.invalidate();
         },
-        onError: ({ message }) => {
-            toast.error(message, {
-                position: "bottom-center",
-                duration: 4000,
-                className: "dark:bg-brand dark:text-white text-black",
-            });
+        onError: async ({ message }) => {
+            await trpcUtils.user.getFavouriteMoviesForUser.invalidate();
         },
     });
 
@@ -63,15 +59,15 @@ const FavouriteMoviesEditable = ({ data }: FavouriteMoviesEditableProps) => {
         },
     });
 
-    const { mutate: createMovie } = api.movie.createFilm.useMutation();
-
-    const addMovie = (movie: IMovie) => {
-        createMovie({
-            ...movie,
-        });
-        add({
-            movieId: movie.movieId,
-        });
+    const addMovie = async (movie: IMovie) => {
+        try {
+            await add({
+                movieId: movie.movieId,
+            });
+        } catch (e) {
+            console.error(e);
+        }
+        setShowAddMovieToFavouriteModal(false);
     };
 
     const deleteMovie = (movieId: number) => {

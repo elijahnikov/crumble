@@ -51,7 +51,7 @@ const RecentReviewsCard = ({
         <div>
             <div className="flex">
                 <p className="text-sm text-slate-600 dark:text-slate-300">
-                    Recently Reviews
+                    Recent Reviews
                 </p>
                 <Link href="/[username]/reviews" as={`/@${user.name}/reviews`}>
                     <p className="ml-4 mt-[2px] flex cursor-pointer text-xs font-normal text-crumble underline">

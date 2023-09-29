@@ -160,15 +160,17 @@ const UserInfo = ({
                         {user.bio}
                     </p>
                     <div className="flex">
-                        <BsLink className="mr-1 mt-1" />
                         {user.bioLink && (
-                            <a
-                                target="_blank"
-                                href={`http://${user.bioLink}`}
-                                className=" text-[12px] text-crumble"
-                            >
-                                {user.bioLink}
-                            </a>
+                            <div>
+                                <BsLink className="mr-1 mt-1" />
+                                <a
+                                    target="_blank"
+                                    href={`http://${user.bioLink}`}
+                                    className=" text-[12px] text-crumble"
+                                >
+                                    {user.bioLink}
+                                </a>
+                            </div>
                         )}
                     </div>
                 </div>
