@@ -1,5 +1,6 @@
 import Button from "@/components/ui/Button/Button";
-import { type RouterOutputs } from "@/utils/api";
+import { api, type RouterOutputs } from "@/utils/api";
+
 import Link from "next/link";
 
 interface PrivacyTabProps {
@@ -7,6 +8,9 @@ interface PrivacyTabProps {
 }
 
 const PrivacyTab = ({ user }: PrivacyTabProps) => {
+    const { data, isError, isLoading } =
+        api.privacy.getPrivacySettingsByUserId.useQuery();
+
     return (
         <>
             <div className="flex">
