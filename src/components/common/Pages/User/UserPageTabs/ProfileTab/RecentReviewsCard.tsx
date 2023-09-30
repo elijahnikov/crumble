@@ -62,8 +62,8 @@ const RecentReviewsCard = ({
             <div className="border-b pt-1 dark:border-slate-500" />
 
             {reviews.reviews.length === 0 ? (
-                <p className="pt-1 text-sm font-normal">
-                    {user.name} has not watched any movies recently
+                <p className="pb-3 pt-1 text-sm font-normal text-slate-600 dark:text-slate-400">
+                    {user.name} has not reviewed any movies recently
                 </p>
             ) : (
                 <div className="mt-2 h-max w-full">
