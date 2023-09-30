@@ -30,9 +30,13 @@ const UserSettingsPage = () => {
         data: user,
         isLoading,
         isError,
-    } = api.user.getUser.useQuery({
+    } = api.user.getUserForSettings.useQuery({
         username: formattedUsername,
     });
+
+    if (isError) {
+        void router.push("/");
+    }
 
     if (isCurrentUser && isLoading) {
         return (

@@ -3,7 +3,7 @@ import { type RouterOutputs } from "@/utils/api";
 import Link from "next/link";
 
 interface PrivacyTabProps {
-    user: NonNullable<RouterOutputs["user"]["getUser"]>;
+    user: NonNullable<RouterOutputs["user"]["getUserForSettings"]>;
 }
 
 const PrivacyTab = ({ user }: PrivacyTabProps) => {

@@ -15,7 +15,7 @@ import toast from "react-hot-toast";
 import FavouriteMoviesEditable from "./FavouriteMoviesEditable";
 
 interface ProfileTabProps {
-    user: NonNullable<RouterOutputs["user"]["getUser"]>;
+    user: NonNullable<RouterOutputs["user"]["getUserForSettings"]>;
 }
 
 const isOutside30Days = (lastChangedDate: Date | null) => {

@@ -24,7 +24,7 @@ export const userRouter = createTRPCRouter({
                 where: {
                     name: input.username,
                 },
-                include: {
+                select: {
                     _count: {
                         select: {
                             followers: true,
@@ -38,6 +38,18 @@ export const userRouter = createTRPCRouter({
                             },
                         },
                     },
+                    id: true,
+                    name: true,
+                    bio: true,
+                    bioLink: true,
+                    dev: true,
+                    displayName: true,
+                    header: true,
+                    image: true,
+                    totalListsCreated: true,
+                    totalHoursWatched: true,
+                    totalMoviesWatched: true,
+                    verified: true,
                 },
             });
             if (user) {
@@ -52,6 +64,28 @@ export const userRouter = createTRPCRouter({
             } else {
                 return null;
             }
+        }),
+    //
+    // Get user for settings
+    //
+    getUserForSettings: protectedProcedure
+        .input(z.object({ username: z.string() }))
+        .query(async ({ ctx, input }) => {
+            const currentUser = ctx.session.user;
+            if (
+                typeof input.username !== "undefined" &&
+                currentUser.name !== input.username
+            ) {
+                throw new TRPCError({
+                    code: "FORBIDDEN",
+                    message: "You do not have access to this profile.",
+                });
+            }
+            return ctx.prisma.user.findFirst({
+                where: {
+                    name: input.username,
+                },
+            });
         }),
     //
     // Edit user details such as bio, bioLink, displayName etc..
