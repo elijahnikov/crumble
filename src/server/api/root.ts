@@ -15,6 +15,8 @@ import { s3Router } from "./routers/s3";
 import { subscriptionRouter } from "./routers/subscription";
 // Activity
 import { activityRouter } from "./routers/activity";
+// Privacy
+import { privacySettingsRouter } from "./routers/privacy";
 
 export const appRouter = createTRPCRouter({
     user: userRouter,
@@ -25,6 +27,7 @@ export const appRouter = createTRPCRouter({
     s3: s3Router,
     subscription: subscriptionRouter,
     activity: activityRouter,
+    privacy: privacySettingsRouter,
 });
 
 export type AppRouter = typeof appRouter;

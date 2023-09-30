@@ -19,7 +19,7 @@ type PickedMovieEntry = Pick<
 };
 
 interface FavouriteMoviesEditableProps {
-    user: NonNullable<RouterOutputs["user"]["getUser"]>;
+    user: NonNullable<RouterOutputs["user"]["getUserForSettings"]>;
     isMe?: boolean;
     data: FavouriteMovieType;
     setHasEdited: React.Dispatch<React.SetStateAction<boolean>>;

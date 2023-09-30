@@ -1,5 +1,6 @@
 import Layout, { Container } from "@/components/common/Layout/Layout";
 import { LoadingPage } from "@/components/common/LoadingSpinner/LoadingSpinner";
+import PrivacyTab from "@/components/common/Pages/User/UserSettings/PrivacyTab/PrivacyTab";
 import ProfileTab from "@/components/common/Pages/User/UserSettings/ProfileTab/ProfileTab";
 import { api } from "@/utils/api";
 import { useSession } from "next-auth/react";
@@ -29,9 +30,13 @@ const UserSettingsPage = () => {
         data: user,
         isLoading,
         isError,
-    } = api.user.getUser.useQuery({
+    } = api.user.getUserForSettings.useQuery({
         username: formattedUsername,
     });
+
+    if (isError) {
+        void router.push("/");
+    }
 
     if (isCurrentUser && isLoading) {
         return (
@@ -99,7 +104,9 @@ const UserSettingsPage = () => {
                                 {selectedTab === "notifications" && (
                                     <p>notifications</p>
                                 )}
-                                {selectedTab === "privacy" && <p>privacy</p>}
+                                {selectedTab === "privacy" && (
+                                    <PrivacyTab user={user!} />
+                                )}
                             </div>
                         </div>
                     </div>
