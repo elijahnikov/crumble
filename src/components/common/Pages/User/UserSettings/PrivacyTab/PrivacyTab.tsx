@@ -3,10 +3,8 @@ import Button from "@/components/ui/Button/Button";
 import { api, type RouterOutputs } from "@/utils/api";
 import uncamelize from "@/utils/general/uncamelizeText";
 import { Switch } from "@headlessui/react";
-import { useSession } from "next-auth/react";
 
 import Link from "next/link";
-import { useEffect } from "react";
 import toast from "react-hot-toast";
 
 interface PrivacyTabProps {
@@ -18,25 +16,28 @@ const PrivacyTab = ({ user }: PrivacyTabProps) => {
     const { data: settings, isLoading } =
         api.privacy.getPrivacySettingsByUserId.useQuery();
 
-    const { mutate: changeSetting } =
-        api.privacy.setPrivacySettings.useMutation({
-            onSuccess: async (data) => {
-                console.log(data);
-                toast.success("Updated your privacy settings", {
-                    position: "bottom-center",
-                    duration: 4000,
-                    className: "dark:bg-brand dark:text-white text-black",
-                });
-                await trpcUtils.privacy.invalidate();
-            },
-            onError: (message) => {
-                toast.error(message.message, {
-                    position: "bottom-center",
-                    duration: 4000,
-                    className: "dark:bg-brand dark:text-white text-black",
-                });
-            },
-        });
+    const {
+        mutate: changeSetting,
+        isLoading: changeSettingLoading,
+        variables,
+    } = api.privacy.setPrivacySettings.useMutation({
+        onSuccess: async (data) => {
+            console.log(data);
+            toast.success("Updated your privacy settings", {
+                position: "bottom-center",
+                duration: 4000,
+                className: "dark:bg-brand dark:text-white text-black",
+            });
+            await trpcUtils.privacy.invalidate();
+        },
+        onError: (message) => {
+            toast.error(message.message, {
+                position: "bottom-center",
+                duration: 4000,
+                className: "dark:bg-brand dark:text-white text-black",
+            });
+        },
+    });
 
     const handleChangeSetting = (setting: string, value: boolean) => {
         changeSetting({
@@ -119,6 +120,15 @@ const PrivacyTab = ({ user }: PrivacyTabProps) => {
                                                         />
                                                     </Switch>
                                                     <p>{uncamelize(setting)}</p>
+                                                    {changeSettingLoading &&
+                                                        setting ===
+                                                            variables?.setting && (
+                                                            <div className="pt-[2px]">
+                                                                <LoadingSpinner
+                                                                    size={20}
+                                                                />
+                                                            </div>
+                                                        )}
                                                 </div>
                                             </div>
                                             {/* <hr className="border-slate-200 dark:border-slate-700" /> */}
