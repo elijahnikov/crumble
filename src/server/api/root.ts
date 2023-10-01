@@ -17,6 +17,8 @@ import { subscriptionRouter } from "./routers/subscription";
 import { activityRouter } from "./routers/activity";
 // Privacy
 import { privacySettingsRouter } from "./routers/privacy";
+// Notifications
+import { notificationRouter } from "./routers/notification";
 
 export const appRouter = createTRPCRouter({
     user: userRouter,
@@ -28,6 +30,7 @@ export const appRouter = createTRPCRouter({
     subscription: subscriptionRouter,
     activity: activityRouter,
     privacy: privacySettingsRouter,
+    notifications: notificationRouter,
 });
 
 export type AppRouter = typeof appRouter;

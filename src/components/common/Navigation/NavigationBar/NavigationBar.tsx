@@ -10,6 +10,7 @@ import CreateModalMenu from "../../CreateModalMenu/CreateModalMenu";
 import AvatarMenu from "../AvatarMenu/AvatarMenu";
 import MoreMenu from "../MoreMenu/MoreMenu";
 import { LOGO_URL } from "@/constants";
+import Notifications from "../../Notifications/Notification";
 
 const NavigationBar = () => {
     const [currentPath, setCurrentPath] = useState("");
@@ -100,6 +101,7 @@ const NavigationBar = () => {
                                     {session?.user.name}
                                 </p>
                                 <DarkModeSwitch />
+                                <Notifications />
                             </div>
                         </div>
                     </div>

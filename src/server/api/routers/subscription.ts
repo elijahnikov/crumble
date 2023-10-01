@@ -28,7 +28,7 @@ export const subscriptionRouter = createTRPCRouter({
                         notifierId: me,
                         followerId: me,
                         followingId: input.id,
-                        type: "test",
+                        type: "follow",
                     },
                 });
             } else {
