@@ -22,6 +22,15 @@ export const subscriptionRouter = createTRPCRouter({
                         followingId: input.id,
                     },
                 });
+                await ctx.prisma.notification.create({
+                    data: {
+                        notifiedId: input.id,
+                        notifierId: me,
+                        followerId: me,
+                        followingId: input.id,
+                        type: "follow",
+                    },
+                });
             } else {
                 await ctx.prisma.subscription.delete({
                     where: {

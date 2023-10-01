@@ -62,15 +62,24 @@ const FavouriteMovies = ({
 
             {favouriteMovies.length === 0 ? (
                 <p className="pb-3 pt-1 text-sm font-normal text-slate-600 dark:text-slate-400 ">
-                    Showcase your favourite films here...
-                    <Link
-                        href="/[username]/settings"
-                        as={`/@${user.name}/settings`}
-                    >
-                        <span className="pl-1 text-crumble underline">
-                            Settings
-                        </span>
-                    </Link>
+                    {isMe ? (
+                        <div>
+                            Showcase your favourite films here...
+                            <Link
+                                href="/[username]/settings"
+                                as={`/@${user.name}/settings`}
+                            >
+                                <span className="pl-1 text-crumble underline">
+                                    Settings
+                                </span>
+                            </Link>
+                        </div>
+                    ) : (
+                        <div>
+                            {user.name} has not added to their favourite movies
+                            list yet.
+                        </div>
+                    )}
                 </p>
             ) : (
                 <div className="mt-2 h-max w-full columns-5 gap-2">

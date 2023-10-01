@@ -89,6 +89,9 @@ model User {
 
   followers Subscription[] @relation("following")
   following Subscription[] @relation("follower")
+
+  notifier Notification[] @relation("notifier")
+  notified Notification[] @relation("notified")
 }
 
 //-----------------------------------------------------------------
@@ -114,16 +117,18 @@ model Review {
   reviewLikes    ReviewLike[]
   reviewComments ReviewComment[]
   activity       Activity[]      @relation("review")
+  notification   Notification[]
 
   @@unique([createdAt, id])
   @@index([userId])
 }
 
 model ReviewLike {
-  userId   String
-  reviewId String
-  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  review   Review @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  userId       String
+  reviewId     String
+  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  review       Review         @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  notification Notification[]
 
   @@id([userId, reviewId])
   @@index([userId])
@@ -320,6 +325,8 @@ model Subscription {
   following   User   @relation("following", fields: [followingId], references: [id], onDelete: Cascade)
   followingId String
 
+  notification Notification[]
+
   @@id([followerId, followingId])
   @@unique([followerId, followingId])
   @@unique([followingId, followerId])
@@ -362,6 +369,37 @@ model Activity {
   @@index([favouriteMovieId])
   @@index([reviewId])
   @@index([listEntryId])
+}
+
+//-----------------------------------------------------------------
+//------------------------- Notification --------------------------
+// //-----------------------------------------------------------------
+model Notification {
+  id String @id @default(cuid())
+
+  followerId  String?
+  followingId String?
+  follow      Subscription? @relation(fields: [followerId, followingId], references: [followerId, followingId], onDelete: Cascade)
+
+  userId     String?
+  reviewId   String?
+  review     Review?     @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  reviewLike ReviewLike? @relation(fields: [userId, reviewId], references: [userId, reviewId], onDelete: Cascade)
+
+  notifiedId String
+  notified   User   @relation("notified", fields: [notifiedId], references: [id], onDelete: Cascade)
+  notifierId String
+  notifier   User   @relation("notifier", fields: [notifierId], references: [id], onDelete: Cascade)
+
+  type      String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([followerId, followingId])
+  @@index([notifierId])
+  @@index([notifiedId])
+  @@index([userId, reviewId])
+  @@index([reviewId])
 }
 
 //-----------------------------------------------------------------
