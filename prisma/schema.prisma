@@ -373,7 +373,7 @@ model Privacy {
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  private                      Boolean @default(false)
+  privateAccount               Boolean @default(false)
   showListsInActivity          Boolean @default(true)
   showListEntryInActivity      Boolean @default(true)
   showWatchedInActivity        Boolean @default(true)
