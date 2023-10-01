@@ -34,6 +34,13 @@ export const notificationRouter = createTRPCRouter({
                         },
                     },
                 },
+                review: {
+                    select: {
+                        id: true,
+                        movieTitle: true,
+                    },
+                },
+                reviewLike: true,
                 notifier: {
                     select: {
                         name: true,

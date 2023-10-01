@@ -1,10 +1,15 @@
 import { api } from "@/utils/api";
 import { Popover } from "@headlessui/react";
 import { useEffect, useState } from "react";
-import { BsBellFill, BsX } from "react-icons/bs";
+import { BsBellFill } from "react-icons/bs";
 import Image from "next/image";
 import clxsm from "@/utils/clsxm";
 import Link from "next/link";
+
+const notificationTypesMap = {
+    follow: "followed you",
+    reviewLike: (extraText?: string) => `liked your review for ${extraText}`,
+};
 
 const Notifications = () => {
     const trpcUtils = api.useContext();
@@ -49,46 +54,62 @@ const Notifications = () => {
                     >
                         Clear all
                     </p>
-                    {notifications?.map((notification, index) => (
-                        <div
-                            key={index}
-                            onClick={() =>
-                                setAsRead({
-                                    id: notification.id,
-                                })
-                            }
-                            className={clxsm(
-                                !notification.read
-                                    ? "cursor-pointer bg-brand-light"
-                                    : "bg-brand",
-                                "mb-2 flex space-x-2 rounded-lg border p-2 dark:border-slate-700"
-                            )}
-                        >
-                            <div className="my-auto">
-                                {notification.notifier.image && (
-                                    <Image
-                                        src={notification.notifier.image}
-                                        className="rounded-full"
-                                        width={30}
-                                        height={30}
-                                        alt="profile picture"
-                                    />
+                    {notifications?.map((notification, index) => {
+                        const notificationType =
+                            notificationTypesMap[
+                                notification.type as keyof typeof notificationTypesMap
+                            ];
+
+                        const result =
+                            typeof notificationType === "function" ? (
+                                <span>
+                                    {notificationType(
+                                        notification.review?.movieTitle
+                                    )}
+                                </span>
+                            ) : (
+                                <span>{notificationType}</span>
+                            );
+                        return (
+                            <div
+                                key={index}
+                                onClick={() =>
+                                    setAsRead({
+                                        id: notification.id,
+                                    })
+                                }
+                                className={clxsm(
+                                    !notification.read
+                                        ? "cursor-pointer bg-brand-light"
+                                        : "bg-brand",
+                                    "mb-2 flex space-x-2 rounded-lg border p-2 dark:border-slate-700"
                                 )}
+                            >
+                                <div className="my-auto">
+                                    {notification.notifier.image && (
+                                        <Image
+                                            src={notification.notifier.image}
+                                            className="rounded-full"
+                                            width={30}
+                                            height={30}
+                                            alt="profile picture"
+                                        />
+                                    )}
+                                </div>
+                                <p className="my-auto w-full text-sm dark:text-slate-400">
+                                    <Link
+                                        href="/[username]/profile"
+                                        as={`/@${notification.notifier.name}/profile`}
+                                    >
+                                        <span className="font-semibold  dark:text-slate-200">
+                                            @{notification.notifier.name}
+                                        </span>
+                                    </Link>{" "}
+                                    has {result}
+                                </p>
                             </div>
-                            <p className="my-auto w-full text-sm dark:text-slate-400">
-                                <Link
-                                    href="/[username]/profile"
-                                    as={`/@${notification.notifier.name}/profile`}
-                                >
-                                    <span className="font-semibold  dark:text-slate-200">
-                                        @{notification.notifier.name}
-                                    </span>
-                                </Link>{" "}
-                                has{" "}
-                                {notification.type === "test" && "followed you"}
-                            </p>
-                        </div>
-                    ))}
+                        );
+                    })}
                 </Popover.Panel>
             </Popover>
         </div>

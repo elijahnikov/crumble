@@ -246,13 +246,31 @@ export const reviewRouter = createTRPCRouter({
     toggleReviewLike: protectedProcedure
         .input(z.object({ id: z.string() }))
         .mutation(async ({ input: { id }, ctx }) => {
-            const data = { reviewId: id, userId: ctx.session.user.id };
+            const currentUserId = ctx.session.user.id;
+            const data = { reviewId: id, userId: currentUserId };
+
+            const review = await ctx.prisma.review.findFirst({
+                where: {
+                    id,
+                },
+            });
 
             const existingLike = await ctx.prisma.reviewLike.findUnique({
                 where: { userId_reviewId: data },
             });
             if (!existingLike) {
                 await ctx.prisma.reviewLike.create({ data });
+                if (review) {
+                    await ctx.prisma.notification.create({
+                        data: {
+                            notifiedId: review?.userId,
+                            notifierId: currentUserId,
+                            userId: review.userId,
+                            reviewId: id,
+                            type: "reviewLike",
+                        },
+                    });
+                }
                 return { addedLike: true };
             }
             {
