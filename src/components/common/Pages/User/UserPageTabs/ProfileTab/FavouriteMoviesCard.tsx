@@ -61,7 +61,7 @@ const FavouriteMovies = ({
             <div className="border-b pt-1 dark:border-slate-500" />
 
             {favouriteMovies.length === 0 ? (
-                <p className="pt-1 text-sm font-normal">
+                <p className="pb-3 pt-1 text-sm font-normal text-slate-600 dark:text-slate-400 ">
                     Showcase your favourite films here...
                     <Link
                         href="/[username]/settings"

@@ -88,8 +88,8 @@ const RecentListsCard = ({ user }: RecentActivityCardProps) => {
                                 ))}
                             </div>
                         ) : (
-                            <p className="text-sm font-normal">
-                                No activity recorded.
+                            <p className="text-sm font-normal text-slate-600 dark:text-slate-400">
+                                {user.name} has not created any lists.
                             </p>
                         )}
                     </div>
