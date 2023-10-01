@@ -34,9 +34,9 @@ const ReviewActivity = ({
                         {activity.review?.movieTitle}
                     </span>
                 </Link>{" "}
-                and rated it
+                and rated it{" "}
                 <Rating
-                    style={{ marginBottom: "2px", marginLeft: "5px" }}
+                    style={{ marginBottom: "2px" }}
                     emptyStyle={{ display: "flex" }}
                     fillStyle={{
                         display: "-webkit-inline-box",
