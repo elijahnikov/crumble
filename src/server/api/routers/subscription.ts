@@ -103,7 +103,9 @@ export const subscriptionRouter = createTRPCRouter({
                         userId: follower.follower.id,
                         amIFollowing:
                             follower.follower.followers.length > 0 &&
-                            currentUserId,
+                            follower.follower.followers.some(
+                                (obj) => obj.followerId === ctx.session?.user.id
+                            ),
                     };
                 }),
                 nextCursor,
@@ -170,7 +172,10 @@ export const subscriptionRouter = createTRPCRouter({
                         userId: following.following.id,
                         amIFollowing:
                             following.following.following.length > 0 &&
-                            currentUserId,
+                            following.following.following.some(
+                                (obj) =>
+                                    obj.followingId === ctx.session?.user.id
+                            ),
                     };
                 }),
                 nextCursor,

@@ -22,7 +22,6 @@ const PrivacyTab = ({ user }: PrivacyTabProps) => {
         variables,
     } = api.privacy.setPrivacySettings.useMutation({
         onSuccess: async (data) => {
-            console.log(data);
             toast.success("Updated your privacy settings", {
                 position: "bottom-center",
                 duration: 4000,

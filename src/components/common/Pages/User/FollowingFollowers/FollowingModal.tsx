@@ -2,7 +2,7 @@ import LoadingSpinner from "@/components/common/LoadingSpinner/LoadingSpinner";
 import Modal from "@/components/ui/Modal/Modal";
 import { api } from "@/utils/api";
 import InfiniteScroll from "react-infinite-scroll-component";
-import UserEntry from "./Entry";
+import { FollowingUserEntry } from "./Entry";
 
 const FollowingModal = ({
     open,
@@ -66,12 +66,12 @@ const FollowingModal = ({
                                                     (page) => page.following
                                                 )
                                                 .map((following, index) => (
-                                                    <UserEntry
+                                                    <FollowingUserEntry
                                                         key={
                                                             following.userId +
                                                             index
                                                         }
-                                                        follower={following}
+                                                        following={following}
                                                         toggleSubscription={
                                                             toggleSubscription
                                                         }

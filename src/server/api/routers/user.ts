@@ -59,7 +59,10 @@ export const userRouter = createTRPCRouter({
                     followersCount: user._count.followers,
                     followingsCount: user._count.following,
                     amIFollowing:
-                        user?.followers.length > 0 && ctx.session?.user.id,
+                        user?.followers.length > 0 &&
+                        user?.followers.some(
+                            (obj) => obj.followerId === ctx.session?.user.id
+                        ),
                 };
             } else {
                 return null;

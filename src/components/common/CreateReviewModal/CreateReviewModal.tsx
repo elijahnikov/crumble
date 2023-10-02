@@ -133,7 +133,6 @@ const CreateReviewModal = ({
     };
 
     const handleCreateReview = () => {
-        console.log({ chosenMovieDetails, extraMovieDetails });
         if (chosenMovieDetails) {
             filmMutate({
                 ...chosenMovieDetails,

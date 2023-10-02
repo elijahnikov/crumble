@@ -147,7 +147,6 @@ const Crew = ({
             memo: Record<string, typeof crew>,
             x: (typeof crew)[0]
         ) {
-            console.log({ memo, x });
             if (!memo[x.job]) {
                 memo[x.job] = [];
             }
