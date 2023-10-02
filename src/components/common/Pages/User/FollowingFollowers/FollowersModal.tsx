@@ -61,22 +61,17 @@ const FollowersModal = ({
                                         height="300px"
                                     >
                                         {followers.length > 0 &&
-                                            data.data?.pages
-                                                .flatMap(
-                                                    (page) => page.followers
-                                                )
-                                                .map((follower, index) => (
-                                                    <FollowersUserEntry
-                                                        key={
-                                                            follower.userId +
-                                                            index
-                                                        }
-                                                        follower={follower}
-                                                        toggleSubscription={
-                                                            toggleSubscription
-                                                        }
-                                                    />
-                                                ))}
+                                            followers.map((follower, index) => (
+                                                <FollowersUserEntry
+                                                    key={
+                                                        follower.userId + index
+                                                    }
+                                                    follower={follower}
+                                                    toggleSubscription={
+                                                        toggleSubscription
+                                                    }
+                                                />
+                                            ))}
                                     </InfiniteScroll>
                                 )}
                             </div>
