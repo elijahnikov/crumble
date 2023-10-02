@@ -145,10 +145,10 @@ export const subscriptionRouter = createTRPCRouter({
                             image: true,
                             displayName: true,
                             id: true,
-                            following:
+                            followers:
                                 currentUserId === null
                                     ? false
-                                    : { where: { followingId: currentUserId } },
+                                    : { where: { followerId: currentUserId } },
                         },
                     },
                 },
@@ -163,6 +163,7 @@ export const subscriptionRouter = createTRPCRouter({
                     };
                 }
             }
+
             return {
                 following: data.map((following) => {
                     return {
@@ -171,10 +172,9 @@ export const subscriptionRouter = createTRPCRouter({
                         image: following.following.image,
                         userId: following.following.id,
                         amIFollowing:
-                            following.following.following.length > 0 &&
-                            following.following.following.some(
-                                (obj) =>
-                                    obj.followingId === ctx.session?.user.id
+                            following.following.followers.length > 0 &&
+                            following.following.followers.some(
+                                (obj) => obj.followerId === ctx.session?.user.id
                             ),
                     };
                 }),

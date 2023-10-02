@@ -81,7 +81,7 @@ export const FollowingUserEntry = ({
     toggleSubscription,
 }: FollowingUserEntryProps) => {
     const { data: session } = useSession();
-
+    console.log(following);
     return (
         <>
             <div className="flex">
