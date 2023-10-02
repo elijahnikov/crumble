@@ -8,7 +8,7 @@ import {
     type IMovieFetch,
     movieFetchSchema,
     movieDetailsFetchSchema,
-    IMovieDetails,
+    type IMovieDetails,
 } from "@/server/api/schemas/movie";
 import { fetchWithZod } from "@/utils/fetch/zodFetch";
 import { type SetStateType } from "@/utils/types/helpers";
