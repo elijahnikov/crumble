@@ -148,7 +148,7 @@ const ReviewRow = ({
                                 )}
                             />
                             <p className="dark:text-slate-400">
-                                {review._count.reviewComments}
+                                {review._count.reviewLikes}
                             </p>
                         </div>
                     </div>
