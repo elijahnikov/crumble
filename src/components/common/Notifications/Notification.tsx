@@ -47,9 +47,12 @@ const Notifications = () => {
 
     useEffect(() => {
         const hasReadTrue =
-            notifications && notifications.some((obj) => obj.read === false);
+            data &&
+            data.pages
+                .flatMap((page) => page.notifications)
+                .some((obj) => obj.read === false);
         setHasUnread(hasReadTrue ? hasReadTrue : false);
-    }, [notifications]);
+    }, [data]);
 
     if (!notifications) {
         return null;
