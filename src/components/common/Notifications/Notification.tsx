@@ -91,81 +91,22 @@ const Notifications = () => {
                                 <LoadingSpinner size={30} />
                             </div>
                         }
-                        height="300px"
+                        height="250px"
                     >
-                        {notifications.length > 0 &&
+                        {notifications.length > 0 ? (
                             notifications.map((notification, index) => (
                                 <NotificationEntry
+                                    setAsRead={setAsRead}
                                     key={index}
                                     notification={notification}
                                 />
-                            ))}
+                            ))
+                        ) : (
+                            <div className="mx-auto mt-8 text-center">
+                                <p className="text-sm">You are up to date.</p>
+                            </div>
+                        )}
                     </InfiniteScroll>
-                    {/* {notifications && notifications.length > 0 ? (
-                        notifications?.map((notification, index) => {
-                            const notificationType =
-                                notificationTypesMap[
-                                    notification.type as keyof typeof notificationTypesMap
-                                ];
-
-                            const result =
-                                typeof notificationType === "function" ? (
-                                    <span>
-                                        {notificationType(
-                                            notification.review?.movieTitle
-                                        )}
-                                    </span>
-                                ) : (
-                                    <span>{notificationType}</span>
-                                );
-                            return (
-                                <div
-                                    key={index}
-                                    onClick={() =>
-                                        setAsRead({
-                                            id: notification.id,
-                                        })
-                                    }
-                                    className={clxsm(
-                                        !notification.read
-                                            ? "cursor-pointer bg-brand-light"
-                                            : "bg-brand",
-                                        "mb-2 flex space-x-2 rounded-lg border p-2 dark:border-slate-700"
-                                    )}
-                                >
-                                    <div className="my-auto">
-                                        {notification.notifier.image && (
-                                            <Image
-                                                src={
-                                                    notification.notifier.image
-                                                }
-                                                className="rounded-full"
-                                                width={30}
-                                                height={30}
-                                                alt="profile picture"
-                                            />
-                                        )}
-                                    </div>
-                                    <p className="my-auto w-full text-sm dark:text-slate-400">
-                                        <Link
-                                            className="hover:underline"
-                                            href="/[username]/profile"
-                                            as={`/@${notification.notifier.name}/profile`}
-                                        >
-                                            <span className="font-semibold  dark:text-slate-200">
-                                                @{notification.notifier.name}
-                                            </span>
-                                        </Link>{" "}
-                                        has {result}
-                                    </p>
-                                </div>
-                            );
-                        })
-                    ) : notifications ? (
-                        <div className="mx-auto mt-8 text-center">
-                            <p className="text-sm">You are up to date.</p>
-                        </div>
-                    ) : null} */}
                 </Popover.Panel>
             </Popover>
         </div>
@@ -174,10 +115,60 @@ const Notifications = () => {
 
 const NotificationEntry = ({
     notification,
+    setAsRead,
 }: {
     notification: RouterOutputs["notifications"]["getNotifications"]["notifications"][number];
+    setAsRead: ({ id }: { id: string }) => void;
 }) => {
-    return <></>;
+    const notificationType =
+        notificationTypesMap[
+            notification.type as keyof typeof notificationTypesMap
+        ];
+    const result =
+        typeof notificationType === "function" ? (
+            <span>{notificationType(notification.review?.movieTitle)}</span>
+        ) : (
+            <span>{notificationType}</span>
+        );
+    return (
+        <div
+            onClick={() =>
+                setAsRead({
+                    id: notification.id,
+                })
+            }
+            className={clxsm(
+                !notification.read
+                    ? "cursor-pointer bg-brand-light"
+                    : "bg-brand",
+                "mb-2 flex space-x-2 rounded-lg border p-2 dark:border-slate-700"
+            )}
+        >
+            <div className="my-auto">
+                {notification.notifier.image && (
+                    <Image
+                        src={notification.notifier.image}
+                        className="rounded-full"
+                        width={30}
+                        height={30}
+                        alt="profile picture"
+                    />
+                )}
+            </div>
+            <p className="my-auto w-full text-sm dark:text-slate-400">
+                <Link
+                    className="hover:underline"
+                    href="/[username]/profile"
+                    as={`/@${notification.notifier.name}/profile`}
+                >
+                    <span className="font-semibold  dark:text-slate-200">
+                        @{notification.notifier.name}
+                    </span>
+                </Link>{" "}
+                has {result}
+            </p>
+        </div>
+    );
 };
 
 export default Notifications;
