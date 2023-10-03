@@ -146,6 +146,7 @@ model ReviewComment {
   review             Review              @relation(fields: [reviewId], references: [id], onDelete: Cascade)
   user               User                @relation(fields: [userId], references: [id], onDelete: Cascade)
   reviewCommentLikes ReviewCommentLike[]
+  notification       Notification[]
 
   @@unique([createdAt, id])
   @@index([reviewId])
@@ -386,6 +387,9 @@ model Notification {
   review     Review?     @relation(fields: [reviewId], references: [id], onDelete: Cascade)
   reviewLike ReviewLike? @relation(fields: [userId, reviewId], references: [userId, reviewId], onDelete: Cascade)
 
+  reviewCommentId String?
+  reviewComment   ReviewComment? @relation(fields: [reviewCommentId], references: [id], onDelete: Cascade)
+
   notifiedId String
   notified   User   @relation("notified", fields: [notifiedId], references: [id], onDelete: Cascade)
   notifierId String
@@ -401,6 +405,7 @@ model Notification {
   @@index([notifiedId])
   @@index([userId, reviewId])
   @@index([reviewId])
+  @@index([reviewCommentId])
 }
 
 //-----------------------------------------------------------------

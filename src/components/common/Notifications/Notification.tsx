@@ -10,7 +10,8 @@ import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 
 const notificationTypesMap = {
     follow: "followed you",
-    reviewLike: (extraText?: string) => `liked your review for ${extraText}`,
+    reviewLike: (movie?: string) => `liked your review for ${movie}`,
+    reviewComment: (movie?: string) => `commented on your review for ${movie}`,
 };
 
 const Notifications = () => {
