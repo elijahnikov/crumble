@@ -48,7 +48,7 @@ const PrivacyTab = ({ user }: PrivacyTabProps) => {
     return (
         <div>
             <div className="flex">
-                <h2 className="w-[80%]">Profile</h2>
+                <h2 className="w-[80%]">Privacy</h2>
                 <Link href="/[username]/profile" as={`/@${user.name}/profile`}>
                     <Button className="mt-[5px]" size="sm" intent={"secondary"}>
                         Back to profile

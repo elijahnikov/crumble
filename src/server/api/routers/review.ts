@@ -368,6 +368,11 @@ export const reviewRouter = createTRPCRouter({
         )
         .mutation(async ({ ctx, input }) => {
             const currentUserId = ctx.session.user.id;
+            const review = await ctx.prisma.review.findFirst({
+                where: {
+                    id: input.linkedToId,
+                },
+            });
             const reviewComment = await ctx.prisma.reviewComment.create({
                 data: {
                     text: input.text,
@@ -375,6 +380,20 @@ export const reviewRouter = createTRPCRouter({
                     userId: currentUserId,
                 },
             });
+            if (reviewComment && review) {
+                if (currentUserId !== review.userId) {
+                    await ctx.prisma.notification.create({
+                        data: {
+                            notifiedId: review.userId,
+                            notifierId: currentUserId,
+                            userId: review.userId,
+                            reviewCommentId: reviewComment.id,
+                            reviewId: review.id,
+                            type: "reviewComment",
+                        },
+                    });
+                }
+            }
             return reviewComment;
         }),
     //
