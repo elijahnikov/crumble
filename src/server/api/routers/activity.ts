@@ -16,6 +16,7 @@ export const activityRouter = createTRPCRouter({
                             "listEntry",
                             "review",
                             "favouriteMovie",
+                            "reviewLike",
                         ])
                     )
                     .optional(),

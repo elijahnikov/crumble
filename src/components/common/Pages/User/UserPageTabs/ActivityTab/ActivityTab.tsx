@@ -10,7 +10,7 @@ const ActivityTab = ({
     const { data, isLoading } = api.activity.getActivityForUser.useQuery({
         username: user.name!,
         specificActivity: ["favouriteMovie", "watched", "review", "listEntry"],
-        limit: 5,
+        limit: 10,
     });
 
     return <></>;

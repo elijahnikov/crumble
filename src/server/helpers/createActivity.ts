@@ -2,7 +2,6 @@ import { prisma } from "../db";
 
 interface CreateNewActivityParams {
     currentUserId: string;
-    action: string;
     activity: string;
     id: string;
 }
@@ -17,7 +16,6 @@ const activityToPrivacySettingMapping = {
 
 export const createNewActivity = async ({
     currentUserId,
-    action,
     activity,
     id,
 }: CreateNewActivityParams) => {
@@ -37,7 +35,6 @@ export const createNewActivity = async ({
         await prisma.activity.create({
             data: {
                 userId: currentUserId,
-                action,
                 [activity]: id,
             },
         });

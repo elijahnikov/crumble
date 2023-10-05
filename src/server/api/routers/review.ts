@@ -204,7 +204,6 @@ export const reviewRouter = createTRPCRouter({
             });
             await createNewActivity({
                 currentUserId: userId,
-                action: "Created a new review for {1} and rated it {2}/5",
                 activity: "reviewId",
                 id: review.id,
             });
@@ -260,6 +259,7 @@ export const reviewRouter = createTRPCRouter({
             });
             if (!existingLike) {
                 await ctx.prisma.reviewLike.create({ data });
+
                 if (review) {
                     await ctx.prisma.notification.create({
                         data: {
