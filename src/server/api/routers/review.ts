@@ -204,8 +204,7 @@ export const reviewRouter = createTRPCRouter({
             });
             await createNewActivity({
                 currentUserId: userId,
-                activity: "reviewId",
-                id: review.id,
+                idMap: [{ reviewId: review.id }],
             });
 
             return review;
