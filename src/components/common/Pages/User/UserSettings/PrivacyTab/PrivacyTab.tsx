@@ -130,7 +130,6 @@ const PrivacyTab = ({ user }: PrivacyTabProps) => {
                                                         )}
                                                 </div>
                                             </div>
-                                            {/* <hr className="border-slate-200 dark:border-slate-700" /> */}
                                         </>
                                     );
                                 })}
