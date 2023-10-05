@@ -425,6 +425,7 @@ model Privacy {
   showWatchedInActivity        Boolean @default(true)
   showReviewInActivity         Boolean @default(true)
   showFavouriteMovieInActivity Boolean @default(true)
+  showReviewLikeInActivity     Boolean @default(true)
 
   @@index([userId])
 }

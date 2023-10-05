@@ -1,3 +1,5 @@
+import Button from "@/components/ui/Button/Button";
+import { createNewActivity } from "@/server/helpers/createActivity";
 import { type RouterOutputs, api } from "@/utils/api";
 
 const ActivityTab = ({
@@ -13,7 +15,20 @@ const ActivityTab = ({
         limit: 10,
     });
 
-    return <></>;
+    return (
+        <>
+            <Button
+                onClick={() =>
+                    void createNewActivity({
+                        currentUserId: "test",
+                        idMap: [{ favouriteMovieId: "test1" }],
+                    })
+                }
+            >
+                test
+            </Button>
+        </>
+    );
 };
 
 export default ActivityTab;

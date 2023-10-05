@@ -79,8 +79,7 @@ export const watchedRouter = createTRPCRouter({
             if (!withReview)
                 await createNewActivity({
                     currentUserId: userId,
-                    activity: "watchedId",
-                    id: watched.id,
+                    idMap: [{ watchedId: watched.id }],
                 });
             return watched;
         }),

@@ -200,8 +200,7 @@ export const userRouter = createTRPCRouter({
             if (entry) {
                 await createNewActivity({
                     currentUserId,
-                    activity: "favouriteMovieId",
-                    id: entry.id,
+                    idMap: [{ favouriteMovieId: entry.id }],
                 });
                 return entry;
             } else {
