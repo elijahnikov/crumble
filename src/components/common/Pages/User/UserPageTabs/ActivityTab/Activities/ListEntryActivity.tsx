@@ -3,10 +3,10 @@ import { fromNow } from "@/utils/general/dateFormat";
 import Link from "next/link";
 
 const ListEntryActivity = ({
-    small,
+    small = true,
     activity,
 }: {
-    small: boolean;
+    small?: boolean;
     activity: RouterOutputs["activity"]["getActivityForUser"]["activities"][number];
 }) => {
     return (
