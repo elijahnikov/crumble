@@ -26,6 +26,9 @@ const ReviewActivity = ({
                     )}
                 </div>
                 <div className="w-full py-3">
+                    <p className="mb-2 text-xs font-normal text-crumble">
+                        {fromNow(activity.createdAt)}
+                    </p>
                     <p className="text-xs text-slate-600 dark:text-slate-300">
                         <span className="font-semibold">
                             {activity.user.name}
@@ -34,11 +37,19 @@ const ReviewActivity = ({
                             watched and reviewed
                         </span>
                     </p>
-                    <p className="text-[15px] font-normal text-slate-700 dark:text-slate-200">
+                    <div className="mt-1 flex">
+                        <p className="flex text-xl">
+                            {activity.review?.movieTitle}
+                            <p className="relative top-[3px] ml-2 text-[12px] font-normal text-crumble">
+                                {activity.review?.movieReleaseYear.slice(0, 4)}
+                            </p>
+                        </p>
+                    </div>
+                    <p className="mt-2 text-[16px] font-normal text-slate-700 dark:text-slate-200">
                         {activity.review?.text}
                     </p>
                     <Rating
-                        style={{ marginTop: "-10px" }}
+                        style={{ marginTop: "-10px", marginBottom: "-10px" }}
                         emptyStyle={{ display: "flex" }}
                         fillStyle={{
                             display: "-webkit-inline-box",
@@ -50,11 +61,6 @@ const ReviewActivity = ({
                         emptyColor="#404446"
                         fillColor="#EF4444"
                     />
-                </div>
-                <div className="w-[10%] py-3">
-                    <p className="text-xs font-normal text-crumble">
-                        {fromNow(activity.createdAt, true)}
-                    </p>
                 </div>
             </div>
         );

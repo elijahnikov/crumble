@@ -84,7 +84,16 @@ export const activityRouter = createTRPCRouter({
                             },
                         },
                         list: true,
-                        review: true,
+                        review: {
+                            include: {
+                                user: {
+                                    select: {
+                                        name: true,
+                                        id: true,
+                                    },
+                                },
+                            },
+                        },
                         reviewLike: true,
                         watched: true,
                         user: {

@@ -6,6 +6,7 @@ import ListEntryActivity from "./Activities/ListEntryActivity";
 import ReviewActivity from "./Activities/ReviewActivity";
 import WatchedActivity from "./Activities/WatchedActivity";
 import Button from "@/components/ui/Button/Button";
+import ReviewLikeActivity from "./Activities/ReviewLikeActivity";
 
 const ActivityTab = ({
     user,
@@ -72,7 +73,9 @@ const ActivityTab = ({
                     {activity.review && !activity.reviewLike && (
                         <ReviewActivity card={false} activity={activity} />
                     )}
-                    {activity.reviewLike && activity.review && <p>hello</p>}
+                    {activity.reviewLike && activity.review && (
+                        <ReviewLikeActivity activity={activity} />
+                    )}
                     <hr className="my-4 dark:border-slate-700" />
                 </div>
             ))}
