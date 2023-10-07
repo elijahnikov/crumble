@@ -11,6 +11,6 @@ export const shortMonthDateFormat = (date: Date) => {
     });
 };
 
-export const fromNow = (date: Date) => {
-    return dayjs(date).fromNow();
+export const fromNow = (date: Date, withoutSuffix?: boolean | undefined) => {
+    return dayjs(date).fromNow(withoutSuffix);
 };

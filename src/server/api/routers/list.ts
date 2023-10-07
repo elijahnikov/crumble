@@ -252,9 +252,7 @@ export const listRouter = createTRPCRouter({
 
             await createNewActivity({
                 currentUserId: userId,
-                action: `Created a new list containing ${list.numberOfFilms} movies.`,
-                activity: "listId",
-                id: list.id,
+                idMap: [{ listId: list.id }],
             });
 
             const listId = list.id;
@@ -346,9 +344,7 @@ export const listRouter = createTRPCRouter({
             });
             await createNewActivity({
                 currentUserId,
-                action: `Added {1} to their list titled ${newListEntry.list.title}`,
-                activity: "listEntryId",
-                id: newListEntry.id,
+                idMap: [{ listEntryId: newListEntry.id }],
             });
             return {
                 entryCreated: true,

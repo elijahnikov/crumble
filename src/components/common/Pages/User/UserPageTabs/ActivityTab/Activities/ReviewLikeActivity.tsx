@@ -2,7 +2,7 @@ import { type RouterOutputs } from "@/utils/api";
 import { fromNow } from "@/utils/general/dateFormat";
 import Link from "next/link";
 
-const WatchedActivity = ({
+const ReviewLikeActivity = ({
     card = true,
     activity,
 }: {
@@ -20,7 +20,12 @@ const WatchedActivity = ({
                 <span className="font-semibold text-slate-600 dark:text-slate-300">
                     {activity.user.name}{" "}
                 </span>
-                watched{" "}
+                liked{" "}
+                <span className="font-semibold text-slate-600 dark:text-slate-300">
+                    {activity.review?.user.name}
+                    {"'s"}
+                </span>{" "}
+                review for{" "}
                 <Link
                     href={{
                         pathname: "/movie/[id]",
@@ -30,7 +35,7 @@ const WatchedActivity = ({
                     }}
                 >
                     <span className="font-bold text-black hover:underline dark:text-white">
-                        {activity.watched?.movieTitle}
+                        {activity.review?.movieTitle}
                     </span>
                 </Link>
             </p>
@@ -38,4 +43,4 @@ const WatchedActivity = ({
     );
 };
 
-export default WatchedActivity;
+export default ReviewLikeActivity;

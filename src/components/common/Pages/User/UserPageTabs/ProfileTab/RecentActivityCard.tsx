@@ -5,6 +5,7 @@ import WatchedActivity from "../ActivityTab/Activities/WatchedActivity";
 import ListEntryActivity from "../ActivityTab/Activities/ListEntryActivity";
 import ReviewActivity from "../ActivityTab/Activities/ReviewActivity";
 import Link from "next/link";
+import ReviewLikeActivity from "../ActivityTab/Activities/ReviewLikeActivity";
 
 interface RecentActivityCardProps {
     user: NonNullable<RouterOutputs["user"]["getUser"]>;
@@ -39,33 +40,36 @@ const RecentActivityCard = ({ user }: RecentActivityCardProps) => {
                 {data && (
                     <div>
                         {data.activities.length > 0 ? (
-                            <div className="space-y-3">
+                            <div>
                                 {data.activities.map((activity) => (
-                                    <div key={activity.id}>
+                                    <div className="mb-3" key={activity.id}>
                                         {activity.favouriteMovie && (
                                             <FavouriteMovieActivity
-                                                small
                                                 activity={activity}
                                             />
                                         )}
                                         {activity.watched && (
                                             <WatchedActivity
-                                                small
                                                 activity={activity}
                                             />
                                         )}
                                         {activity.listEntry && (
                                             <ListEntryActivity
                                                 activity={activity}
-                                                small
                                             />
                                         )}
-                                        {activity.review && (
-                                            <ReviewActivity
-                                                activity={activity}
-                                                small
-                                            />
-                                        )}
+                                        {activity.review &&
+                                            !activity.reviewLike && (
+                                                <ReviewActivity
+                                                    activity={activity}
+                                                />
+                                            )}
+                                        {activity.reviewLike &&
+                                            activity.review && (
+                                                <ReviewLikeActivity
+                                                    activity={activity}
+                                                />
+                                            )}
                                     </div>
                                 ))}
                             </div>

@@ -129,6 +129,7 @@ model ReviewLike {
   user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   review       Review         @relation(fields: [reviewId], references: [id], onDelete: Cascade)
   notification Notification[]
+  activity     Activity[]
 
   @@id([userId, reviewId])
   @@index([userId])
@@ -339,11 +340,11 @@ model Subscription {
 //--------------------------- Activity ----------------------------
 //-----------------------------------------------------------------
 model Activity {
-  id     String @id @default(cuid())
-  action String
+  id String @id @default(cuid())
 
-  review   Review? @relation("review", fields: [reviewId], references: [id], onDelete: Cascade)
-  reviewId String?
+  review     Review?     @relation("review", fields: [reviewId], references: [id], onDelete: Cascade)
+  reviewId   String?
+  reviewLike ReviewLike? @relation(fields: [userId, reviewId], references: [userId, reviewId], onDelete: Cascade)
 
   favouriteMovie   FavouriteMovies? @relation("favouriteMovie", fields: [favouriteMovieId], references: [id], onDelete: Cascade)
   favouriteMovieId String?
@@ -370,6 +371,7 @@ model Activity {
   @@index([favouriteMovieId])
   @@index([reviewId])
   @@index([listEntryId])
+  @@index([userId, reviewId])
 }
 
 //-----------------------------------------------------------------
@@ -423,6 +425,7 @@ model Privacy {
   showWatchedInActivity        Boolean @default(true)
   showReviewInActivity         Boolean @default(true)
   showFavouriteMovieInActivity Boolean @default(true)
+  showReviewLikeInActivity     Boolean @default(true)
 
   @@index([userId])
 }
