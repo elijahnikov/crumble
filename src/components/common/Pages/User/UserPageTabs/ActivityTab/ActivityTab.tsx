@@ -9,14 +9,16 @@ const ActivityTab = ({
     user: NonNullable<RouterOutputs["user"]["getUser"]>;
     isMe: boolean;
 }) => {
-    const { data, isLoading } = api.activity.getActivityForUser.useQuery({
-        username: user.name!,
-        specificActivity: ["favouriteMovie", "watched", "review", "listEntry"],
-        limit: 10,
-    });
-
-    const { data: settings } =
-        api.privacy.getPrivacySettingsByUserId.useQuery();
+    const { data, isLoading } =
+        api.activity.getActivityForUser.useInfiniteQuery(
+            {
+                username: user.name!,
+                limit: 10,
+            },
+            {
+                getNextPageParam: (lastPage) => lastPage.nextCursor,
+            }
+        );
 
     return <></>;
 };
