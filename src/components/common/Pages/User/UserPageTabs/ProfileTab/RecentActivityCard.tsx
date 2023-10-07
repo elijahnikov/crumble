@@ -39,31 +39,27 @@ const RecentActivityCard = ({ user }: RecentActivityCardProps) => {
                 {data && (
                     <div>
                         {data.activities.length > 0 ? (
-                            <div className="space-y-3">
+                            <div>
                                 {data.activities.map((activity) => (
                                     <div key={activity.id}>
                                         {activity.favouriteMovie && (
                                             <FavouriteMovieActivity
-                                                small
                                                 activity={activity}
                                             />
                                         )}
                                         {activity.watched && (
                                             <WatchedActivity
-                                                small
                                                 activity={activity}
                                             />
                                         )}
                                         {activity.listEntry && (
                                             <ListEntryActivity
                                                 activity={activity}
-                                                small
                                             />
                                         )}
                                         {activity.review && (
                                             <ReviewActivity
                                                 activity={activity}
-                                                small
                                             />
                                         )}
                                     </div>

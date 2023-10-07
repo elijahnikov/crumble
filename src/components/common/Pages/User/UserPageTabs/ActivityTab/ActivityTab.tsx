@@ -5,6 +5,7 @@ import FavouriteMovieActivity from "./Activities/FavouriteMovieActivity";
 import ListEntryActivity from "./Activities/ListEntryActivity";
 import ReviewActivity from "./Activities/ReviewActivity";
 import WatchedActivity from "./Activities/WatchedActivity";
+import Button from "@/components/ui/Button/Button";
 
 const ActivityTab = ({
     user,
@@ -13,16 +14,22 @@ const ActivityTab = ({
     user: NonNullable<RouterOutputs["user"]["getUser"]>;
     isMe: boolean;
 }) => {
-    const { data, isError, isInitialLoading, fetchNextPage, hasNextPage } =
-        api.activity.getActivityForUser.useInfiniteQuery(
-            {
-                username: user.name!,
-                limit: 10,
-            },
-            {
-                getNextPageParam: (lastPage) => lastPage.nextCursor,
-            }
-        );
+    const {
+        data,
+        isError,
+        isInitialLoading,
+        fetchNextPage,
+        hasNextPage,
+        isFetchingNextPage,
+    } = api.activity.getActivityForUser.useInfiniteQuery(
+        {
+            username: user.name!,
+            limit: 10,
+        },
+        {
+            getNextPageParam: (lastPage) => lastPage.nextCursor,
+        }
+    );
 
     if (isError) {
         return <div>Error...</div>;
@@ -47,35 +54,39 @@ const ActivityTab = ({
     }
 
     return (
-        <div>
-            <InfiniteScroll
-                dataLength={activities.length}
-                next={fetchNextPage}
-                hasMore={hasNextPage!}
-                loader={
-                    <div className="mx-auto mt-10 flex w-full justify-center">
-                        <LoadingSpinner size={40} />
-                    </div>
-                }
-                height={"100%"}
-            >
-                {activities.map((activity) => (
-                    <div key={activity.id}>
-                        {activity.favouriteMovie && (
-                            <FavouriteMovieActivity small activity={activity} />
-                        )}
-                        {activity.watched && (
-                            <WatchedActivity small activity={activity} />
-                        )}
-                        {activity.listEntry && (
-                            <ListEntryActivity activity={activity} small />
-                        )}
-                        {activity.review && (
-                            <ReviewActivity activity={activity} small />
-                        )}
-                    </div>
-                ))}
-            </InfiniteScroll>
+        <div className="mt-5">
+            {activities.map((activity) => (
+                <div key={activity.id}>
+                    {activity.favouriteMovie && (
+                        <FavouriteMovieActivity
+                            card={false}
+                            activity={activity}
+                        />
+                    )}
+                    {activity.watched && (
+                        <WatchedActivity card={false} activity={activity} />
+                    )}
+                    {activity.listEntry && (
+                        <ListEntryActivity card={false} activity={activity} />
+                    )}
+                    {activity.review && !activity.reviewLike && (
+                        <ReviewActivity card={false} activity={activity} />
+                    )}
+                    {activity.reviewLike && activity.review && <p>hello</p>}
+                    <hr className="my-4 dark:border-slate-700" />
+                </div>
+            ))}
+            {hasNextPage && (
+                <div className="mx-auto flex w-full justify-center">
+                    <Button
+                        onClick={() => void fetchNextPage()}
+                        loading={isFetchingNextPage}
+                        size={"sm"}
+                    >
+                        More
+                    </Button>
+                </div>
+            )}
         </div>
     );
 };
