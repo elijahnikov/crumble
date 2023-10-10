@@ -7,6 +7,7 @@ import {
 import ProfileTab from "./UserPageTabs/ProfileTab/ProfileTab";
 import type { RouterOutputs } from "@/utils/api";
 import ActivityTab from "./UserPageTabs/ActivityTab/ActivityTab";
+import MoviesTab from "./UserPageTabs/MoviesTab/MoviesTab";
 
 const MainUserInformation = ({
     tabView,
@@ -42,7 +43,7 @@ const MainUserInformation = ({
                     <ActivityTab user={user} isMe={isMe} />
                 </TabsContent>
                 <TabsContent value="movies">
-                    <h1>Movies</h1>
+                    <MoviesTab user={user} />
                 </TabsContent>
                 <TabsContent value="diary">
                     <h1>Diary</h1>
