@@ -1,7 +1,11 @@
 import LoadingSpinner from "@/components/common/LoadingSpinner/LoadingSpinner";
 import Button from "@/components/ui/Button/Button";
+import Input from "@/components/ui/Input/Input";
+import { Select } from "@/components/ui/Select/Select";
 import { api, type RouterOutputs } from "@/utils/api";
 import Image from "next/image";
+import Link from "next/link";
+import { Rating } from "react-simple-star-rating";
 
 const MoviesTab = ({
     user,
@@ -48,21 +52,63 @@ const MoviesTab = ({
     }
     return (
         <>
+            <div>
+                <Select
+                    size="sm"
+                    value={"sortBySelection"}
+                    setValue={() => "void"}
+                >
+                    <Select.Item size="sm" value="Newest">
+                        Newest
+                    </Select.Item>
+                    <Select.Item size="sm" value="Top">
+                        Top
+                    </Select.Item>
+                    <Select.Item size="sm" value="Controversial">
+                        Controversial
+                    </Select.Item>
+                </Select>
+            </div>
             <div className="mt-5 grid w-full grid-cols-8 gap-3">
                 {watched.map((movie) => (
-                    <div key={movie.id}>
-                        <Image
-                            className="rounded-md"
-                            width={0}
-                            height={0}
-                            sizes="100vw"
-                            style={{
-                                width: "100%",
-                                height: "auto",
+                    <div key={movie.id} className="w-[100%]">
+                        <Link
+                            href={{
+                                pathname: "/movie/[id]",
+                                query: {
+                                    id: movie.movieId,
+                                },
                             }}
-                            alt={`${movie.movieTitle}`}
-                            src={`https://image.tmdb.org/t/p/w500${movie.poster}`}
-                        />
+                        >
+                            <Image
+                                className="rounded-md"
+                                width={0}
+                                height={0}
+                                sizes="100vw"
+                                style={{
+                                    width: "100%",
+                                    height: "auto",
+                                }}
+                                alt={`${movie.movieTitle}`}
+                                src={`https://image.tmdb.org/t/p/w500${movie.poster}`}
+                            />
+                        </Link>
+                        <div className="mt-[-15px]">
+                            {movie.ratingGiven ? (
+                                <Rating
+                                    className="relative w-[100%] flex-shrink"
+                                    emptyStyle={{ display: "flex" }}
+                                    fillStyle={{
+                                        display: "-webkit-inline-box",
+                                    }}
+                                    readonly
+                                    allowFraction={true}
+                                    initialValue={movie.ratingGiven}
+                                    size={14}
+                                    fillColor="#EF4444"
+                                />
+                            ) : null}
+                        </div>
                     </div>
                 ))}
             </div>
