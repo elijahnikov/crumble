@@ -32,6 +32,7 @@ const MoviesTab = ({
     user: NonNullable<RouterOutputs["user"]["getUser"]>;
 }) => {
     const [sortBy, setSortBy] = useState<string>(sortByMap[1]!.label);
+
     const {
         data: movies,
         isInitialLoading,

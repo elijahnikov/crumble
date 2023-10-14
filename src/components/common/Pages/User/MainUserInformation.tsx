@@ -47,7 +47,7 @@ const MainUserInformation = ({
                     <MoviesTab user={user} />
                 </TabsContent>
                 <TabsContent value="diary">
-                    <DiaryTab />
+                    <DiaryTab user={user} />
                 </TabsContent>
                 <TabsContent value="watchlist">
                     <h1>Watchlist</h1>
