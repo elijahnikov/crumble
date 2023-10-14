@@ -8,6 +8,12 @@ import {
     TableCell,
 } from "@/components/ui/Table/Table";
 import { type RouterOutputs, api } from "@/utils/api";
+import dayjs from "dayjs";
+import { BiRefresh } from "react-icons/bi";
+import { BsListNested } from "react-icons/bs";
+import { Rating } from "react-simple-star-rating";
+import Image from "next/image";
+import Link from "next/link";
 
 const DiaryTab = ({
     user,
@@ -52,6 +58,26 @@ const DiaryTab = ({
             </p>
         );
     }
+    function modifyArray(arr: NonNullable<typeof watched>) {
+        let lastMonth: number | null = null;
+
+        arr.forEach((movie) => {
+            const createdAt = new Date(movie.createdAt);
+            const currentMonth = createdAt.getMonth() + 1;
+
+            if (lastMonth === null || lastMonth !== currentMonth) {
+                lastMonth = currentMonth;
+            } else {
+                movie.createdAt = new Date(movie.createdAt);
+                movie.createdAt.setFullYear(1970);
+            }
+        });
+
+        return arr;
+    }
+
+    const modifiedArray = modifyArray(watched);
+    console.log({ modifiedArray });
     return (
         <div>
             <Table>
@@ -70,36 +96,61 @@ const DiaryTab = ({
                     {watched.map((movie) => (
                         <TableRow key={movie.id}>
                             <TableCell>
-                                {movie.createdAt.toDateString()}
+                                {movie.createdAt.getFullYear() !== 1970 &&
+                                    dayjs()
+                                        .month(movie.createdAt.getMonth())
+                                        .format("MMM")}
                             </TableCell>
                             <TableCell>
-                                {movie.createdAt.toDateString()}
+                                {dayjs(movie.createdAt).date()}
                             </TableCell>
-                            <TableCell>{movie.movieTitle}</TableCell>
-                            <TableCell>{movie.movie.releaseDate}</TableCell>
-                            <TableCell>{movie.ratingGiven}</TableCell>
-                            <TableCell>{""}</TableCell>
-                            <TableCell>{""}</TableCell>
+                            <TableCell>
+                                <div className="flex items-center">
+                                    <Link
+                                        href={{
+                                            pathname: "/movie/[id]",
+                                            query: {
+                                                id: movie.movieId,
+                                            },
+                                        }}
+                                    >
+                                        <Image
+                                            className="rounded-md"
+                                            width={50}
+                                            height={0}
+                                            alt={`${movie.movieTitle}`}
+                                            src={`https://image.tmdb.org/t/p/w500${movie.poster}`}
+                                        />
+                                    </Link>
+                                    <p className="ml-5">{movie.movieTitle}</p>
+                                </div>
+                            </TableCell>
+                            <TableCell className="text-right">
+                                {dayjs(movie.movie.releaseDate).year()}
+                            </TableCell>
+                            <TableCell>
+                                <Rating
+                                    style={{ marginBottom: "2px" }}
+                                    emptyStyle={{ display: "flex" }}
+                                    fillStyle={{
+                                        display: "-webkit-inline-box",
+                                    }}
+                                    allowFraction={true}
+                                    initialValue={movie.ratingGiven ?? 0}
+                                    size={14}
+                                    readonly
+                                    emptyColor="#404446"
+                                    fillColor="#EF4444"
+                                />
+                            </TableCell>
+                            <TableCell>
+                                <BiRefresh />
+                            </TableCell>
+                            <TableCell>
+                                <BsListNested />
+                            </TableCell>
                         </TableRow>
                     ))}
-                    {/* <TableRow>
-                        <TableCell className="font-medium">INV001</TableCell>
-                        <TableCell>Paid</TableCell>
-                        <TableCell>Credit Card</TableCell>
-                        <TableCell className="text-right">$250.00</TableCell>
-                    </TableRow>
-                    <TableRow>
-                        <TableCell className="font-medium">INV001</TableCell>
-                        <TableCell>Paid</TableCell>
-                        <TableCell>Credit Card</TableCell>
-                        <TableCell className="text-right">$250.00</TableCell>
-                    </TableRow>
-                    <TableRow>
-                        <TableCell className="font-medium">INV001</TableCell>
-                        <TableCell>Paid</TableCell>
-                        <TableCell>Credit Card</TableCell>
-                        <TableCell className="text-right">$250.00</TableCell>
-                    </TableRow> */}
                 </TableBody>
             </Table>
         </div>
