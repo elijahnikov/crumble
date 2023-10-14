@@ -75,7 +75,7 @@ const MoviesTab = ({
     }
     return (
         <div>
-            <div className="float-right">
+            <div className="float-right mb-2">
                 <Select size="sm" value={sortBy} setValue={setSortBy}>
                     {sortByMap.map((sort) => (
                         <Select.Item
@@ -88,7 +88,8 @@ const MoviesTab = ({
                     ))}
                 </Select>
             </div>
-            <div className="mt-5 grid w-full grid-cols-8 gap-3">
+
+            <div className="mt-5 grid  w-full grid-cols-8 gap-3 border-t-[1px] py-2 dark:border-slate-700">
                 {watched.map((movie) => (
                     <div key={movie.id} className="w-[100%]">
                         <Link
