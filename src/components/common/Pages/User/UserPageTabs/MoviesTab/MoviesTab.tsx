@@ -1,17 +1,37 @@
 import LoadingSpinner from "@/components/common/LoadingSpinner/LoadingSpinner";
 import Button from "@/components/ui/Button/Button";
-import Input from "@/components/ui/Input/Input";
 import { Select } from "@/components/ui/Select/Select";
 import { api, type RouterOutputs } from "@/utils/api";
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 import { Rating } from "react-simple-star-rating";
+
+const sortByMap: Array<{ label: string; dataName: string }> = [
+    {
+        label: "Movie Name",
+        dataName: "movieName",
+    },
+    {
+        label: "Recently Added",
+        dataName: "recentlyAdded",
+    },
+    {
+        label: "Release Date",
+        dataName: "releaseDate",
+    },
+    {
+        label: "Average Rating",
+        dataName: "averageRating",
+    },
+];
 
 const MoviesTab = ({
     user,
 }: {
     user: NonNullable<RouterOutputs["user"]["getUser"]>;
 }) => {
+    const [sortBy, setSortBy] = useState<string>(sortByMap[0]!.label);
     const {
         data: movies,
         isInitialLoading,
@@ -51,22 +71,18 @@ const MoviesTab = ({
         );
     }
     return (
-        <>
-            <div>
-                <Select
-                    size="sm"
-                    value={"sortBySelection"}
-                    setValue={() => "void"}
-                >
-                    <Select.Item size="sm" value="Newest">
-                        Newest
-                    </Select.Item>
-                    <Select.Item size="sm" value="Top">
-                        Top
-                    </Select.Item>
-                    <Select.Item size="sm" value="Controversial">
-                        Controversial
-                    </Select.Item>
+        <div>
+            <div className="float-right">
+                <Select size="sm" value={sortBy} setValue={setSortBy}>
+                    {sortByMap.map((sort) => (
+                        <Select.Item
+                            size="sm"
+                            key={sort.dataName}
+                            value={sort.label}
+                        >
+                            {sort.label}
+                        </Select.Item>
+                    ))}
                 </Select>
             </div>
             <div className="mt-5 grid w-full grid-cols-8 gap-3">
@@ -123,7 +139,7 @@ const MoviesTab = ({
                     </Button>
                 </div>
             )}
-        </>
+        </div>
     );
 };
 
