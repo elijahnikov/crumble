@@ -14,4 +14,6 @@ export const createWatchedSchema = z.object({
     poster: z.string().optional(),
     withReview: z.boolean().optional(),
     runtime: z.number().optional(),
+    rewatch: z.boolean().optional(),
+    reviewLink: z.string().optional(),
 });

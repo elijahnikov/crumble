@@ -77,7 +77,7 @@ const DiaryTab = ({
     }
 
     const modifiedArray = modifyArray(watched);
-    console.log({ modifiedArray });
+
     return (
         <div>
             <Table>
@@ -171,10 +171,17 @@ const DiaryTab = ({
                                 />
                             </TableCell>
                             <TableCell>
-                                <BiRefresh />
+                                {movie.rewatch && <BiRefresh />}
                             </TableCell>
                             <TableCell>
-                                <BsListNested />
+                                {movie.reviewLink && (
+                                    <Link
+                                        href="/review/[id]/"
+                                        as={`/review/${movie.reviewLink}`}
+                                    >
+                                        <BsListNested />
+                                    </Link>
+                                )}
                             </TableCell>
                         </TableRow>
                     ))}

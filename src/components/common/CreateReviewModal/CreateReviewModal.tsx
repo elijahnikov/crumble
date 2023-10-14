@@ -65,12 +65,12 @@ const CreateReviewModal = ({
     const { mutate: filmMutate, isLoading: filmLoading } =
         api.movie.createFilm.useMutation();
     const {
-        mutate: reviewMutate,
+        mutateAsync: reviewMutate,
         isLoading: reviewLoading,
         isSuccess: reviewSuccess,
     } = api.review.createReview.useMutation();
     const {
-        mutate: watchedMutate,
+        mutateAsync: watchedMutate,
         isLoading: watchedLoading,
         isSuccess: watchedSuccess,
     } = api.watched.createWatched.useMutation({
@@ -132,23 +132,16 @@ const CreateReviewModal = ({
         setRewatchChecked(false);
     };
 
-    const handleCreateReview = () => {
+    const handleCreateReview = async () => {
         if (chosenMovieDetails) {
             filmMutate({
                 ...chosenMovieDetails,
                 fromReview: true,
                 rating: parseFloat(ratingValue.toString()),
             });
-            watchedMutate({
-                ratingGiven: ratingValue,
-                movieTitle: chosenMovieDetails.title,
-                movieId: chosenMovieDetails.movieId,
-                poster: chosenMovieDetails.poster,
-                runtime: extraMovieDetails?.runtime ?? 0,
-                withReview: Boolean(reviewText) || reviewText !== "",
-            });
+
             if (reviewText) {
-                reviewMutate({
+                const review = await reviewMutate({
                     tags: tags.join(","),
                     containsSpoilers: spoilerChecked,
                     watchedOn: watchedOnDate!.toISOString(),
@@ -158,6 +151,26 @@ const CreateReviewModal = ({
                     ratingGiven: ratingValue,
                     text: reviewText,
                     ...chosenMovieDetails,
+                });
+                await watchedMutate({
+                    ratingGiven: ratingValue,
+                    movieTitle: chosenMovieDetails.title,
+                    movieId: chosenMovieDetails.movieId,
+                    poster: chosenMovieDetails.poster,
+                    runtime: extraMovieDetails?.runtime ?? 0,
+                    rewatch: rewatchChecked,
+                    withReview: Boolean(reviewText) || reviewText !== "",
+                    reviewLink: review.id,
+                });
+            } else {
+                await watchedMutate({
+                    ratingGiven: ratingValue,
+                    movieTitle: chosenMovieDetails.title,
+                    movieId: chosenMovieDetails.movieId,
+                    poster: chosenMovieDetails.poster,
+                    runtime: extraMovieDetails?.runtime ?? 0,
+                    rewatch: rewatchChecked,
+                    withReview: Boolean(reviewText) || reviewText !== "",
                 });
             }
         }
@@ -272,7 +285,7 @@ const CreateReviewModal = ({
                     {blockInput && (
                         <div className="flex-end float-right space-x-2">
                             <Button
-                                onClick={() => handleCreateReview()}
+                                onClick={() => void handleCreateReview()}
                                 loading={
                                     filmLoading ||
                                     reviewLoading ||
