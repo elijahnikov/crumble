@@ -96,13 +96,38 @@ const DiaryTab = ({
                     {watched.map((movie) => (
                         <TableRow key={movie.id}>
                             <TableCell>
-                                {movie.createdAt.getFullYear() !== 1970 &&
-                                    dayjs()
-                                        .month(movie.createdAt.getMonth())
-                                        .format("MMM")}
+                                {movie.createdAt.getFullYear() !== 1970 && (
+                                    <div>
+                                        <p className="text-lg font-bold uppercase dark:text-slate-200">
+                                            {dayjs()
+                                                .month(
+                                                    movie.createdAt.getMonth()
+                                                )
+                                                .format("MMM")}
+                                        </p>
+                                        <p className="text-xs font-normal dark:text-slate-400">
+                                            {dayjs()
+                                                .year(
+                                                    movie.createdAt.getFullYear()
+                                                )
+                                                .format("YYYY")}
+                                        </p>
+                                    </div>
+                                )}
                             </TableCell>
                             <TableCell>
-                                {dayjs(movie.createdAt).date()}
+                                {
+                                    <div>
+                                        <p className="text-lg font-bold uppercase dark:text-slate-200">
+                                            {dayjs(movie.createdAt).date()}
+                                        </p>
+                                        <p className="text-xs font-normal dark:text-slate-400">
+                                            {dayjs()
+                                                .year(movie.createdAt.getDay())
+                                                .format("ddd")}
+                                        </p>
+                                    </div>
+                                }
                             </TableCell>
                             <TableCell>
                                 <div className="flex items-center">
@@ -122,7 +147,9 @@ const DiaryTab = ({
                                             src={`https://image.tmdb.org/t/p/w500${movie.poster}`}
                                         />
                                     </Link>
-                                    <p className="ml-5">{movie.movieTitle}</p>
+                                    <p className="ml-5 max-w-[70%] truncate">
+                                        {movie.movieTitle}
+                                    </p>
                                 </div>
                             </TableCell>
                             <TableCell className="text-right">
