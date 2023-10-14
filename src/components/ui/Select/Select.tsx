@@ -2,6 +2,7 @@ import React, { type ReactElement, useState } from "react";
 import * as PopoverPrimitive from "@radix-ui/react-popover";
 import { BsChevronDown } from "react-icons/bs";
 import Input from "../Input/Input";
+import clxsm from "@/utils/clsxm";
 
 interface SelectProps {
     placeholder?: string;
@@ -10,6 +11,7 @@ interface SelectProps {
     value: string;
     setValue: (value: string) => void;
     label?: string;
+    size?: "sm" | "md";
     children: ReactElement<SelectItemProps> | ReactElement<SelectItemProps>[];
 }
 
@@ -20,6 +22,7 @@ interface SelectItemProps {
     setValue?: (value: string) => void;
     setSearchText?: (value: string) => void;
     open?: boolean;
+    size?: "sm" | "md";
     setOpen?: (value: boolean) => void;
 }
 
@@ -31,6 +34,7 @@ const Select = ({
     value,
     setValue,
     children,
+    size = "md",
 }: SelectProps) => {
     const [open, setOpen] = useState<boolean>(false);
     const [searchText, setSearchText] = useState<string>("");
@@ -50,19 +54,33 @@ const Select = ({
                         </div>
                     )}
                     <div
-                        className={`${
+                        className={clxsm(
+                            size === "md" ? "px-3 py-2" : "px-2 py-1.5",
                             disabled &&
-                            "border-sky-lighter bg-sky-lightest dark:border-ink-dark dark:bg-ink-darker"
-                        } ${"border-slate-200 dark:border-slate-700"}  flex w-[200px] rounded-lg border-[1px] px-3 py-2 text-left text-sm`}
+                                "border-sky-lighter bg-sky-lightest dark:border-ink-dark dark:bg-ink-darker",
+                            "flex w-[200px] rounded-lg border-[1px] border-slate-200  text-left text-sm dark:border-slate-700"
+                        )}
                     >
-                        <p className="w-[90%]">
+                        <p
+                            className={clxsm(
+                                size === "sm" && "text-xs ",
+                                "w-[90%] font-normal"
+                            )}
+                        >
                             {value !== "" ? value : placeholder}
                         </p>
                         <BsChevronDown className="mt-1 fill-ink-light" />
                     </div>
                 </PopoverPrimitive.Trigger>
                 <PopoverPrimitive.Portal>
-                    <PopoverPrimitive.Content className="mt-2 max-h-[400px] w-[200px] space-y-1 overflow-y-auto rounded-lg border-[1px] border-slate-200 bg-white p-[5px] dark:border-gray-700 dark:bg-black">
+                    <PopoverPrimitive.Content
+                        className={clxsm(
+                            size === "md"
+                                ? "max-h-[400px] w-[200px] space-y-1 p-[5px]"
+                                : "max-h-[400px] w-[200px] space-y-1 p-[3px]",
+                            "mt-2  overflow-y-auto rounded-lg border-[1px] border-slate-200 bg-white  dark:border-gray-700 dark:bg-black"
+                        )}
+                    >
                         {searchable && (
                             <Input
                                 className="w-[100%]"
@@ -102,6 +120,7 @@ const Item = ({
     setValue,
     open,
     setOpen,
+    size = "md",
 }: SelectItemProps) => {
     return (
         <div
@@ -110,12 +129,16 @@ const Item = ({
                 setOpen && setOpen(!open);
                 setSearchText && setSearchText("");
             }}
-            className={`${
-                selectedValue === value && "bg-brand-white dark:bg-brand-light"
-            } cursor-pointer rounded-md p-2 pl-[20px] text-sm hover:bg-brand-white dark:hover:bg-brand-light`}
+            className={clxsm(
+                selectedValue === value && "bg-brand-white dark:bg-brand-light",
+                size === "md" ? "p-2" : "p-1.5",
+                "cursor-pointer rounded-md  pl-[20px] text-sm hover:bg-brand-white dark:hover:bg-brand-light"
+            )}
             key={value}
         >
-            <p className="ml-1">{children}</p>
+            <p className={clxsm(size === "sm" && "text-xs", "ml-1")}>
+                {children}
+            </p>
         </div>
     );
 };

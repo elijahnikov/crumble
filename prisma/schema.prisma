@@ -194,6 +194,7 @@ model Movie {
 
   FavouriteMovies FavouriteMovies[]
   ListEntries     ListEntry[]
+  Watched         Watched[]
 }
 
 model FavouriteMovies {
@@ -223,12 +224,14 @@ model Watched {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  movie       Movie    @relation(fields: [movieId], references: [movieId], onDelete: Cascade)
 
   activity Activity[] @relation("watched")
 
   @@unique([createdAt, id])
   @@unique([userId, movieId])
   @@index([userId])
+  @@index([movieId])
 }
 
 //-----------------------------------------------------------------

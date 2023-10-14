@@ -3,6 +3,7 @@ import { z } from "zod";
 export const watchedSchema = z.object({
     limit: z.number().optional(),
     cursor: z.object({ id: z.string(), createdAt: z.date() }).optional(),
+    sortBy: z.string().optional(),
     username: z.string(),
 });
 

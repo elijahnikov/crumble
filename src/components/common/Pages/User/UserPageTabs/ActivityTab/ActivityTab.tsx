@@ -1,6 +1,5 @@
 import LoadingSpinner from "@/components/common/LoadingSpinner/LoadingSpinner";
 import { type RouterOutputs, api } from "@/utils/api";
-import InfiniteScroll from "react-infinite-scroll-component";
 import FavouriteMovieActivity from "./Activities/FavouriteMovieActivity";
 import ListEntryActivity from "./Activities/ListEntryActivity";
 import ReviewActivity from "./Activities/ReviewActivity";

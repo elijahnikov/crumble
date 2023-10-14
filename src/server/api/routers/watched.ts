@@ -2,6 +2,25 @@ import { createNewActivity } from "@/server/helpers/createActivity";
 import { createWatchedSchema, watchedSchema } from "../schemas/watched";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
+const sortByMapping: Record<string, object | []> = {
+    movieName: {
+        movie: {
+            title: "asc",
+        },
+    },
+    releaseDate: {
+        movie: {
+            releaseDate: "desc",
+        },
+    },
+    averageRating: {
+        movie: {
+            rating: "desc",
+        },
+    },
+    recentlyAdded: [{ createdAt: "desc" }, { id: "desc" }],
+};
+
 export const watchedRouter = createTRPCRouter({
     //
     // Get all watched for user
@@ -9,12 +28,14 @@ export const watchedRouter = createTRPCRouter({
     watched: publicProcedure
         .input(watchedSchema)
         .query(async ({ ctx, input: { limit = 20, ...input } }) => {
-            const { username, cursor } = input;
+            const { username, cursor, sortBy } = input;
 
             const data = await ctx.prisma.watched.findMany({
                 take: limit + 1,
                 cursor: cursor ? { createdAt_id: cursor } : undefined,
-                orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+                orderBy: sortBy
+                    ? sortByMapping[sortBy]
+                    : [{ createdAt: "desc" }, { id: "desc" }],
                 where: {
                     user: {
                         name: username,
