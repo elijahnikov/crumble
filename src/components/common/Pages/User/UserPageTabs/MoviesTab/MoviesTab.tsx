@@ -31,7 +31,7 @@ const MoviesTab = ({
 }: {
     user: NonNullable<RouterOutputs["user"]["getUser"]>;
 }) => {
-    const [sortBy, setSortBy] = useState<string>(sortByMap[0]!.label);
+    const [sortBy, setSortBy] = useState<string>(sortByMap[1]!.label);
     const {
         data: movies,
         isInitialLoading,
@@ -43,6 +43,9 @@ const MoviesTab = ({
         {
             username: user.name!,
             limit: 32,
+            sortBy:
+                sortByMap.find((sort) => sort.label === sortBy)?.dataName ??
+                undefined,
         },
         {
             getNextPageParam: (lastPage) => lastPage.nextCursor,
