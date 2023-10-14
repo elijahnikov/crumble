@@ -41,6 +41,13 @@ export const watchedRouter = createTRPCRouter({
                         name: username,
                     },
                 },
+                include: {
+                    movie: {
+                        select: {
+                            releaseDate: true,
+                        },
+                    },
+                },
             });
             let nextCursor: typeof cursor | undefined;
             if (data.length > limit) {

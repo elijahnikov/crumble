@@ -8,6 +8,7 @@ import ProfileTab from "./UserPageTabs/ProfileTab/ProfileTab";
 import type { RouterOutputs } from "@/utils/api";
 import ActivityTab from "./UserPageTabs/ActivityTab/ActivityTab";
 import MoviesTab from "./UserPageTabs/MoviesTab/MoviesTab";
+import DiaryTab from "./UserPageTabs/DiaryTab/DiaryTab";
 
 const MainUserInformation = ({
     tabView,
@@ -46,7 +47,7 @@ const MainUserInformation = ({
                     <MoviesTab user={user} />
                 </TabsContent>
                 <TabsContent value="diary">
-                    <h1>Diary</h1>
+                    <DiaryTab user={user} />
                 </TabsContent>
                 <TabsContent value="watchlist">
                     <h1>Watchlist</h1>
