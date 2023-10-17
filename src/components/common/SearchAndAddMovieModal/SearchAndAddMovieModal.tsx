@@ -138,6 +138,7 @@ const SearchAndAddMovieModal = ({
                             disabled={!chosenMovie}
                             onClick={() => {
                                 setChosenMovie(undefined);
+                                setBlockInput(false);
                                 void callback(chosenMovie);
                             }}
                         >

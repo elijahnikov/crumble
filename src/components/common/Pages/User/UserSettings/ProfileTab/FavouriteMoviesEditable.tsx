@@ -129,7 +129,7 @@ const FavouriteMoviesEditable = ({ data }: FavouriteMoviesEditableProps) => {
                                                 true
                                             )
                                         }
-                                        className="flex h-full w-[100%] items-center justify-center rounded-md bg-brand-white dark:bg-brand"
+                                        className="flex h-[170px] w-[100%] items-center justify-center rounded-md bg-brand-white dark:bg-brand"
                                     >
                                         <BsPlus className="mx-auto my-auto h-5 w-5 justify-center text-center sm:h-8 sm:w-8 lg:h-10 lg:w-10" />
                                     </div>
