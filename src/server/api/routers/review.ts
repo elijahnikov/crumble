@@ -55,17 +55,22 @@ export const reviewRouter = createTRPCRouter({
                 if (movieId) {
                     where.movieId = movieId;
                 }
+
                 const data = await ctx.prisma.review.findMany({
                     take: limit + 1,
                     where: where,
                     cursor: cursor ? { createdAt_id: cursor } : undefined,
                     orderBy:
-                        orderBy && orderBy !== "createdAt"
-                            ? [
-                                  {
-                                      [orderBy]: orderDirection,
+                        orderBy &&
+                        orderBy !== "createdAt" &&
+                        orderBy === "reviewLikes"
+                            ? {
+                                  reviewLikes: {
+                                      _count: "desc",
                                   },
-                              ]
+                              }
+                            : orderBy && orderBy !== "createdAt"
+                            ? [{ [orderBy]: orderDirection }]
                             : [{ createdAt: orderDirection }, { id: "desc" }],
                     include: {
                         _count: {
