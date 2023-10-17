@@ -14,6 +14,7 @@ import { BsListNested } from "react-icons/bs";
 import { Rating } from "react-simple-star-rating";
 import Image from "next/image";
 import Link from "next/link";
+import Button from "@/components/ui/Button/Button";
 
 const DiaryTab = ({
     user,
@@ -30,7 +31,7 @@ const DiaryTab = ({
     } = api.watched.watched.useInfiniteQuery(
         {
             username: user.name!,
-            limit: 32,
+            limit: 10,
         },
         {
             getNextPageParam: (lastPage) => lastPage.nextCursor,
@@ -79,7 +80,7 @@ const DiaryTab = ({
     const modifiedArray = modifyArray(watched);
 
     return (
-        <div>
+        <div className="w-full">
             <Table>
                 <TableHeader>
                     <TableRow>
@@ -156,22 +157,30 @@ const DiaryTab = ({
                                 {dayjs(movie.movie.releaseDate).year()}
                             </TableCell>
                             <TableCell>
-                                <Rating
-                                    style={{ marginBottom: "2px" }}
-                                    emptyStyle={{ display: "flex" }}
-                                    fillStyle={{
-                                        display: "-webkit-inline-box",
-                                    }}
-                                    allowFraction={true}
-                                    initialValue={movie.ratingGiven ?? 0}
-                                    size={14}
-                                    readonly
-                                    emptyColor="#404446"
-                                    fillColor="#EF4444"
-                                />
+                                {movie.ratingGiven ? (
+                                    <Rating
+                                        style={{ marginBottom: "2px" }}
+                                        emptyStyle={{ display: "flex" }}
+                                        fillStyle={{
+                                            display: "-webkit-inline-box",
+                                        }}
+                                        allowFraction={true}
+                                        initialValue={movie.ratingGiven}
+                                        size={14}
+                                        readonly
+                                        emptyColor="#404446"
+                                        fillColor="#EF4444"
+                                    />
+                                ) : (
+                                    <p className="text-[11px] text-slate-600 dark:text-slate-400">
+                                        No rating given
+                                    </p>
+                                )}
                             </TableCell>
                             <TableCell>
-                                {movie.rewatch && <BiRefresh />}
+                                {movie.rewatch && (
+                                    <BiRefresh className="h-4 w-4" />
+                                )}
                             </TableCell>
                             <TableCell>
                                 {movie.reviewLink && (
@@ -179,7 +188,7 @@ const DiaryTab = ({
                                         href="/review/[id]/"
                                         as={`/review/${movie.reviewLink}`}
                                     >
-                                        <BsListNested />
+                                        <BsListNested className="h-4 w-4" />
                                     </Link>
                                 )}
                             </TableCell>
@@ -187,6 +196,17 @@ const DiaryTab = ({
                     ))}
                 </TableBody>
             </Table>
+            {hasNextPage && (
+                <div className="mx-auto mt-5 flex w-[100%] justify-center">
+                    <Button
+                        onClick={() => void fetchNextPage()}
+                        loading={isFetchingNextPage}
+                        size={"sm"}
+                    >
+                        More
+                    </Button>
+                </div>
+            )}
         </div>
     );
 };

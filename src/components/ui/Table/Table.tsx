@@ -61,7 +61,7 @@ const TableRow = React.forwardRef<
     <tr
         ref={ref}
         className={clxsm(
-            "hover:bg-muted/50 data-[state=selected]:bg-muted border-b font-normal transition-colors dark:border-slate-600",
+            "hover:bg-muted/50 data-[state=selected]:bg-muted border-b font-normal transition-colors dark:border-slate-700",
             className
         )}
         {...props}
