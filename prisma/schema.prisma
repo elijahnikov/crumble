@@ -90,8 +90,9 @@ model User {
   followers Subscription[] @relation("following")
   following Subscription[] @relation("follower")
 
-  notifier Notification[] @relation("notifier")
-  notified Notification[] @relation("notified")
+  notifier  Notification[] @relation("notifier")
+  notified  Notification[] @relation("notified")
+  Watchlist Watchlist[]
 }
 
 //-----------------------------------------------------------------
@@ -195,6 +196,7 @@ model Movie {
   FavouriteMovies FavouriteMovies[]
   ListEntries     ListEntry[]
   Watched         Watched[]
+  Watchlist       Watchlist[]
 }
 
 model FavouriteMovies {
@@ -366,6 +368,9 @@ model Activity {
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  watchlist   Watchlist? @relation("watchlist", fields: [watchlistId], references: [id])
+  watchlistId String?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -377,6 +382,7 @@ model Activity {
   @@index([reviewId])
   @@index([listEntryId])
   @@index([userId, reviewId])
+  @@index([watchlistId])
 }
 
 //-----------------------------------------------------------------
@@ -432,5 +438,21 @@ model Privacy {
   showFavouriteMovieInActivity Boolean @default(true)
   showReviewLikeInActivity     Boolean @default(true)
 
+  @@index([userId])
+}
+
+//-----------------------------------------------------------------
+//-------------------------- Watchlist ----------------------------
+//-----------------------------------------------------------------
+model Watchlist {
+  id      String @id @default(cuid())
+  movieId Int
+  userId  String
+  movie   Movie  @relation(fields: [movieId], references: [movieId], onDelete: Cascade)
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  activity Activity[] @relation("watchlist")
+
+  @@index([movieId])
   @@index([userId])
 }
