@@ -437,6 +437,7 @@ model Privacy {
   showReviewInActivity         Boolean @default(true)
   showFavouriteMovieInActivity Boolean @default(true)
   showReviewLikeInActivity     Boolean @default(true)
+  showWatchlistEntryInActivity Boolean @default(true)
 
   @@index([userId])
 }
@@ -453,6 +454,10 @@ model Watchlist {
 
   activity Activity[] @relation("watchlist")
 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([createdAt, id])
   @@index([movieId])
   @@index([userId])
 }

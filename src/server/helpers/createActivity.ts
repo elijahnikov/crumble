@@ -9,6 +9,7 @@ const activityIdNames = [
     "favouriteMovieId",
     "reviewLikeId",
     "userId",
+    "watchlistId",
 ] as const;
 
 type PartialRecord<K extends string, T> = {
@@ -30,6 +31,7 @@ const activityToPrivacySettingMapping: Record<ActivityIdNamesType, string> = {
     favouriteMovieId: "showFavouriteMovieInActivity",
     reviewLikeId: "showReviewLikeInActivity",
     userId: "showReviewLikeInActivity",
+    watchlistId: "showWatchlistEntryInActivity",
 };
 
 export const createNewActivity = async ({
