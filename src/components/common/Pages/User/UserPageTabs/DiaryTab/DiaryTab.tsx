@@ -73,11 +73,9 @@ const DiaryTab = ({
                 movie.createdAt.setFullYear(1970);
             }
         });
-
-        return arr;
     }
 
-    const modifiedArray = modifyArray(watched);
+    modifyArray(watched);
 
     return (
         <div className="w-full">
