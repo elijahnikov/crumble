@@ -11,7 +11,14 @@ import { Container } from "@/components/common/Layout/Layout";
 import { api } from "@/utils/api";
 import Tooltip from "@/components/ui/Tooltip/Tooltip";
 import Button from "@/components/ui/Button/Button";
-import { BsThreeDotsVertical } from "react-icons/bs";
+import {
+    BsHeartFill,
+    BsPlus,
+    BsShareFill,
+    BsThreeDotsVertical,
+} from "react-icons/bs";
+import { BiHeart, BiShare } from "react-icons/bi";
+import toast from "react-hot-toast";
 
 interface SingleFilmViewProps {
     movieData: z.infer<typeof movieDetailsFetchSchema>;
@@ -27,6 +34,18 @@ const SingleFilmView = ({ movieData }: SingleFilmViewProps) => {
     const { data: extraMovieData } = api.movie.film.useQuery({
         id: movieData.id,
     });
+
+    const { mutate: addToWatchlist } = api.watchlist.addToWatchlist.useMutation(
+        {
+            onSuccess: () => {
+                toast.success("Added to your watchlist!", {
+                    position: "bottom-center",
+                    duration: 4000,
+                    className: "dark:bg-brand dark:text-white text-black",
+                });
+            },
+        }
+    );
 
     return (
         <>
@@ -87,7 +106,7 @@ const SingleFilmView = ({ movieData }: SingleFilmViewProps) => {
                 {/* DESCRIPTION AND STATS */}
                 <div className="mb-[20px] flex">
                     <div className="mt-[60px] min-w-[200px] max-w-[200px] space-y-5 text-center">
-                        <div className="ml-[1.4vw] flex w-full space-x-2">
+                        <div className="mt-4 w-full space-x-2">
                             <CreateReviewModal
                                 fromMenu={false}
                                 open={open}
@@ -102,9 +121,43 @@ const SingleFilmView = ({ movieData }: SingleFilmViewProps) => {
                                     poster: movieData.poster_path,
                                 }}
                             />
-                            <Button size="sm" intent="outline">
-                                <BsThreeDotsVertical />
-                            </Button>
+                            <div className="mx-auto mt-5 flex w-[92%] justify-center space-x-4">
+                                <Tooltip>
+                                    <Tooltip.Trigger>
+                                        <div
+                                            onClick={() => {
+                                                addToWatchlist({
+                                                    movieId: movieData.id,
+                                                });
+                                            }}
+                                            className="w-max cursor-pointer rounded-md border p-1 dark:border-slate-700"
+                                        >
+                                            <BsPlus className="h-5 w-5 text-slate-600 dark:text-slate-400" />
+                                        </div>
+                                    </Tooltip.Trigger>
+                                    <Tooltip.Content>
+                                        Add to watchlist
+                                    </Tooltip.Content>
+                                </Tooltip>
+                                <Tooltip>
+                                    <Tooltip.Trigger>
+                                        <div className="w-max cursor-pointer rounded-md border p-1 dark:border-slate-700">
+                                            <BiShare className="h-5 w-5 text-slate-600 dark:text-slate-400" />
+                                        </div>
+                                    </Tooltip.Trigger>
+                                    <Tooltip.Content>Share</Tooltip.Content>
+                                </Tooltip>
+                                <Tooltip>
+                                    <Tooltip.Trigger>
+                                        <div className="w-max cursor-pointer rounded-md border p-1 dark:border-slate-700">
+                                            <BiHeart className="h-5 w-5 text-slate-600 dark:text-slate-400" />
+                                        </div>
+                                    </Tooltip.Trigger>
+                                    <Tooltip.Content>
+                                        Add to likes
+                                    </Tooltip.Content>
+                                </Tooltip>
+                            </div>
                         </div>
 
                         <div className="flex w-full justify-between pl-4 pr-5">

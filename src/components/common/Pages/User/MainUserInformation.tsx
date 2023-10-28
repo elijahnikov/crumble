@@ -9,6 +9,7 @@ import type { RouterOutputs } from "@/utils/api";
 import ActivityTab from "./UserPageTabs/ActivityTab/ActivityTab";
 import MoviesTab from "./UserPageTabs/MoviesTab/MoviesTab";
 import DiaryTab from "./UserPageTabs/DiaryTab/DiaryTab";
+import WatchlistTab from "./UserPageTabs/WatchlistTab/WatchlistTab";
 
 const MainUserInformation = ({
     tabView,
@@ -50,7 +51,7 @@ const MainUserInformation = ({
                     <DiaryTab user={user} />
                 </TabsContent>
                 <TabsContent value="watchlist">
-                    <h1>Watchlist</h1>
+                    <WatchlistTab user={user} />
                 </TabsContent>
                 <TabsContent value="reviews">
                     <h1>Reviews</h1>
