@@ -50,7 +50,14 @@ export const watchlistRouter = createTRPCRouter({
                     },
                 },
                 include: {
-                    movie: true,
+                    movie: {
+                        select: {
+                            poster: true,
+                            title: true,
+                            releaseDate: true,
+                            movieId: true,
+                        },
+                    },
                 },
             });
             let nextCursor: typeof cursor | undefined;
@@ -65,6 +72,7 @@ export const watchlistRouter = createTRPCRouter({
             }
             return {
                 watchlist: data,
+                length: data.length,
                 nextCursor,
             };
         }),

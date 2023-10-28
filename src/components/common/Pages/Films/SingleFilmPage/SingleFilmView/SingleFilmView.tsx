@@ -18,6 +18,7 @@ import {
     BsThreeDotsVertical,
 } from "react-icons/bs";
 import { BiHeart, BiShare } from "react-icons/bi";
+import toast from "react-hot-toast";
 
 interface SingleFilmViewProps {
     movieData: z.infer<typeof movieDetailsFetchSchema>;
@@ -33,6 +34,18 @@ const SingleFilmView = ({ movieData }: SingleFilmViewProps) => {
     const { data: extraMovieData } = api.movie.film.useQuery({
         id: movieData.id,
     });
+
+    const { mutate: addToWatchlist } = api.watchlist.addToWatchlist.useMutation(
+        {
+            onSuccess: () => {
+                toast.success("Added to your watchlist!", {
+                    position: "bottom-center",
+                    duration: 4000,
+                    className: "dark:bg-brand dark:text-white text-black",
+                });
+            },
+        }
+    );
 
     return (
         <>
@@ -93,7 +106,7 @@ const SingleFilmView = ({ movieData }: SingleFilmViewProps) => {
                 {/* DESCRIPTION AND STATS */}
                 <div className="mb-[20px] flex">
                     <div className="mt-[60px] min-w-[200px] max-w-[200px] space-y-5 text-center">
-                        <div className="w-full space-x-2">
+                        <div className="mt-4 w-full space-x-2">
                             <CreateReviewModal
                                 fromMenu={false}
                                 open={open}
@@ -111,7 +124,14 @@ const SingleFilmView = ({ movieData }: SingleFilmViewProps) => {
                             <div className="mx-auto mt-5 flex w-[92%] justify-center space-x-4">
                                 <Tooltip>
                                     <Tooltip.Trigger>
-                                        <div className="w-max cursor-pointer rounded-md border p-1 dark:border-slate-700">
+                                        <div
+                                            onClick={() => {
+                                                addToWatchlist({
+                                                    movieId: movieData.id,
+                                                });
+                                            }}
+                                            className="w-max cursor-pointer rounded-md border p-1 dark:border-slate-700"
+                                        >
                                             <BsPlus className="h-5 w-5 text-slate-600 dark:text-slate-400" />
                                         </div>
                                     </Tooltip.Trigger>
