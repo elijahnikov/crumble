@@ -1,11 +1,15 @@
 import LoadingSpinner from "@/components/common/LoadingSpinner/LoadingSpinner";
 import { api, type RouterOutputs } from "@/utils/api";
 import Link from "next/link";
-
+import Image from "next/image";
 import Button from "@/components/ui/Button/Button";
 import { useEffect, useState } from "react";
 import { getDatesToSortBy } from "@/utils/date/getDatesToSortBy";
 import { Select } from "@/components/ui/Select/Select";
+import { Rating } from "react-simple-star-rating";
+import { BsHeartFill } from "react-icons/bs";
+import clxsm from "@/utils/clsxm";
+import { BiSolidComment } from "react-icons/bi";
 
 const sortToKeyMap: Record<
     string,
@@ -17,7 +21,7 @@ const sortToKeyMap: Record<
 };
 
 const filterMap = {
-    duration: ["1 day", "1 week", "30 days", "6 months", "1 year", "ALl time"],
+    duration: ["1 day", "1 week", "30 days", "6 months", "1 year", "All time"],
     sortBy: ["Newest", "Top", "Controversial"],
 };
 
@@ -70,17 +74,52 @@ const ReviewsTab = ({
 
     if (!reviews || reviews.length === 0) {
         return (
-            <div className="w-full text-center">
-                <p className="mt-5 text-sm font-normal text-slate-600 dark:text-slate-400">
-                    {user.name} has not watchlisted any movies just yet.
-                </p>
+            <div>
+                <div className="mb-2 mt-2 flex space-x-2">
+                    <div className="w-full" />
+                    {(sortBySelection === "Top" ||
+                        sortBySelection === "Controversial") && (
+                        <Select
+                            size="sm"
+                            value={selectedDurationSort}
+                            setValue={setSelectedDurationSort}
+                        >
+                            {filterMap.duration.map((filter, index) => (
+                                <Select.Item
+                                    size="sm"
+                                    key={index}
+                                    value={filter}
+                                >
+                                    {filter}
+                                </Select.Item>
+                            ))}
+                        </Select>
+                    )}
+                    <Select
+                        value={sortBySelection}
+                        setValue={setSortBySelection}
+                        size="sm"
+                    >
+                        {filterMap.sortBy.map((filter, index) => (
+                            <Select.Item key={index} size="sm" value={filter}>
+                                {filter}
+                            </Select.Item>
+                        ))}
+                    </Select>
+                </div>
+                <div className="w-full text-center">
+                    <p className="mt-5 text-sm font-normal text-slate-600 dark:text-slate-400">
+                        No reviews found for {user.name}
+                    </p>
+                </div>
             </div>
         );
     }
 
     return (
         <div>
-            <div className="float-right mb-2">
+            <div className="mb-2 mt-2 flex space-x-2">
+                <div className="w-full" />
                 {(sortBySelection === "Top" ||
                     sortBySelection === "Controversial") && (
                     <Select
@@ -107,18 +146,9 @@ const ReviewsTab = ({
                     ))}
                 </Select>
             </div>
-            <div className="mt-2 grid  w-full grid-cols-8 gap-3 border-t-[1px] py-2 dark:border-slate-700">
-                {reviews.map((movie) => (
-                    <div key={movie.id} className="w-[100%]">
-                        <Link
-                            href={{
-                                pathname: "/movie/[id]",
-                                query: {
-                                    id: movie.movieId,
-                                },
-                            }}
-                        ></Link>
-                    </div>
+            <div className="mt-2 w-full gap-3 border-t-[1px] py-2 dark:border-slate-700">
+                {reviews.map((review) => (
+                    <ReviewRow review={review} key={review.id} />
                 ))}
             </div>
             {hasNextPage && (
@@ -137,3 +167,93 @@ const ReviewsTab = ({
 };
 
 export default ReviewsTab;
+
+interface ReviewRow {
+    review: RouterOutputs["review"]["reviews"]["reviews"][0];
+}
+
+const ReviewRow = ({ review }: ReviewRow) => {
+    return (
+        <div className="mt-5 w-full px-5">
+            <div className="flex space-x-5">
+                <div>
+                    <Link href="/review/[id]/" as={`/review/${review.id}`}>
+                        <Image
+                            alt={review.movieTitle}
+                            src={`https://image.tmdb.org/t/p/original${review.moviePoster}`}
+                            width={100}
+                            height={100}
+                            className="rounded-md"
+                        />
+                    </Link>
+                </div>
+                <div>
+                    <div className="flex">
+                        <div>
+                            {review.user.image && (
+                                <Image
+                                    alt={review.user.name!}
+                                    src={review.user.image}
+                                    width={30}
+                                    height={30}
+                                    className="rounded-full"
+                                />
+                            )}
+                        </div>
+                        <p className="ml-2 mt-1 text-sm font-semibold">
+                            <span className="text-slate-600 dark:text-slate-300">
+                                Review by{" "}
+                            </span>
+                            <span className="underline">
+                                {review.user.name}
+                            </span>
+                        </p>
+                        <Rating
+                            className="-mt-[18px] ml-3"
+                            emptyStyle={{ display: "flex" }}
+                            fillStyle={{
+                                display: "-webkit-inline-box",
+                            }}
+                            readonly
+                            allowFraction={true}
+                            initialValue={review.ratingGiven}
+                            size={15}
+                            fillColor="#EF4444"
+                        />
+                    </div>
+                    <div>
+                        <div className="text-[16px] font-semibold text-slate-700 dark:text-slate-200 dark:text-slate-200">
+                            {review.text}
+                        </div>
+                        <div className=" mb-2 mt-10 flex space-x-4">
+                            <div className="flex space-x-1 text-xs">
+                                <BsHeartFill
+                                    className={clxsm(
+                                        "mt-[3px]",
+                                        review.likedByMe
+                                            ? "fill-crumble"
+                                            : "dark-fill-slate-400 fill-slate-600"
+                                    )}
+                                />
+                                <p className="dark:text-slate-400">
+                                    {review._count.reviewLikes}
+                                </p>
+                            </div>
+                            <div className="flex space-x-1 text-xs">
+                                <BiSolidComment
+                                    className={clxsm(
+                                        "dark-fill-slate-400 mt-[3px] fill-slate-600"
+                                    )}
+                                />
+                                <p className="dark:text-slate-400">
+                                    {review._count.reviewComments}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr className="mx-auto mt-5 w-full border-gray-200 dark:border-gray-700" />
+        </div>
+    );
+};
