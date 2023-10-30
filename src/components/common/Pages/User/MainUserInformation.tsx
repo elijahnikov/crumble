@@ -10,6 +10,7 @@ import ActivityTab from "./UserPageTabs/ActivityTab/ActivityTab";
 import MoviesTab from "./UserPageTabs/MoviesTab/MoviesTab";
 import DiaryTab from "./UserPageTabs/DiaryTab/DiaryTab";
 import WatchlistTab from "./UserPageTabs/WatchlistTab/WatchlistTab";
+import ReviewsTab from "./UserPageTabs/ReviewsTab/ReviewsTab";
 
 const MainUserInformation = ({
     tabView,
@@ -54,7 +55,7 @@ const MainUserInformation = ({
                     <WatchlistTab user={user} />
                 </TabsContent>
                 <TabsContent value="reviews">
-                    <h1>Reviews</h1>
+                    <ReviewsTab user={user} />
                 </TabsContent>
             </Tabs>
         </h1>
