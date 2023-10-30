@@ -43,9 +43,11 @@ const WatchlistTab = ({
 
     if (!watchlist || watchlist.length === 0) {
         return (
-            <p className="text-sm font-normal text-slate-600 dark:text-slate-400">
-                {user.name} has not watched any movies just yet.
-            </p>
+            <div className="w-full text-center">
+                <p className="mt-5 text-sm font-normal text-slate-600 dark:text-slate-400">
+                    {user.name} has not watchlisted any movies just yet.
+                </p>
+            </div>
         );
     }
 
