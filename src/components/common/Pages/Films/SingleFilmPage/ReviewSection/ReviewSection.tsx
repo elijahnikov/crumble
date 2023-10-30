@@ -130,6 +130,16 @@ const ReviewRow = ({ review }: ReviewRow) => {
                         {review._count.reviewComments}
                     </p>
                 </div>
+                <div className="flex space-x-1 text-xs">
+                    <BiSolidComment
+                        className={clxsm(
+                            "dark-fill-slate-400 mt-[3px] fill-slate-600"
+                        )}
+                    />
+                    <p className="dark:text-slate-400">
+                        {review._count.reviewComments}
+                    </p>
+                </div>
             </div>
             <hr className="mx-auto mt-5 w-[90%] border-gray-200 dark:border-gray-700" />
         </div>

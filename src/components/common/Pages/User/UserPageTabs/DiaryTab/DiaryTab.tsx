@@ -54,9 +54,11 @@ const DiaryTab = ({
 
     if (!watched || watched.length === 0) {
         return (
-            <p className="text-sm font-normal text-slate-600 dark:text-slate-400">
-                {user.name} has not watched any movies just yet.
-            </p>
+            <div className="w-full text-center">
+                <p className="mt-5 text-sm font-normal text-slate-600 dark:text-slate-400">
+                    {user.name} has not added any movies to their diary yet.
+                </p>
+            </div>
         );
     }
     function modifyArray(arr: NonNullable<typeof watched>) {

@@ -50,6 +50,7 @@ export const reviewRouter = createTRPCRouter({
                 if (dateSortBy && orderBy !== "createdAt") {
                     where.createdAt = {
                         lte: new Date(),
+                        gte: dateSortBy,
                     };
                 }
                 if (movieId) {
@@ -61,16 +62,13 @@ export const reviewRouter = createTRPCRouter({
                     where: where,
                     cursor: cursor ? { createdAt_id: cursor } : undefined,
                     orderBy:
-                        orderBy &&
-                        orderBy !== "createdAt" &&
-                        orderBy === "reviewLikes"
+                        // if order by is supplied and its not createdAt orderBy key
+                        orderBy && orderBy !== "createdAt"
                             ? {
-                                  reviewLikes: {
-                                      _count: "desc",
+                                  [orderBy]: {
+                                      _count: orderDirection,
                                   },
                               }
-                            : orderBy && orderBy !== "createdAt"
-                            ? [{ [orderBy]: orderDirection }]
                             : [{ createdAt: orderDirection }, { id: "desc" }],
                     include: {
                         _count: {
