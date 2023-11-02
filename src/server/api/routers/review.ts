@@ -13,6 +13,8 @@ import { createNewActivity } from "@/server/helpers/createActivity";
 //     prefix: "@upstash/ratelimit",
 // });
 
+const countFilters = ["reviewLikes", "reviewComments"];
+
 type ReviewWhereType = Record<
     string,
     | object
@@ -64,11 +66,13 @@ export const reviewRouter = createTRPCRouter({
                     orderBy:
                         // if order by is supplied and its not createdAt orderBy key
                         orderBy && orderBy !== "createdAt"
-                            ? {
-                                  [orderBy]: {
-                                      _count: orderDirection,
-                                  },
-                              }
+                            ? countFilters.includes(orderBy)
+                                ? {
+                                      [orderBy]: {
+                                          _count: orderDirection,
+                                      },
+                                  }
+                                : { [orderBy]: orderDirection }
                             : [{ createdAt: orderDirection }, { id: "desc" }],
                     include: {
                         _count: {
