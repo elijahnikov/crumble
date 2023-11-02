@@ -11,6 +11,7 @@ import MoviesTab from "./UserPageTabs/MoviesTab/MoviesTab";
 import DiaryTab from "./UserPageTabs/DiaryTab/DiaryTab";
 import WatchlistTab from "./UserPageTabs/WatchlistTab/WatchlistTab";
 import ReviewsTab from "./UserPageTabs/ReviewsTab/ReviewsTab";
+import ListsTab from "./UserPageTabs/ListsTab/ListsTab";
 
 const MainUserInformation = ({
     tabView,
@@ -56,6 +57,9 @@ const MainUserInformation = ({
                 </TabsContent>
                 <TabsContent value="reviews">
                     <ReviewsTab user={user} />
+                </TabsContent>
+                <TabsContent value="lists">
+                    <ListsTab user={user} />
                 </TabsContent>
             </Tabs>
         </h1>
