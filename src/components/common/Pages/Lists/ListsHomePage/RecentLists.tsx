@@ -14,7 +14,7 @@ const RecentLists = () => {
         <div className="mt-5">
             <div className="ml-2 flex">
                 <p className="font-semibold dark:text-slate-200">
-                    Recent reviews
+                    Recent lists
                 </p>
                 <Link
                     href={{
