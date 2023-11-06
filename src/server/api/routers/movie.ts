@@ -88,7 +88,7 @@ export const movieRouter = createTRPCRouter({
     //
     // Get film by id
     //
-    film: publicProcedure
+    movie: publicProcedure
         .input(z.object({ id: z.number() }))
         .query(async ({ ctx, input: { id } }) => {
             const data = await ctx.prisma.movie.findFirst({

@@ -65,3 +65,42 @@ export const movieDetailsFetchSchema = z.object({
     runtime: z.number(),
 });
 export type IMovieDetailsFetch = z.infer<typeof movieDetailsFetchSchema>;
+
+export const allMovieDetailsFetchSchema = z
+    .object({
+        adult: z.boolean(),
+        backdrop_path: z.string().nullable(),
+        genre_ids: z.number().array(),
+        id: z.number(),
+        original_language: z.string(),
+        original_title: z.string(),
+        overview: z.string().nullable(),
+        popularity: z.number(),
+        poster_path: z.string().nullable(),
+        release_date: z.string(),
+        title: z.string(),
+        video: z.boolean(),
+        vote_average: z.number(),
+        vote_count: z.number(),
+    })
+    .transform(
+        ({
+            backdrop_path,
+            id,
+            poster_path,
+            release_date,
+            original_title,
+            overview,
+            ...rest
+        }) => ({
+            backdrop: backdrop_path ?? "",
+            movieId: id,
+            movieTitle: original_title,
+            overview: overview ?? "",
+            poster: poster_path ?? "",
+            releaseDate: release_date,
+            ...rest,
+        })
+    );
+
+export type IAllMovieDetailsFetch = z.infer<typeof movieFetchSchema>;
