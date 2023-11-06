@@ -114,6 +114,7 @@ const MoviesAllPage = () => {
 
     const [decade, setDecade] = useState<string>("2020s");
     const [genre, setGenre] = useState<string>(genres[0]!.name);
+    const [sort, setSort] = useState<string>("Release date");
 
     const fetchAllMovies = useCallback(async () => {
         setLoading(true);
@@ -197,6 +198,19 @@ const MoviesAllPage = () => {
                                     {genre.name}
                                 </Select.Item>
                             ))}
+                        </Select>
+                        <Select
+                            label="Sort by"
+                            size="sm"
+                            value={sort}
+                            setValue={setSort}
+                        >
+                            <Select.Item size="sm" value={"Release date"}>
+                                Release Date
+                            </Select.Item>
+                            <Select.Item size="sm" value={"Popularity"}>
+                                Popularity
+                            </Select.Item>
                         </Select>
                     </div>
                     {loading && <LoadingSpinner />}
