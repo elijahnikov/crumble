@@ -24,6 +24,7 @@ interface SelectItemProps {
     open?: boolean;
     size?: "sm" | "md";
     setOpen?: (value: boolean) => void;
+    onClick?: (value: string) => void;
 }
 
 const Select = ({
@@ -47,8 +48,13 @@ const Select = ({
             >
                 <PopoverPrimitive.Trigger disabled={disabled}>
                     {label && (
-                        <div className="relative top-[-5px] text-left">
-                            <p className="text-sm text-black dark:text-white">
+                        <div className="relative top-[-3px] ml-[2px] text-left">
+                            <p
+                                className={clxsm(
+                                    "text-black dark:text-white",
+                                    size === "sm" ? "text-xs" : "text-sm"
+                                )}
+                            >
                                 {label}
                             </p>
                         </div>
@@ -121,6 +127,7 @@ const Item = ({
     open,
     setOpen,
     size = "md",
+    onClick,
 }: SelectItemProps) => {
     return (
         <div
@@ -128,6 +135,7 @@ const Item = ({
                 setValue && setValue(value);
                 setOpen && setOpen(!open);
                 setSearchText && setSearchText("");
+                onClick && onClick(value);
             }}
             className={clxsm(
                 selectedValue === value && "bg-brand-white dark:bg-brand-light",
