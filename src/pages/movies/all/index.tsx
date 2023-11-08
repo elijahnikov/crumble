@@ -7,9 +7,11 @@ import {
 } from "@/server/api/schemas/movie";
 import { fetchWithZod } from "@/utils/fetch/zodFetch";
 import Head from "next/head";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 import { type ZodType } from "zod";
+import Image from "next/image";
 
 const decades = {
     2020: ["2020-01-01", "2029-12-31"],
@@ -105,6 +107,17 @@ const genres = [
     },
 ];
 
+const sortings = [
+    {
+        id: "primary_release_date",
+        name: "Release date",
+    },
+    {
+        id: "popularity",
+        name: "Popularity",
+    },
+];
+
 const MoviesAllPage = () => {
     const router = useRouter();
 
@@ -112,19 +125,31 @@ const MoviesAllPage = () => {
     const [page, setPage] = useState<number>(1);
     const [loading, setLoading] = useState<boolean>(false);
 
-    const [decade, setDecade] = useState<string>("2020s");
+    const [decade, setDecade] = useState<string>("All");
     const [genre, setGenre] = useState<string>(genres[0]!.name);
     const [sort, setSort] = useState<string>("Release date");
 
     const fetchAllMovies = useCallback(async () => {
         setLoading(true);
-        let url = `https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=true&language=en-US&page=${page}`;
-        if (router.query.decade) {
+        let url = `https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=${page}`;
+        if (router.query.sort) {
+            const sortId = sortings.find(
+                (sorting) => sorting.name === router.query.sort
+            )?.id;
+            url += `&sort_by=${sortId}.desc`;
+        }
+        if (router.query.decade && router.query.decade !== "All") {
             const decade = String(router.query.decade);
             const dates = decades[decade as unknown as keyof typeof decades];
             url += `&primary_release_date.gte=${dates[0]}&primary_release_date.lte=${dates[1]}`;
         }
-        url += "&sort_by=primary_release_date.asc";
+        if (router.query.genre && router.query.genre !== "Any") {
+            const genreId = genres.find(
+                (genre) => genre.name === router.query.genre
+            )?.id;
+            url += `&with_genres=${genreId}`;
+        }
+        console.log(url);
         const data = await fetchWithZod(
             url,
             allMovieDetailsFetchSchema as ZodType
@@ -138,6 +163,12 @@ const MoviesAllPage = () => {
     useEffect(() => {
         void fetchAllMovies();
     }, [router.query, fetchAllMovies, page]);
+
+    useEffect(() => {
+        setDecade(router.query.decade ? String(router.query.decade) : "All");
+        setSort(router.query.sort ? String(router.query.sort) : "Release date");
+        setGenre(router.query.genre ? String(router.query.genre) : "Any");
+    }, [router.query.genre, router.query.sort, router.query.decade]);
     return (
         <>
             <Head>Movies • Crumble</Head>
@@ -150,7 +181,7 @@ const MoviesAllPage = () => {
                             value={decade}
                             setValue={setDecade}
                         >
-                            {Object.keys(decades)
+                            {[...Object.keys(decades), "All"]
                                 .reverse()
                                 .map((decade, index) => (
                                     <Select.Item
@@ -165,11 +196,15 @@ const MoviesAllPage = () => {
                                                     genre:
                                                         router.query.genre ??
                                                         "",
+                                                    sort:
+                                                        router.query.sort ?? "",
                                                 },
                                             })
                                         }
                                     >
-                                        {decade}s
+                                        {decade === "All"
+                                            ? decade
+                                            : `${decade}s`}
                                     </Select.Item>
                                 ))}
                         </Select>
@@ -191,6 +226,7 @@ const MoviesAllPage = () => {
                                                 decade:
                                                     router.query.decade ?? "",
                                                 genre: genre.name,
+                                                sort: router.query.sort ?? "",
                                             },
                                         })
                                     }
@@ -205,16 +241,56 @@ const MoviesAllPage = () => {
                             value={sort}
                             setValue={setSort}
                         >
-                            <Select.Item size="sm" value={"Release date"}>
-                                Release Date
-                            </Select.Item>
-                            <Select.Item size="sm" value={"Popularity"}>
-                                Popularity
-                            </Select.Item>
+                            {sortings.map((sorting, index) => (
+                                <Select.Item
+                                    size="sm"
+                                    key={index}
+                                    value={sorting.name}
+                                    onClick={() =>
+                                        void router.replace({
+                                            pathname: "/movies/all/",
+                                            query: {
+                                                decade:
+                                                    router.query.decade ?? "",
+                                                genre: router.query.genre ?? "",
+                                                sort: sorting.name,
+                                            },
+                                        })
+                                    }
+                                >
+                                    {sorting.name}
+                                </Select.Item>
+                            ))}
                         </Select>
                     </div>
                     {loading && <LoadingSpinner />}
-                    {JSON.stringify(movieData)}
+                    <div className="mt-5 grid  w-full grid-cols-8 gap-3 border-t-[1px] py-2 dark:border-slate-700">
+                        {movieData.map((movie) => (
+                            <div key={movie.movieId} className="w-[100%]">
+                                <Link
+                                    href={{
+                                        pathname: "/movie/[id]",
+                                        query: {
+                                            id: movie.movieId,
+                                        },
+                                    }}
+                                >
+                                    <Image
+                                        className="rounded-md"
+                                        width={0}
+                                        height={0}
+                                        sizes="100vw"
+                                        style={{
+                                            width: "100%",
+                                            height: "auto",
+                                        }}
+                                        alt={`${movie.title}`}
+                                        src={`https://image.tmdb.org/t/p/w500${movie.poster}`}
+                                    />
+                                </Link>
+                            </div>
+                        ))}
+                    </div>
                 </Container>
             </Layout>
         </>
