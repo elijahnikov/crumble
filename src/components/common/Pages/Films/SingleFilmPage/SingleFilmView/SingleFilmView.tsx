@@ -31,7 +31,7 @@ const SingleFilmView = ({ movieData }: SingleFilmViewProps) => {
         return crew.job === "Director";
     });
 
-    const { data: extraMovieData } = api.movie.film.useQuery({
+    const { data: extraMovieData } = api.movie.movie.useQuery({
         id: movieData.id,
     });
 

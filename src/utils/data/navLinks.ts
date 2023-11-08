@@ -12,9 +12,9 @@ import {
     BsPerson,
     BsPersonFill,
 } from "react-icons/bs";
-import { FaList, FaListAlt } from "react-icons/fa";
+import { FaListAlt } from "react-icons/fa";
 
-const pages = ["films", "diary", "reviews", "people", "lists"] as const;
+const pages = ["movies", "diary", "reviews", "people", "lists"] as const;
 
 type pagesIndex = (typeof pages)[number];
 
@@ -28,11 +28,11 @@ type NavigationArrayType = Array<{
 
 const navigation: NavigationArrayType = [
     {
-        name: "Films",
+        name: "Movies",
         icon: BiCameraMovie,
         hoverIcon: BiSolidCameraMovie,
-        href: "/films",
-        includeUrls: ["film"],
+        href: "/movies",
+        includeUrls: ["movie"],
     },
     { name: "Diary", icon: BsBook, hoverIcon: BsBookFill, href: "/diary" },
     {
