@@ -75,7 +75,7 @@ const CreateReviewModal = ({
         isSuccess: watchedSuccess,
     } = api.watched.createWatched.useMutation({
         onSuccess: () => {
-            void trpcUtils.movie.film.invalidate();
+            void trpcUtils.movie.movie.invalidate();
         },
     });
 
