@@ -295,18 +295,31 @@ const MoviesAllPage = () => {
                                                 },
                                             }}
                                         >
-                                            <Image
-                                                className="rounded-md"
-                                                width={0}
-                                                height={0}
-                                                sizes="100vw"
-                                                style={{
-                                                    width: "100%",
-                                                    height: "auto",
-                                                }}
-                                                alt={`${movie.title}`}
-                                                src={`https://image.tmdb.org/t/p/w500${movie.poster}`}
-                                            />
+                                            {movie.poster ? (
+                                                <Image
+                                                    className="rounded-md"
+                                                    width={0}
+                                                    height={0}
+                                                    sizes="100vw"
+                                                    style={{
+                                                        width: "100%",
+                                                        height: "auto",
+                                                    }}
+                                                    alt={`${movie.title}`}
+                                                    src={`https://image.tmdb.org/t/p/w500${movie.poster}`}
+                                                />
+                                            ) : (
+                                                <div className="align-center mx-auto my-auto h-full justify-center rounded-md border-[1px] text-center dark:border-slate-700">
+                                                    <p className="mt-5 text-xs dark:text-slate-400">
+                                                        {movie.title.length > 25
+                                                            ? `${movie.title.slice(
+                                                                  0,
+                                                                  25
+                                                              )}...`
+                                                            : movie.title}
+                                                    </p>
+                                                </div>
+                                            )}
                                         </Link>
                                     </div>
                                 ))}

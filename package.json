@@ -33,6 +33,7 @@
     "class-variance-authority": "^0.7.0",
     "classnames": "^2.3.2",
     "clsx": "^2.0.0",
+    "cmdk": "^0.2.0",
     "cuid": "^3.0.0",
     "dayjs": "^1.11.9",
     "lodash": "^4.17.21",
