@@ -64,7 +64,7 @@ const Select = ({
                             size === "md" ? "px-3 py-2" : "px-2 py-1.5",
                             disabled &&
                                 "border-sky-lighter bg-sky-lightest dark:border-ink-dark dark:bg-ink-darker",
-                            "flex w-[200px] rounded-lg border-[1px] border-slate-200  text-left text-sm dark:border-slate-700"
+                            "flex w-[200px] rounded-md border-[1px] border-slate-200  text-left text-sm dark:border-slate-700"
                         )}
                     >
                         <p
