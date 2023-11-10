@@ -6,11 +6,16 @@ import Input from "@/components/ui/Input/Input";
 import { fetchWithZod } from "@/utils/fetch/zodFetch";
 import { type ZodType } from "zod";
 import { type ICastSearch, castSearchSchema } from "@/server/api/schemas/movie";
+import LoadingSpinner from "@/components/common/LoadingSpinner/LoadingSpinner";
+import Image from "next/image";
+import Checkbox from "@/components/ui/Checkbox/Checkbox";
 
 const CastSearch = () => {
     const [open, setOpen] = useState<boolean>(false);
     const [castSearchTerm, setCastSearchTerm] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
+
+    const [castData, setCastData] = useState<ICastSearch[]>([]);
 
     const fetchCastMembers = useCallback(async () => {
         setLoading(true);
@@ -24,18 +29,9 @@ const CastSearch = () => {
             url2,
             castSearchSchema as ZodType
         )) as ICastSearch[];
-        console.log({ url, data, url2 });
 
-        // const data = (await fetchWithZod(
-        //     url,
-        //     allMovieDetailsFetchSchema as ZodType
-        // )) as IAllMovieDetailsFetch[];
-        // const data2 = (await fetchWithZod(
-        //     url.replace(`page=${page}`, `page=${page2}`),
-        //     allMovieDetailsFetchSchema as ZodType
-        // )) as IAllMovieDetailsFetch[];
-
-        // if (data && data2) setMovieData(data.concat(data2));
+        if (data) setCastData(data);
+        console.log(data);
 
         setTimeout(() => {
             setLoading(false);
@@ -90,9 +86,65 @@ const CastSearch = () => {
                             size={"sm"}
                             fullWidth
                             value={castSearchTerm}
-                            onChange={(e) => setCastSearchTerm(e.target.value)}
+                            onChange={(e) => {
+                                if (e.target.value === "") setCastData([]);
+                                setCastSearchTerm(e.target.value);
+                            }}
                             placeholder="Search cast members"
                         />
+                        {loading && (
+                            <div className="mx-auto flex w-full justify-center py-4">
+                                <LoadingSpinner size={20} />
+                            </div>
+                        )}
+                        {!loading && castData.length === 0 && (
+                            <div className="mx-auto flex w-full justify-center py-4 text-center">
+                                <p className="text-xs">
+                                    No cast member found with that search query.
+                                </p>
+                            </div>
+                        )}
+                        {!loading &&
+                            castData.length > 0 &&
+                            castData.slice(0, 5).map((cast) => {
+                                const knownForTitle = cast.knownFor.find(
+                                    (k) =>
+                                        typeof k.originalTitle !== "undefined"
+                                )?.originalTitle;
+                                return (
+                                    <div
+                                        key={cast.id}
+                                        className="flex w-full rounded-md border p-1 dark:border-slate-800"
+                                    >
+                                        <Checkbox className="ml-1 mr-3 mt-[6px]" />
+                                        <div className="relative h-8 w-8 overflow-hidden rounded-full">
+                                            <Image
+                                                src={`https://image.tmdb.org/t/p/w500${cast.profilePath}`}
+                                                alt={cast.originalName}
+                                                layout="fill"
+                                                objectFit="cover"
+                                                className="rounded-full"
+                                            />
+                                        </div>
+                                        <div>
+                                            <p className="ml-2 mt-[3px] text-xs">
+                                                {cast.originalName}
+                                            </p>
+                                            {cast.knownFor.length > 0 && (
+                                                <p className="ml-2 text-xs dark:text-slate-400">
+                                                    {knownForTitle &&
+                                                    knownForTitle.length > 30
+                                                        ? `${knownForTitle.slice(
+                                                              0,
+                                                              30
+                                                          )}...`
+                                                        : knownForTitle}
+                                                </p>
+                                            )}
+                                        </div>
+                                    </div>
+                                );
+                            })}
                     </PopoverPrimitive.Content>
                 </PopoverPrimitive.Portal>
             </PopoverPrimitive.Root>

@@ -113,10 +113,36 @@ export const castSearchSchema = z
         name: z.string(),
         original_name: z.string(),
         profile_path: z.string().nullable(),
+        known_for: z.array(
+            z
+                .object({
+                    backdrop_path: z.string().nullable(),
+                    title: z.string().optional(),
+                    original_title: z.string().optional(),
+                    poster_path: z.string().nullable(),
+                    release_date: z.string().optional(),
+                })
+                .transform(
+                    ({
+                        backdrop_path,
+                        poster_path,
+                        original_title,
+                        release_date,
+                        ...rest
+                    }) => ({
+                        backdropPath: backdrop_path,
+                        posterPath: poster_path,
+                        originalTitle: original_title,
+                        releaseDate: release_date,
+                        ...rest,
+                    })
+                )
+        ),
     })
-    .transform(({ profile_path, original_name, ...rest }) => ({
+    .transform(({ profile_path, original_name, known_for, ...rest }) => ({
         originalName: original_name,
         profilePath: profile_path,
+        knownFor: known_for,
         ...rest,
     }));
 

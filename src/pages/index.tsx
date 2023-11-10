@@ -1,6 +1,7 @@
 import Head from "next/head";
 import Layout from "@/components/common/Layout/Layout";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Home() {
     return (
