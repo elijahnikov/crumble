@@ -12,6 +12,8 @@ import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 import { type ZodType } from "zod";
 import Image from "next/image";
+import Button from "@/components/ui/Button/Button";
+import CastSearch from "@/components/common/Pages/AllMovies/CastSearch/CastSearch";
 
 const decades = {
     2020: ["2020-01-01", "2029-12-31"],
@@ -123,15 +125,17 @@ const MoviesAllPage = () => {
 
     const [movieData, setMovieData] = useState<IAllMovieDetailsFetch[]>([]);
     const [page, setPage] = useState<number>(1);
+    const [page2, setPage2] = useState(2);
+
     const [loading, setLoading] = useState<boolean>(false);
 
     const [decade, setDecade] = useState<string>("All");
     const [genre, setGenre] = useState<string>(genres[0]!.name);
     const [sort, setSort] = useState<string>("Release date");
 
-    const fetchAllMovies = useCallback(async () => {
-        setLoading(true);
+    const getUrl = useCallback(() => {
         let url = `https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=${page}`;
+
         if (router.query.sort) {
             const sortId = sortings.find(
                 (sorting) => sorting.name === router.query.sort
@@ -149,20 +153,32 @@ const MoviesAllPage = () => {
             )?.id;
             url += `&with_genres=${genreId}`;
         }
-        console.log(url);
-        const data = await fetchWithZod(
+        return url;
+    }, [page, router.query.decade, router.query.genre, router.query.sort]);
+
+    const fetchAllMovies = useCallback(async () => {
+        setLoading(true);
+        const url = getUrl();
+
+        const data = (await fetchWithZod(
             url,
             allMovieDetailsFetchSchema as ZodType
-        );
-        if (data) setMovieData(data);
+        )) as IAllMovieDetailsFetch[];
+        const data2 = (await fetchWithZod(
+            url.replace(`page=${page}`, `page=${page2}`),
+            allMovieDetailsFetchSchema as ZodType
+        )) as IAllMovieDetailsFetch[];
+
+        if (data && data2) setMovieData(data.concat(data2));
+
         setTimeout(() => {
             setLoading(false);
         }, Math.floor(Math.random() * (1000 - 200 + 1)) + 200);
-    }, [router.query, page]);
+    }, [page, page2, getUrl]);
 
     useEffect(() => {
         void fetchAllMovies();
-    }, [router.query, fetchAllMovies, page]);
+    }, [router.query, fetchAllMovies, page, page2]);
 
     useEffect(() => {
         setDecade(router.query.decade ? String(router.query.decade) : "All");
@@ -174,7 +190,9 @@ const MoviesAllPage = () => {
             <Head>Movies • Crumble</Head>
             <Layout>
                 <Container>
-                    <div className="flex">
+                    <h3 className="mb-4">Discover movies</h3>
+                    <div className="flex space-x-2">
+                        <CastSearch />
                         <Select
                             label="Decade"
                             size="sm"
@@ -263,34 +281,93 @@ const MoviesAllPage = () => {
                             ))}
                         </Select>
                     </div>
-                    {loading && <LoadingSpinner />}
-                    <div className="mt-5 grid  w-full grid-cols-8 gap-3 border-t-[1px] py-2 dark:border-slate-700">
-                        {movieData.map((movie) => (
-                            <div key={movie.movieId} className="w-[100%]">
-                                <Link
-                                    href={{
-                                        pathname: "/movie/[id]",
-                                        query: {
-                                            id: movie.movieId,
-                                        },
-                                    }}
-                                >
-                                    <Image
-                                        className="rounded-md"
-                                        width={0}
-                                        height={0}
-                                        sizes="100vw"
-                                        style={{
-                                            width: "100%",
-                                            height: "auto",
-                                        }}
-                                        alt={`${movie.title}`}
-                                        src={`https://image.tmdb.org/t/p/w500${movie.poster}`}
-                                    />
-                                </Link>
+                    {loading && (
+                        <div className="mx-auto mt-10 flex w-full justify-center text-center">
+                            <LoadingSpinner size={35} />
+                        </div>
+                    )}
+                    {!loading && (
+                        <>
+                            <div className="mt-5 grid  w-full grid-cols-10 gap-3 border-t-[1px] py-2 dark:border-slate-700">
+                                {movieData.map((movie) => (
+                                    <div
+                                        key={movie.movieId}
+                                        className="w-[100%]"
+                                    >
+                                        <Link
+                                            href={{
+                                                pathname: "/movie/[id]",
+                                                query: {
+                                                    id: movie.movieId,
+                                                },
+                                            }}
+                                        >
+                                            {movie.poster ? (
+                                                <Image
+                                                    className="rounded-md"
+                                                    width={0}
+                                                    height={0}
+                                                    sizes="100vw"
+                                                    style={{
+                                                        width: "100%",
+                                                        height: "auto",
+                                                    }}
+                                                    alt={`${movie.title}`}
+                                                    src={`https://image.tmdb.org/t/p/w500${movie.poster}`}
+                                                />
+                                            ) : (
+                                                <div className="align-center mx-auto my-auto h-full justify-center rounded-md border-[1px] text-center dark:border-slate-700">
+                                                    <p className="mt-5 text-xs dark:text-slate-400">
+                                                        {movie.title.length > 25
+                                                            ? `${movie.title.slice(
+                                                                  0,
+                                                                  25
+                                                              )}...`
+                                                            : movie.title}
+                                                    </p>
+                                                </div>
+                                            )}
+                                        </Link>
+                                    </div>
+                                ))}
                             </div>
-                        ))}
-                    </div>
+                            <div className="flex w-full">
+                                <div className="w-full">
+                                    <Button
+                                        disabled={page <= 1}
+                                        onClick={() => {
+                                            if (page > 1) {
+                                                setPage(
+                                                    (prevPage) => prevPage - 2
+                                                );
+                                                setPage2(
+                                                    (prevPage2) => prevPage2 - 2
+                                                );
+                                            }
+                                        }}
+                                        size={"sm"}
+                                        intent={"secondary"}
+                                    >
+                                        Previous
+                                    </Button>
+                                </div>
+                                <div>
+                                    <Button
+                                        onClick={() => {
+                                            setPage((prevPage) => prevPage + 2);
+                                            setPage2(
+                                                (prevPage2) => prevPage2 + 2
+                                            );
+                                        }}
+                                        size={"sm"}
+                                        intent={"secondary"}
+                                    >
+                                        Next
+                                    </Button>
+                                </div>
+                            </div>
+                        </>
+                    )}
                 </Container>
             </Layout>
         </>

@@ -2,6 +2,7 @@ import Layout, { Container } from "@/components/common/Layout/Layout";
 import { LoadingPage } from "@/components/common/LoadingSpinner/LoadingSpinner";
 import ReviewSection from "@/components/common/Pages/Films/SingleFilmPage/ReviewSection/ReviewSection";
 import SingleFilmView from "@/components/common/Pages/Films/SingleFilmPage/SingleFilmView/SingleFilmView";
+import { api } from "@/utils/api";
 import { fetchWithZod } from "@/utils/fetch/zodFetch";
 import {
     type IMovieDetailsFetchSchema,
@@ -17,6 +18,11 @@ import { useEffect, useState } from "react";
 const SingleFilmPage = () => {
     const router = useRouter();
 
+    const { mutate } = api.movie.createFilm.useMutation();
+    const { data } = api.movie.movie.useQuery({
+        id: Number(router.query.id),
+    });
+
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<boolean>(false);
 
@@ -31,6 +37,15 @@ const SingleFilmPage = () => {
                 movieDetailsFetchSchema
             )) as IMovieDetailsFetchSchema;
             setMovieData(movieData);
+            if (!data)
+                mutate({
+                    movieId: movieData.id,
+                    overview: movieData.overview,
+                    releaseDate: movieData.release_date,
+                    title: movieData.original_title,
+                    backdrop: movieData.backdrop_path,
+                    poster: movieData.poster_path,
+                });
         } catch (err) {
             setError(true);
         }
