@@ -103,4 +103,21 @@ export const allMovieDetailsFetchSchema = z
         })
     );
 
-export type IAllMovieDetailsFetch = z.infer<typeof movieFetchSchema>;
+export type IAllMovieDetailsFetch = z.infer<typeof allMovieDetailsFetchSchema>;
+
+export const castSearchSchema = z
+    .object({
+        adult: z.boolean(),
+        gender: z.number(),
+        id: z.number(),
+        name: z.string(),
+        original_name: z.string(),
+        profile_path: z.string().nullable(),
+    })
+    .transform(({ profile_path, original_name, ...rest }) => ({
+        originalName: original_name,
+        profilePath: profile_path,
+        ...rest,
+    }));
+
+export type ICastSearch = z.infer<typeof castSearchSchema>;

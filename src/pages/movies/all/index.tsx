@@ -13,6 +13,7 @@ import { useCallback, useEffect, useState } from "react";
 import { type ZodType } from "zod";
 import Image from "next/image";
 import Button from "@/components/ui/Button/Button";
+import CastSearch from "@/components/common/Pages/AllMovies/CastSearch/CastSearch";
 
 const decades = {
     2020: ["2020-01-01", "2029-12-31"],
@@ -132,9 +133,7 @@ const MoviesAllPage = () => {
     const [genre, setGenre] = useState<string>(genres[0]!.name);
     const [sort, setSort] = useState<string>("Release date");
 
-    const fetchAllMovies = useCallback(async () => {
-        setLoading(true);
-
+    const getUrl = useCallback(() => {
         let url = `https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=${page}`;
 
         if (router.query.sort) {
@@ -154,21 +153,28 @@ const MoviesAllPage = () => {
             )?.id;
             url += `&with_genres=${genreId}`;
         }
+        return url;
+    }, [page, router.query.decade, router.query.genre, router.query.sort]);
 
-        const data: IAllMovieDetailsFetch[] = await fetchWithZod(
+    const fetchAllMovies = useCallback(async () => {
+        setLoading(true);
+        const url = getUrl();
+
+        const data = (await fetchWithZod(
             url,
             allMovieDetailsFetchSchema as ZodType
-        );
-        const data2: IAllMovieDetailsFetch[] = await fetchWithZod(
+        )) as IAllMovieDetailsFetch[];
+        const data2 = (await fetchWithZod(
             url.replace(`page=${page}`, `page=${page2}`),
             allMovieDetailsFetchSchema as ZodType
-        );
+        )) as IAllMovieDetailsFetch[];
+
         if (data && data2) setMovieData(data.concat(data2));
 
         setTimeout(() => {
             setLoading(false);
         }, Math.floor(Math.random() * (1000 - 200 + 1)) + 200);
-    }, [router.query, page, page2]);
+    }, [page, page2, getUrl]);
 
     useEffect(() => {
         void fetchAllMovies();
@@ -186,6 +192,7 @@ const MoviesAllPage = () => {
                 <Container>
                     <h3 className="mb-4">Discover movies</h3>
                     <div className="flex space-x-2">
+                        <CastSearch />
                         <Select
                             label="Decade"
                             size="sm"
