@@ -4,6 +4,7 @@ import { Select } from "@/components/ui/Select/Select";
 import {
     type IAllMovieDetailsFetch,
     allMovieDetailsFetchSchema,
+    ICastSearch,
 } from "@/server/api/schemas/movie";
 import { fetchWithZod } from "@/utils/fetch/zodFetch";
 import Head from "next/head";
@@ -13,7 +14,9 @@ import { useCallback, useEffect, useState } from "react";
 import { type ZodType } from "zod";
 import Image from "next/image";
 import Button from "@/components/ui/Button/Button";
-import CastSearch from "@/components/common/Pages/AllMovies/CastSearch/CastSearch";
+import CastSearch, {
+    ChosenCastPill,
+} from "@/components/common/Pages/AllMovies/CastSearch/CastSearch";
 
 const decades = {
     2020: ["2020-01-01", "2029-12-31"],
@@ -132,6 +135,7 @@ const MoviesAllPage = () => {
     const [decade, setDecade] = useState<string>("All");
     const [genre, setGenre] = useState<string>(genres[0]!.name);
     const [sort, setSort] = useState<string>("Release date");
+    const [chosenCast, setChosenCast] = useState<ICastSearch[]>([]);
 
     const getUrl = useCallback(() => {
         let url = `https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=${page}`;
@@ -176,6 +180,18 @@ const MoviesAllPage = () => {
         }, Math.floor(Math.random() * (1000 - 200 + 1)) + 200);
     }, [page, page2, getUrl]);
 
+    const handleRemove = (castId: number) => {
+        const objectIndex = chosenCast.findIndex(
+            (existingObject) => existingObject.id === castId
+        );
+
+        if (objectIndex !== -1) {
+            const updatedArray = [...chosenCast];
+            updatedArray.splice(objectIndex, 1);
+            setChosenCast(updatedArray);
+        }
+    };
+
     useEffect(() => {
         void fetchAllMovies();
     }, [router.query, fetchAllMovies, page, page2]);
@@ -185,6 +201,31 @@ const MoviesAllPage = () => {
         setSort(router.query.sort ? String(router.query.sort) : "Release date");
         setGenre(router.query.genre ? String(router.query.genre) : "Any");
     }, [router.query.genre, router.query.sort, router.query.decade]);
+
+    useEffect(() => {
+        if (chosenCast.length > 0) {
+            void router.replace({
+                pathname: "/movies/all/",
+                query: {
+                    cast: chosenCast
+                        .map((cast) => {
+                            return cast.id;
+                        })
+                        .join(),
+                    ...router.query,
+                },
+            });
+        } else {
+            const { pathname, query } = router;
+            delete query.cast;
+
+            void router.replace({
+                pathname: "/movies/all",
+                query,
+            });
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [chosenCast]);
     return (
         <>
             <Head>Movies • Crumble</Head>
@@ -192,7 +233,11 @@ const MoviesAllPage = () => {
                 <Container>
                     <h3 className="mb-4">Discover movies</h3>
                     <div className="flex space-x-2">
-                        <CastSearch />
+                        <CastSearch
+                            chosenCast={chosenCast}
+                            setChosenCast={setChosenCast}
+                            handleRemove={handleRemove}
+                        />
                         <Select
                             label="Decade"
                             size="sm"
@@ -211,11 +256,7 @@ const MoviesAllPage = () => {
                                                 pathname: "/movies/all/",
                                                 query: {
                                                     decade,
-                                                    genre:
-                                                        router.query.genre ??
-                                                        "",
-                                                    sort:
-                                                        router.query.sort ?? "",
+                                                    ...router.query,
                                                 },
                                             })
                                         }
@@ -241,10 +282,8 @@ const MoviesAllPage = () => {
                                         void router.replace({
                                             pathname: "/movies/all/",
                                             query: {
-                                                decade:
-                                                    router.query.decade ?? "",
                                                 genre: genre.name,
-                                                sort: router.query.sort ?? "",
+                                                ...router.query,
                                             },
                                         })
                                     }
@@ -268,10 +307,8 @@ const MoviesAllPage = () => {
                                         void router.replace({
                                             pathname: "/movies/all/",
                                             query: {
-                                                decade:
-                                                    router.query.decade ?? "",
-                                                genre: router.query.genre ?? "",
                                                 sort: sorting.name,
+                                                ...router.query,
                                             },
                                         })
                                     }
@@ -280,6 +317,15 @@ const MoviesAllPage = () => {
                                 </Select.Item>
                             ))}
                         </Select>
+                    </div>
+                    <div className="-mb-5 mt-2 flex w-full columns-4 flex-wrap gap-1">
+                        {chosenCast.map((cast) => (
+                            <ChosenCastPill
+                                key={cast.id}
+                                cast={cast}
+                                handleRemove={handleRemove}
+                            />
+                        ))}
                     </div>
                     {loading && (
                         <div className="mx-auto mt-10 flex w-full justify-center text-center">
