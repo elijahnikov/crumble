@@ -4,7 +4,7 @@ import { Select } from "@/components/ui/Select/Select";
 import {
     type IAllMovieDetailsFetch,
     allMovieDetailsFetchSchema,
-    ICastSearch,
+    type ICastSearch,
 } from "@/server/api/schemas/movie";
 import { fetchWithZod } from "@/utils/fetch/zodFetch";
 import Head from "next/head";
@@ -19,14 +19,14 @@ import CastSearch, {
 } from "@/components/common/Pages/AllMovies/CastSearch/CastSearch";
 
 const decades = {
-    2020: ["2020-01-01", "2029-12-31"],
-    2010: ["2010-01-01", "2019-12-31"],
-    2000: ["2000-01-01", "2009-12-31"],
-    1990: ["1990-01-01", "1999-12-31"],
-    1980: ["1980-01-01", "1989-12-31"],
-    1970: ["1970-01-01", "1979-12-31"],
-    1960: ["1960-01-01", "1969-12-31"],
-    1950: ["1950-01-01", "1959-12-31"],
+    "2020s": ["2020-01-01", "2029-12-31"],
+    "2010s": ["2010-01-01", "2019-12-31"],
+    "2000s": ["2000-01-01", "2009-12-31"],
+    "1990s": ["1990-01-01", "1999-12-31"],
+    "1980s": ["1980-01-01", "1989-12-31"],
+    "1970s": ["1970-01-01", "1979-12-31"],
+    "1960s": ["1960-01-01", "1969-12-31"],
+    "1950s": ["1950-01-01", "1959-12-31"],
 };
 
 const genres = [
@@ -124,7 +124,7 @@ const sortings = [
 ];
 
 const MoviesAllPage = () => {
-    const router = useRouter();
+    // const router = useRouter();
 
     const [movieData, setMovieData] = useState<IAllMovieDetailsFetch[]>([]);
     const [page, setPage] = useState<number>(1);
@@ -140,25 +140,28 @@ const MoviesAllPage = () => {
     const getUrl = useCallback(() => {
         let url = `https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=${page}`;
 
-        if (router.query.sort) {
-            const sortId = sortings.find(
-                (sorting) => sorting.name === router.query.sort
-            )?.id;
-            url += `&sort_by=${sortId}.desc`;
-        }
-        if (router.query.decade && router.query.decade !== "All") {
-            const decade = String(router.query.decade);
+        if (decade && decade !== "All") {
             const dates = decades[decade as unknown as keyof typeof decades];
             url += `&primary_release_date.gte=${dates[0]}&primary_release_date.lte=${dates[1]}`;
         }
-        if (router.query.genre && router.query.genre !== "Any") {
-            const genreId = genres.find(
-                (genre) => genre.name === router.query.genre
-            )?.id;
+        if (sort && sort !== "") {
+            const sorting = sortings.find((s) => s.name === sort)?.id;
+            url += `&sort_by=${sorting}.desc`;
+        }
+        if (chosenCast.length > 0) {
+            const castIds = chosenCast
+                .map((cast) => {
+                    return cast.id;
+                })
+                .join(",");
+            url += `&with_cast=${castIds}`;
+        }
+        if (genre && genre !== "Any") {
+            const genreId = genres.find((g) => g.name === genre)?.id;
             url += `&with_genres=${genreId}`;
         }
         return url;
-    }, [page, router.query.decade, router.query.genre, router.query.sort]);
+    }, [page, decade, sort, chosenCast, genre]);
 
     const fetchAllMovies = useCallback(async () => {
         setLoading(true);
@@ -194,38 +197,8 @@ const MoviesAllPage = () => {
 
     useEffect(() => {
         void fetchAllMovies();
-    }, [router.query, fetchAllMovies, page, page2]);
+    }, [decade, genre, sort, chosenCast, fetchAllMovies, page, page2]);
 
-    useEffect(() => {
-        setDecade(router.query.decade ? String(router.query.decade) : "All");
-        setSort(router.query.sort ? String(router.query.sort) : "Release date");
-        setGenre(router.query.genre ? String(router.query.genre) : "Any");
-    }, [router.query.genre, router.query.sort, router.query.decade]);
-
-    useEffect(() => {
-        if (chosenCast.length > 0) {
-            void router.replace({
-                pathname: "/movies/all/",
-                query: {
-                    cast: chosenCast
-                        .map((cast) => {
-                            return cast.id;
-                        })
-                        .join(),
-                    ...router.query,
-                },
-            });
-        } else {
-            const { pathname, query } = router;
-            delete query.cast;
-
-            void router.replace({
-                pathname: "/movies/all",
-                query,
-            });
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [chosenCast]);
     return (
         <>
             <Head>Movies • Crumble</Head>
@@ -244,28 +217,17 @@ const MoviesAllPage = () => {
                             value={decade}
                             setValue={setDecade}
                         >
-                            {[...Object.keys(decades), "All"]
-                                .reverse()
-                                .map((decade, index) => (
+                            {["All", ...Object.keys(decades)].map(
+                                (decade, index) => (
                                     <Select.Item
                                         size="sm"
                                         key={index}
-                                        value={`${decade}s`}
-                                        onClick={() =>
-                                            void router.replace({
-                                                pathname: "/movies/all/",
-                                                query: {
-                                                    decade,
-                                                    ...router.query,
-                                                },
-                                            })
-                                        }
+                                        value={`${decade}`}
                                     >
-                                        {decade === "All"
-                                            ? decade
-                                            : `${decade}s`}
+                                        {decade}
                                     </Select.Item>
-                                ))}
+                                )
+                            )}
                         </Select>
                         <Select
                             label="Genre"
@@ -278,15 +240,6 @@ const MoviesAllPage = () => {
                                     size="sm"
                                     key={index}
                                     value={genre.name}
-                                    onClick={() =>
-                                        void router.replace({
-                                            pathname: "/movies/all/",
-                                            query: {
-                                                genre: genre.name,
-                                                ...router.query,
-                                            },
-                                        })
-                                    }
                                 >
                                     {genre.name}
                                 </Select.Item>
@@ -303,15 +256,6 @@ const MoviesAllPage = () => {
                                     size="sm"
                                     key={index}
                                     value={sorting.name}
-                                    onClick={() =>
-                                        void router.replace({
-                                            pathname: "/movies/all/",
-                                            query: {
-                                                sort: sorting.name,
-                                                ...router.query,
-                                            },
-                                        })
-                                    }
                                 >
                                     {sorting.name}
                                 </Select.Item>

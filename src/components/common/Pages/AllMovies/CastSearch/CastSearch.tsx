@@ -88,7 +88,7 @@ const CastSearch = ({
                         )}
                     >
                         <p className={clxsm("w-[90%] text-xs font-normal")}>
-                            Sort by cast...
+                            Sort by cast
                         </p>
                         <BsChevronDown className="mt-1 fill-ink-light" />
                     </div>
