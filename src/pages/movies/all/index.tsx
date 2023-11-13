@@ -9,7 +9,7 @@ import {
 import { fetchWithZod } from "@/utils/fetch/zodFetch";
 import Head from "next/head";
 import Link from "next/link";
-import { useRouter } from "next/router";
+
 import { useCallback, useEffect, useState } from "react";
 import { type ZodType } from "zod";
 import Image from "next/image";
@@ -18,6 +18,8 @@ import CastSearch, {
     ChosenCastPill,
 } from "@/components/common/Pages/AllMovies/CastSearch/CastSearch";
 import MovieImage from "@/components/common/Pages/AllMovies/MovieImage/MovieImage";
+import { useRouter } from "next/router";
+import { useGetURLParam } from "@/utils/hooks/useGetURLParam";
 
 const decades = {
     "2020s": ["2020-01-01", "2029-12-31"],
@@ -125,7 +127,7 @@ const sortings = [
 ];
 
 const MoviesAllPage = () => {
-    // const router = useRouter();
+    const router = useRouter();
 
     const [movieData, setMovieData] = useState<IAllMovieDetailsFetch[]>([]);
     const [page, setPage] = useState<number>(1);
@@ -133,9 +135,9 @@ const MoviesAllPage = () => {
 
     const [loading, setLoading] = useState<boolean>(false);
 
-    const [decade, setDecade] = useState<string>("All");
-    const [genre, setGenre] = useState<string>(genres[0]!.name);
-    const [sort, setSort] = useState<string>("Release date");
+    const decade = useGetURLParam("decade") ?? "All";
+    const genre = useGetURLParam("genre") ?? genres[0]!.name;
+    const sort = useGetURLParam("sort") ?? "Release date";
     const [chosenCast, setChosenCast] = useState<ICastSearch[]>([]);
 
     const getUrl = useCallback(() => {
@@ -215,8 +217,8 @@ const MoviesAllPage = () => {
                         <Select
                             label="Decade"
                             size="sm"
-                            value={decade}
-                            setValue={setDecade}
+                            value={String(decade)}
+                            setValue={() => null}
                         >
                             {["All", ...Object.keys(decades)].map(
                                 (decade, index) => (
@@ -224,6 +226,25 @@ const MoviesAllPage = () => {
                                         size="sm"
                                         key={index}
                                         value={`${decade}`}
+                                        onClick={() => {
+                                            if (decade === "All") {
+                                                const { query, pathname } =
+                                                    router;
+                                                delete query.decade;
+                                                void router.replace({
+                                                    pathname,
+                                                    query,
+                                                });
+                                            } else {
+                                                void router.replace({
+                                                    pathname: "/movies/all/",
+                                                    query: {
+                                                        ...router.query,
+                                                        decade,
+                                                    },
+                                                });
+                                            }
+                                        }}
                                     >
                                         {decade}
                                     </Select.Item>
@@ -233,14 +254,23 @@ const MoviesAllPage = () => {
                         <Select
                             label="Genre"
                             size="sm"
-                            value={genre}
-                            setValue={setGenre}
+                            value={String(genre)}
+                            setValue={() => null}
                         >
                             {genres.map((genre, index) => (
                                 <Select.Item
                                     size="sm"
                                     key={index}
                                     value={genre.name}
+                                    onClick={() =>
+                                        void router.replace({
+                                            pathname: "/movies/all/",
+                                            query: {
+                                                ...router.query,
+                                                genre: genre.name,
+                                            },
+                                        })
+                                    }
                                 >
                                     {genre.name}
                                 </Select.Item>
@@ -249,14 +279,23 @@ const MoviesAllPage = () => {
                         <Select
                             label="Sort by"
                             size="sm"
-                            value={sort}
-                            setValue={setSort}
+                            value={String(sort)}
+                            setValue={() => null}
                         >
                             {sortings.map((sorting, index) => (
                                 <Select.Item
                                     size="sm"
                                     key={index}
                                     value={sorting.name}
+                                    onClick={() =>
+                                        void router.replace({
+                                            pathname: "/movies/all/",
+                                            query: {
+                                                ...router.query,
+                                                sort: sorting.name,
+                                            },
+                                        })
+                                    }
                                 >
                                     {sorting.name}
                                 </Select.Item>
