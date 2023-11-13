@@ -9,7 +9,7 @@ import {
 import { fetchWithZod } from "@/utils/fetch/zodFetch";
 import Head from "next/head";
 import Link from "next/link";
-import { useRouter } from "next/router";
+
 import { useCallback, useEffect, useState } from "react";
 import { type ZodType } from "zod";
 import Image from "next/image";
@@ -18,6 +18,7 @@ import CastSearch, {
     ChosenCastPill,
 } from "@/components/common/Pages/AllMovies/CastSearch/CastSearch";
 import MovieImage from "@/components/common/Pages/AllMovies/MovieImage/MovieImage";
+import { useRouter } from "next/router";
 
 const decades = {
     "2020s": ["2020-01-01", "2029-12-31"],
@@ -125,7 +126,7 @@ const sortings = [
 ];
 
 const MoviesAllPage = () => {
-    // const router = useRouter();
+    const router = useRouter();
 
     const [movieData, setMovieData] = useState<IAllMovieDetailsFetch[]>([]);
     const [page, setPage] = useState<number>(1);
@@ -224,6 +225,15 @@ const MoviesAllPage = () => {
                                         size="sm"
                                         key={index}
                                         value={`${decade}`}
+                                        onClick={() => {
+                                            void router.replace({
+                                                pathname: "/movies/all/",
+                                                query: {
+                                                    ...router.query,
+                                                    decade,
+                                                },
+                                            });
+                                        }}
                                     >
                                         {decade}
                                     </Select.Item>
@@ -241,6 +251,15 @@ const MoviesAllPage = () => {
                                     size="sm"
                                     key={index}
                                     value={genre.name}
+                                    onClick={() =>
+                                        void router.replace({
+                                            pathname: "/movies/all/",
+                                            query: {
+                                                ...router.query,
+                                                genre: genre.name,
+                                            },
+                                        })
+                                    }
                                 >
                                     {genre.name}
                                 </Select.Item>
@@ -257,6 +276,15 @@ const MoviesAllPage = () => {
                                     size="sm"
                                     key={index}
                                     value={sorting.name}
+                                    onClick={() =>
+                                        void router.replace({
+                                            pathname: "/movies/all/",
+                                            query: {
+                                                ...router.query,
+                                                sort: sorting.name,
+                                            },
+                                        })
+                                    }
                                 >
                                     {sorting.name}
                                 </Select.Item>

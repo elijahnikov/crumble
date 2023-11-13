@@ -54,7 +54,7 @@ const TrendingThisWeek = () => {
     return (
         <div>
             <div>
-                <h4 className="text-sm dark:text-slate-400">
+                <h4 className="text-sm text-slate-600 dark:text-slate-400">
                     Trending this week
                 </h4>
             </div>

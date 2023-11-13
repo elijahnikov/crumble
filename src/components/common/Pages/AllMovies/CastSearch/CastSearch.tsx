@@ -9,6 +9,7 @@ import LoadingSpinner from "@/components/common/LoadingSpinner/LoadingSpinner";
 import Image from "next/image";
 import Checkbox from "@/components/ui/Checkbox/Checkbox";
 import Modal from "@/components/ui/Modal/Modal";
+import { useRouter } from "next/router";
 
 const CastSearch = ({
     chosenCast,
@@ -19,6 +20,8 @@ const CastSearch = ({
     setChosenCast: React.Dispatch<React.SetStateAction<Array<ICastSearch>>>;
     handleRemove: (castId: number) => void;
 }) => {
+    const router = useRouter();
+
     const [open, setOpen] = useState<boolean>(false);
     const [castSearchTerm, setCastSearchTerm] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
