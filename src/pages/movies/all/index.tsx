@@ -19,6 +19,7 @@ import CastSearch, {
 } from "@/components/common/Pages/AllMovies/CastSearch/CastSearch";
 import MovieImage from "@/components/common/Pages/AllMovies/MovieImage/MovieImage";
 import { useRouter } from "next/router";
+import { useGetURLParam } from "@/utils/hooks/useGetURLParam";
 
 const decades = {
     "2020s": ["2020-01-01", "2029-12-31"],
@@ -134,9 +135,9 @@ const MoviesAllPage = () => {
 
     const [loading, setLoading] = useState<boolean>(false);
 
-    const [decade, setDecade] = useState<string>("All");
-    const [genre, setGenre] = useState<string>(genres[0]!.name);
-    const [sort, setSort] = useState<string>("Release date");
+    const decade = useGetURLParam("decade") ?? "All";
+    const genre = useGetURLParam("genre") ?? genres[0]!.name;
+    const sort = useGetURLParam("sort") ?? "Release date";
     const [chosenCast, setChosenCast] = useState<ICastSearch[]>([]);
 
     const getUrl = useCallback(() => {
@@ -216,8 +217,8 @@ const MoviesAllPage = () => {
                         <Select
                             label="Decade"
                             size="sm"
-                            value={decade}
-                            setValue={setDecade}
+                            value={String(decade)}
+                            setValue={() => null}
                         >
                             {["All", ...Object.keys(decades)].map(
                                 (decade, index) => (
@@ -226,13 +227,23 @@ const MoviesAllPage = () => {
                                         key={index}
                                         value={`${decade}`}
                                         onClick={() => {
-                                            void router.replace({
-                                                pathname: "/movies/all/",
-                                                query: {
-                                                    ...router.query,
-                                                    decade,
-                                                },
-                                            });
+                                            if (decade === "All") {
+                                                const { query, pathname } =
+                                                    router;
+                                                delete query.decade;
+                                                void router.replace({
+                                                    pathname,
+                                                    query,
+                                                });
+                                            } else {
+                                                void router.replace({
+                                                    pathname: "/movies/all/",
+                                                    query: {
+                                                        ...router.query,
+                                                        decade,
+                                                    },
+                                                });
+                                            }
                                         }}
                                     >
                                         {decade}
@@ -243,8 +254,8 @@ const MoviesAllPage = () => {
                         <Select
                             label="Genre"
                             size="sm"
-                            value={genre}
-                            setValue={setGenre}
+                            value={String(genre)}
+                            setValue={() => null}
                         >
                             {genres.map((genre, index) => (
                                 <Select.Item
@@ -268,8 +279,8 @@ const MoviesAllPage = () => {
                         <Select
                             label="Sort by"
                             size="sm"
-                            value={sort}
-                            setValue={setSort}
+                            value={String(sort)}
+                            setValue={() => null}
                         >
                             {sortings.map((sorting, index) => (
                                 <Select.Item
