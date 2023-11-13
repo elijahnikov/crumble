@@ -1,7 +1,6 @@
 import Head from "next/head";
 import Layout from "@/components/common/Layout/Layout";
 import Link from "next/link";
-import Image from "next/image";
 
 export default function Home() {
     return (
@@ -13,19 +12,7 @@ export default function Home() {
             </Head>
             <Layout>
                 <div className="ml-[100px] flex flex-col gap-6 lg:gap-8">
-                    <dl className="w-full gap-6 md:columns-2 lg:gap-10 xl:columns-3 2xl:columns-4">
-                        <Link
-                            href={{
-                                pathname: "/movies/all/",
-                                query: {
-                                    decade: "2020",
-                                    genre: "Action",
-                                },
-                            }}
-                        >
-                            <h1>hello</h1>
-                        </Link>
-                    </dl>
+                    <dl className="w-full gap-6 md:columns-2 lg:gap-10 xl:columns-3 2xl:columns-4"></dl>
                 </div>
             </Layout>
         </>

@@ -9,7 +9,6 @@ import LoadingSpinner from "@/components/common/LoadingSpinner/LoadingSpinner";
 import Image from "next/image";
 import Checkbox from "@/components/ui/Checkbox/Checkbox";
 import Modal from "@/components/ui/Modal/Modal";
-import Button from "@/components/ui/Button/Button";
 
 const CastSearch = ({
     chosenCast,

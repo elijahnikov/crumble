@@ -17,6 +17,7 @@ import Button from "@/components/ui/Button/Button";
 import CastSearch, {
     ChosenCastPill,
 } from "@/components/common/Pages/AllMovies/CastSearch/CastSearch";
+import MovieImage from "@/components/common/Pages/AllMovies/MovieImage/MovieImage";
 
 const decades = {
     "2020s": ["2020-01-01", "2029-12-31"],
@@ -278,47 +279,12 @@ const MoviesAllPage = () => {
                     )}
                     {!loading && (
                         <>
-                            <div className="mt-5 grid  w-full grid-cols-10 gap-3 border-t-[1px] py-2 dark:border-slate-700">
+                            <div className="mt-5 grid w-full grid-cols-10 gap-3 border-t-[1px] py-2 dark:border-slate-700">
                                 {movieData.map((movie) => (
-                                    <div
+                                    <MovieImage
                                         key={movie.movieId}
-                                        className="w-[100%]"
-                                    >
-                                        <Link
-                                            href={{
-                                                pathname: "/movie/[id]",
-                                                query: {
-                                                    id: movie.movieId,
-                                                },
-                                            }}
-                                        >
-                                            {movie.poster ? (
-                                                <Image
-                                                    className="rounded-md"
-                                                    width={0}
-                                                    height={0}
-                                                    sizes="100vw"
-                                                    style={{
-                                                        width: "100%",
-                                                        height: "auto",
-                                                    }}
-                                                    alt={`${movie.title}`}
-                                                    src={`https://image.tmdb.org/t/p/w500${movie.poster}`}
-                                                />
-                                            ) : (
-                                                <div className="align-center mx-auto my-auto h-full justify-center rounded-md border-[1px] text-center dark:border-slate-700">
-                                                    <p className="mt-5 text-xs dark:text-slate-400">
-                                                        {movie.title.length > 25
-                                                            ? `${movie.title.slice(
-                                                                  0,
-                                                                  25
-                                                              )}...`
-                                                            : movie.title}
-                                                    </p>
-                                                </div>
-                                            )}
-                                        </Link>
-                                    </div>
+                                        movie={movie}
+                                    />
                                 ))}
                             </div>
                             <div className="flex w-full">
