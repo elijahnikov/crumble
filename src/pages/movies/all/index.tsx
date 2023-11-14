@@ -137,7 +137,7 @@ const MoviesAllPage = () => {
 
     const decade = useGetURLParam("decade") ?? "All";
     const genre = useGetURLParam("genre") ?? genres[0]!.name;
-    const sort = useGetURLParam("sort") ?? "Release date";
+    const sort = useGetURLParam("sort") ?? "Popularity";
     const [chosenCast, setChosenCast] = useState<ICastSearch[]>([]);
 
     const getUrl = useCallback(() => {
@@ -301,6 +301,22 @@ const MoviesAllPage = () => {
                                 </Select.Item>
                             ))}
                         </Select>
+                        <div className="mt-[18px]">
+                            {Object.keys(router.query).length > 0 && (
+                                <Button
+                                    onClick={() => {
+                                        const { pathname } = router;
+                                        void router.replace({
+                                            pathname,
+                                        });
+                                    }}
+                                    intent={"secondary"}
+                                    size="sm"
+                                >
+                                    Reset
+                                </Button>
+                            )}
+                        </div>
                     </div>
                     <div className="-mb-5 mt-2 flex w-full columns-4 flex-wrap gap-1">
                         {chosenCast.map((cast) => (
@@ -311,6 +327,7 @@ const MoviesAllPage = () => {
                             />
                         ))}
                     </div>
+
                     {loading && (
                         <div className="mx-auto mt-10 flex w-full justify-center text-center">
                             <LoadingSpinner size={35} />
