@@ -16,8 +16,8 @@ import Image from "next/image";
 import Button from "@/components/ui/Button/Button";
 import CastSearch, {
     ChosenCastPill,
-} from "@/components/common/Pages/AllMovies/CastSearch/CastSearch";
-import MovieImage from "@/components/common/Pages/AllMovies/MovieImage/MovieImage";
+} from "@/components/common/Pages/Movies/AllMovies/CastSearch/CastSearch";
+import MovieImage from "@/components/common/Pages/Movies/AllMovies/MovieImage/MovieImage";
 import { useRouter } from "next/router";
 import { useGetURLParam } from "@/utils/hooks/useGetURLParam";
 
