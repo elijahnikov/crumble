@@ -1,7 +1,7 @@
 import Layout, { Container } from "@/components/common/Layout/Layout";
 import { LoadingPage } from "@/components/common/LoadingSpinner/LoadingSpinner";
-import ReviewSection from "@/components/common/Pages/Films/SingleFilmPage/ReviewSection/ReviewSection";
-import SingleFilmView from "@/components/common/Pages/Films/SingleFilmPage/SingleFilmView/SingleFilmView";
+import ReviewSection from "@/components/common/Pages/Movies/SingleFilmPage/ReviewSection/ReviewSection";
+import SingleFilmView from "@/components/common/Pages/Movies/SingleFilmPage/SingleFilmView/SingleFilmView";
 import { api } from "@/utils/api";
 import { fetchWithZod } from "@/utils/fetch/zodFetch";
 import {

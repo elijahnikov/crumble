@@ -11,6 +11,7 @@ import type {
     NextPage,
 } from "next";
 import { useSession } from "next-auth/react";
+import Head from "next/head";
 import { useEffect, useState } from "react";
 
 type PageProps = InferGetStaticPropsType<typeof getStaticProps>;
@@ -71,24 +72,27 @@ const ProfilePage: NextPage<PageProps> = ({ username }) => {
     const isMe = authenticated && session.user.id === user.id;
 
     return (
-        <Layout>
-            <Container>
-                <SingleUserView
-                    authenticated={authenticated}
-                    user={user}
-                    isMe={isMe}
-                />
-            </Container>
-            <div className="-mb-[45px]" />
-            <Container>
-                <MainUserInformation
-                    isMe={isMe}
-                    user={user}
-                    tabView={tabFromURL}
-                    routeChange={routeChange}
-                />
-            </Container>
-        </Layout>
+        <>
+            <Head>Movies • Crumble</Head>
+            <Layout>
+                <Container>
+                    <SingleUserView
+                        authenticated={authenticated}
+                        user={user}
+                        isMe={isMe}
+                    />
+                </Container>
+                <div className="-mb-[45px]" />
+                <Container>
+                    <MainUserInformation
+                        isMe={isMe}
+                        user={user}
+                        tabView={tabFromURL}
+                        routeChange={routeChange}
+                    />
+                </Container>
+            </Layout>
+        </>
     );
 };
 

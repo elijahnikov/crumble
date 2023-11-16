@@ -68,20 +68,20 @@ export type IMovieDetailsFetch = z.infer<typeof movieDetailsFetchSchema>;
 
 export const allMovieDetailsFetchSchema = z
     .object({
-        adult: z.boolean(),
+        adult: z.boolean().optional(),
         backdrop_path: z.string().nullable(),
-        genre_ids: z.number().array(),
+        genre_ids: z.number().array().optional(),
         id: z.number(),
-        original_language: z.string(),
+        original_language: z.string().optional(),
         original_title: z.string(),
-        overview: z.string().nullable(),
-        popularity: z.number(),
+        overview: z.string().nullable().optional(),
+        popularity: z.number().optional(),
         poster_path: z.string().nullable(),
         release_date: z.string(),
         title: z.string(),
-        video: z.boolean(),
-        vote_average: z.number(),
-        vote_count: z.number(),
+        video: z.boolean().optional(),
+        vote_average: z.number().optional(),
+        vote_count: z.number().optional(),
     })
     .transform(
         ({

@@ -172,7 +172,7 @@ interface ReviewRow {
     review: RouterOutputs["review"]["reviews"]["reviews"][0];
 }
 
-const ReviewRow = ({ review }: ReviewRow) => {
+export const ReviewRow = ({ review }: ReviewRow) => {
     return (
         <div className="mt-5 w-full px-5">
             <div className="flex space-x-5">
@@ -181,51 +181,56 @@ const ReviewRow = ({ review }: ReviewRow) => {
                         <Image
                             alt={review.movieTitle}
                             src={`https://image.tmdb.org/t/p/original${review.moviePoster}`}
-                            width={100}
-                            height={100}
+                            width={80}
+                            height={80}
                             className="rounded-md"
                         />
                     </Link>
                 </div>
                 <div>
-                    <div className="flex">
-                        <div>
-                            {review.user.image && (
-                                <Image
-                                    alt={review.user.name!}
-                                    src={review.user.image}
-                                    width={30}
-                                    height={30}
-                                    className="rounded-full"
-                                />
-                            )}
+                    <div>
+                        <div className="flex">
+                            <h4>{review.movieTitle}</h4>
+                            <p className="-mt-[5px] ml-1 text-[18px] font-semibold text-slate-500 dark:text-slate-500">
+                                {review.movieReleaseYear.slice(0, 4)}
+                            </p>
                         </div>
-                        <p className="ml-2 mt-1 text-sm font-semibold">
-                            <span className="text-slate-600 dark:text-slate-300">
-                                Review by{" "}
-                            </span>
-                            <span className="underline">
+                        <div className="-mt-2 flex">
+                            <div className="mt-2">
+                                {review.user.image && (
+                                    <Image
+                                        alt={review.user.name!}
+                                        src={review.user.image}
+                                        width={20}
+                                        height={20}
+                                        className="rounded-full"
+                                    />
+                                )}
+                            </div>
+                            <p className="ml-2 mt-3 text-sm font-bold text-slate-600 dark:text-slate-300">
                                 {review.user.name}
-                            </span>
-                        </p>
-                        <Rating
-                            className="-mt-[18px] ml-3"
-                            emptyStyle={{ display: "flex" }}
-                            fillStyle={{
-                                display: "-webkit-inline-box",
-                            }}
-                            readonly
-                            allowFraction={true}
-                            initialValue={review.ratingGiven}
-                            size={15}
-                            fillColor="#EF4444"
-                        />
+                            </p>
+                            <Rating
+                                className="-mt-[3px] ml-2"
+                                emptyStyle={{ display: "flex" }}
+                                fillStyle={{
+                                    display: "-webkit-inline-box",
+                                }}
+                                readonly
+                                allowFraction={true}
+                                initialValue={review.ratingGiven}
+                                size={12}
+                                fillColor="#EF4444"
+                            />
+                        </div>
                     </div>
                     <div>
-                        <div className="text-[16px] font-semibold text-slate-700 dark:text-slate-200 dark:text-slate-200">
-                            {review.text}
+                        <div className=" text-[16px] font-semibold text-slate-700 dark:text-gray-400 dark:text-slate-300">
+                            {review.text.length > 50
+                                ? review.text.slice(0, 50) + "..."
+                                : review.text}
                         </div>
-                        <div className=" mb-2 mt-10 flex space-x-4">
+                        <div className=" mb-2 mt-3 flex space-x-4">
                             <div className="flex space-x-1 text-xs">
                                 <BsHeartFill
                                     className={clxsm(
@@ -236,24 +241,14 @@ const ReviewRow = ({ review }: ReviewRow) => {
                                     )}
                                 />
                                 <p className="dark:text-slate-400">
-                                    {review._count.reviewLikes}
-                                </p>
-                            </div>
-                            <div className="flex space-x-1 text-xs">
-                                <BiSolidComment
-                                    className={clxsm(
-                                        "dark-fill-slate-400 mt-[3px] fill-slate-600"
-                                    )}
-                                />
-                                <p className="dark:text-slate-400">
-                                    {review._count.reviewComments}
+                                    {review._count.reviewLikes} likes
                                 </p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <hr className="mx-auto mt-5 w-full border-gray-200 dark:border-gray-700" />
+            <hr className="mx-auto mt-2 w-full border-gray-200 dark:border-gray-800" />
         </div>
     );
 };

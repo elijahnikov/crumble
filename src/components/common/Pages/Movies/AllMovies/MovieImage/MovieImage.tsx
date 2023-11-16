@@ -1,8 +1,15 @@
-import { type IAllMovieDetailsFetch } from "@/server/api/schemas/movie";
 import Link from "next/link";
 import Image from "next/image";
 
-const MovieImage = ({ movie }: { movie: IAllMovieDetailsFetch }) => {
+const MovieImage = ({
+    movie,
+}: {
+    movie: {
+        movieId: number;
+        poster: string | null;
+        title: string;
+    };
+}) => {
     return (
         <div className="w-[100%]">
             <Link
