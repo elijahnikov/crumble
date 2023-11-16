@@ -54,14 +54,14 @@ const Recommended = () => {
     return (
         <div>
             <div className="flex">
-                <h4 className="w-[60%] text-sm text-slate-600 dark:text-slate-400">
+                <h4 className="text-sm text-slate-600 dark:text-slate-400">
                     Recommended for you
                 </h4>
                 {!loadingCheck &&
                     watched &&
                     watched.watched.length > 0 &&
                     recommendedMovies.length > 0 && (
-                        <p className="ml-2 mt-[2px] w-[40%] text-xs dark:text-slate-500">
+                        <p className="ml-2 mt-[2px] text-xs dark:text-slate-500">
                             Recommendations based on your recent watch of{" "}
                             <span className="text-crumble">
                                 {watched.watched[0]?.movieTitle}
