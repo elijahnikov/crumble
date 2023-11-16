@@ -7,6 +7,8 @@ const RecentlyReviewed = () => {
     const { data, isLoading } = api.review.reviews.useQuery({
         limit: 12,
         dateSortBy: getDatesToSortBy("3 months"),
+        orderBy: "createdAt",
+        orderDirection: "desc",
     });
     return (
         <div>
