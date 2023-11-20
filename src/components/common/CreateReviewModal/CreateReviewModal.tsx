@@ -323,11 +323,11 @@ export const MovieSearchResults = ({
     handleMovieClick,
 }: MovieSearchResultsProps) => {
     return (
-        <div className="mt-5 h-max w-full columns-4 gap-4">
+        <div className={clxsm("mt-5 h-max w-full columns-4 gap-4")}>
             {filmSearchResults?.slice(0, 10).map((movie: IMovie) => (
                 <div
                     key={movie.movieId}
-                    className=" break-inside-avoid-column pb-5"
+                    className={clxsm("break-inside-avoid-column pb-5")}
                     onClick={() => handleMovieClick(movie)}
                 >
                     <div className="column group flow-root cursor-pointer rounded-md border-[1px] border-gray-300 dark:border-brand-light">
@@ -355,6 +355,49 @@ export const MovieSearchResults = ({
                     </div>
                 </div>
             ))}
+        </div>
+    );
+};
+
+export const MovieSearchResultsMini = ({
+    filmSearchResults,
+    handleMovieClick,
+}: MovieSearchResultsProps) => {
+    return (
+        <div className="relative z-50 my-2 mb-2 flex w-full rounded-md border bg-brand p-2 dark:border-slate-800">
+            <div className={clxsm("h-max w-full columns-4 gap-4")}>
+                {filmSearchResults?.slice(0, 10).map((movie: IMovie) => (
+                    <div
+                        key={movie.movieId}
+                        className={clxsm("break-inside-avoid-column pb-5")}
+                        onClick={() => handleMovieClick(movie)}
+                    >
+                        <div className="column group flow-root cursor-pointer rounded-md border-[1px] border-gray-300 dark:border-brand-light">
+                            {movie.poster ? (
+                                <Image
+                                    className="rounded-md"
+                                    width={0}
+                                    height={0}
+                                    sizes="100vw"
+                                    style={{ width: "100%", height: "auto" }}
+                                    alt={`${movie.title}`}
+                                    src={`https://image.tmdb.org/t/p/w500${movie.poster}`}
+                                />
+                            ) : (
+                                <div className="mb-5 mt-5 text-center">?</div>
+                            )}
+                            <div className="p-2">
+                                <p className="overflow-hidden text-ellipsis text-sm font-semibold text-crumble-base group-hover:text-crumble-base">
+                                    {movie.releaseDate.slice(0, 4)}
+                                </p>
+                                <p className="overflow-hidden text-ellipsis text-sm text-sky-lighter group-hover:text-crumble-base">
+                                    {movie.title}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                ))}
+            </div>
         </div>
     );
 };

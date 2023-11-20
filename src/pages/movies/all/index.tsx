@@ -8,11 +8,9 @@ import {
 } from "@/server/api/schemas/movie";
 import { fetchWithZod } from "@/utils/fetch/zodFetch";
 import Head from "next/head";
-import Link from "next/link";
 
 import { useCallback, useEffect, useState } from "react";
 import { type ZodType } from "zod";
-import Image from "next/image";
 import Button from "@/components/ui/Button/Button";
 import CastSearch, {
     ChosenCastPill,
