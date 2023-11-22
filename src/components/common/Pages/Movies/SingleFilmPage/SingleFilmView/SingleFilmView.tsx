@@ -10,13 +10,7 @@ import TertiaryInfo from "./TertiaryInfo";
 import { Container } from "@/components/common/Layout/Layout";
 import { api } from "@/utils/api";
 import Tooltip from "@/components/ui/Tooltip/Tooltip";
-import Button from "@/components/ui/Button/Button";
-import {
-    BsHeartFill,
-    BsPlus,
-    BsShareFill,
-    BsThreeDotsVertical,
-} from "react-icons/bs";
+import { BsPlus } from "react-icons/bs";
 import { BiHeart, BiShare } from "react-icons/bi";
 import toast from "react-hot-toast";
 

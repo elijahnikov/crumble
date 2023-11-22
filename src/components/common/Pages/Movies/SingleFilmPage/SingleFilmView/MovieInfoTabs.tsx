@@ -11,6 +11,7 @@ import Image from "next/image";
 import Button from "@/components/ui/Button/Button";
 import { showJobs } from "@/utils/constants";
 import Tooltip from "@/components/ui/Tooltip/Tooltip";
+import Link from "next/link";
 
 interface MovieInfoTabsProps {
     movieInfo: Pick<
@@ -91,23 +92,30 @@ const Cast = ({
                               >
                                   <Tooltip>
                                       <Tooltip.Trigger>
-                                          <Image
-                                              alt={d.name}
-                                              src={`https://image.tmdb.org/t/p/w500/${d.profile_path}`}
-                                              width={0}
-                                              height={0}
-                                              sizes="100vw"
-                                              className="rounded-md border-t-[1px] opacity-0 duration-[0.5s] dark:border-gray-800"
-                                              style={{
-                                                  width: "100%",
-                                                  height: "100%",
-                                              }}
-                                              onLoadingComplete={(image) =>
-                                                  image.classList.remove(
-                                                      "opacity-0"
-                                                  )
-                                              }
-                                          />
+                                          <Link
+                                              href="/people/[type]/[name]"
+                                              as={`/people/actor/${
+                                                  d.name + "-" + d.id
+                                              }`}
+                                          >
+                                              <Image
+                                                  alt={d.name}
+                                                  src={`https://image.tmdb.org/t/p/w500/${d.profile_path}`}
+                                                  width={0}
+                                                  height={0}
+                                                  sizes="100vw"
+                                                  className="rounded-md border-t-[1px] opacity-0 duration-[0.5s] dark:border-gray-800"
+                                                  style={{
+                                                      width: "100%",
+                                                      height: "100%",
+                                                  }}
+                                                  onLoadingComplete={(image) =>
+                                                      image.classList.remove(
+                                                          "opacity-0"
+                                                      )
+                                                  }
+                                              />
+                                          </Link>
                                       </Tooltip.Trigger>
                                       <Tooltip.Content>
                                           {d.name}
@@ -172,15 +180,20 @@ const Crew = ({
                                 <div className="align-right float-right ml-auto inline w-[200px] text-right">
                                     {groupedJobs[job.title]
                                         ? groupedJobs[job.title]?.map((j) => (
-                                              <div
+                                              <Link
+                                                  href="/people/[type]/[name]"
+                                                  as={`/people/${j.job}/${j.name}`}
                                                   key={j.id}
-                                                  className="mb-2 ml-2 inline-block 
+                                              >
+                                                  <div
+                                                      className="mb-2 ml-2 inline-block 
                                             cursor-pointer rounded-[5px] border-t-[1px] 
                                             border-gray-200 bg-brand-white p-[5px] text-xs 
                                             text-slate-700 hover:bg-gray-200 dark:border-gray-800 dark:bg-brand dark:text-white dark:hover:bg-gray-800"
-                                              >
-                                                  {j.name}
-                                              </div>
+                                                  >
+                                                      {j.name}
+                                                  </div>
+                                              </Link>
                                           ))
                                         : null}
                                 </div>

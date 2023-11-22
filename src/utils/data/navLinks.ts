@@ -14,7 +14,7 @@ import {
 } from "react-icons/bs";
 import { FaListAlt } from "react-icons/fa";
 
-const pages = ["movies", "diary", "reviews", "people", "lists"] as const;
+const pages = ["movies", "diary", "reviews", "members", "lists"] as const;
 
 type pagesIndex = (typeof pages)[number];
 
@@ -43,10 +43,11 @@ const navigation: NavigationArrayType = [
         includeUrls: ["review"],
     },
     {
-        name: "People",
+        name: "Members",
         icon: BsPerson,
         hoverIcon: BsPersonFill,
-        href: "/people",
+        href: "/members",
+        includeUrls: ["member"],
     },
     {
         name: "Lists",

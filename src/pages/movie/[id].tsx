@@ -56,6 +56,7 @@ const SingleFilmPage = () => {
         if (router.query.id) {
             void handleFetchMovieDetails(String(router.query.id));
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [router.query]);
 
     if (loading) {
