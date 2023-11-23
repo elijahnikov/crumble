@@ -182,7 +182,7 @@ const Crew = ({
                                         ? groupedJobs[job.title]?.map((j) => (
                                               <Link
                                                   href="/people/[type]/[name]"
-                                                  as={`/people/${j.job}/${j.name}`}
+                                                  as={`/people/${j.job}/${j.name}-${j.id}`}
                                                   key={j.id}
                                               >
                                                   <div
