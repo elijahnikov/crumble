@@ -16,6 +16,7 @@ import MovieImage from "../../Movies/AllMovies/MovieImage/MovieImage";
 import { api } from "@/utils/api";
 import { useSession } from "next-auth/react";
 import clxsm from "@/utils/clsxm";
+import Tooltip from "@/components/ui/Tooltip/Tooltip";
 
 interface CreditType {
     adult: boolean;
@@ -77,6 +78,7 @@ const SinglePersonView = ({
     const personId = name.split("-")[1];
 
     const [showExtraText, setShowExtraText] = useState<boolean>(false);
+    const [highlight, setHighlight] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
 
     const [details, setDetails] = useState<IPersonDetailsFetch>();
@@ -87,7 +89,6 @@ const SinglePersonView = ({
     const matchingElementsFilter = watched?.filter((item) =>
         toCountAgainst?.includes(item)
     );
-    console.log({ matchingElementsFilter, credits: credits[formattedType] });
 
     const fetchPersonDetails = useCallback(async () => {
         setLoading(true);
@@ -178,6 +179,11 @@ const SinglePersonView = ({
                                                 poster: credit.poster_path,
                                                 title: credit.original_title,
                                             }}
+                                            highlight={
+                                                highlight
+                                                    ? matchingElementsFilter
+                                                    : undefined
+                                            }
                                         />
                                     ))}
                             </div>
@@ -190,7 +196,7 @@ const SinglePersonView = ({
                                 height={400}
                                 className="rounded-md border-t-[1px] dark:border-gray-800"
                             />
-                            <p className="mt-5 max-w-[300px] text-sm dark:text-slate-400">
+                            <p className="mt-5 max-w-[300px] text-sm text-slate-700 dark:text-slate-400">
                                 {showExtraText
                                     ? details?.biography
                                     : details?.biography.slice(0, 200) + "..."}
@@ -204,59 +210,23 @@ const SinglePersonView = ({
                                     {!showExtraText ? " More" : " Less"}
                                 </span>
                             </p>
-                            {matchingElementsFilter && credits && (
-                                <div className="mt-5 w-full rounded-md border bg-brand  dark:border-slate-700">
-                                    <div className="flex p-2">
-                                        <div className="w-full">
-                                            <p className="text-sm dark:text-slate-400">
-                                                You have watched
-                                            </p>
-                                            <div className="flex space-x-1">
-                                                <p>
-                                                    {
-                                                        matchingElementsFilter.length
-                                                    }
-                                                </p>
-                                                <p>/</p>
-                                                <p>
-                                                    {
-                                                        credits[formattedType]!
-                                                            .length
-                                                    }
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <h2 className="mt-1 text-slate-700 dark:text-slate-200">
-                                                {(
-                                                    (matchingElementsFilter.length /
-                                                        credits[formattedType]!
-                                                            .length) *
-                                                    100
-                                                ).toFixed()}
-                                                %
-                                            </h2>
-                                        </div>
-                                    </div>
+                            {matchingElementsFilter &&
+                                typeof toCountAgainst !== "undefined" && (
                                     <div
-                                        style={{
-                                            width: `${(
-                                                (matchingElementsFilter.length /
-                                                    credits[formattedType]!
-                                                        .length) *
-                                                100
-                                            ).toFixed()}%`,
-                                        }}
-                                        className={clxsm(
-                                            "h-1 bg-red-400",
-                                            matchingElementsFilter.length !==
-                                                credits[formattedType]!.length
-                                                ? "rounded-bl-md"
-                                                : "rounded-b-md"
-                                        )}
-                                    />
-                                </div>
-                            )}
+                                        className="cursor-pointer"
+                                        onClick={() => setHighlight(!highlight)}
+                                    >
+                                        <Tracker
+                                            highlight={highlight}
+                                            countAgainstLength={
+                                                toCountAgainst.length
+                                            }
+                                            matchingLength={
+                                                matchingElementsFilter.length
+                                            }
+                                        />
+                                    </div>
+                                )}
                         </div>
                     </div>
                 </div>
@@ -270,7 +240,6 @@ const Header = ({
     formattedName,
     name,
     credits,
-    details,
 }: {
     formattedType: string;
     formattedName: string | undefined;
@@ -311,6 +280,70 @@ const Header = ({
                 </Select>
             </div>
         </div>
+    );
+};
+
+const Tracker = ({
+    matchingLength,
+    countAgainstLength,
+    highlight,
+}: {
+    matchingLength: number;
+    countAgainstLength: number;
+    highlight: boolean;
+}) => {
+    return (
+        <Tooltip>
+            <Tooltip.Trigger>
+                <div
+                    className={clxsm(
+                        "mt-5 w-full rounded-md border bg-brand-white dark:border-slate-700 dark:bg-brand",
+                        !highlight
+                            ? "border-slate-200 dark:border-slate-700"
+                            : "border-crumble dark:border-crumble"
+                    )}
+                >
+                    <div className="flex p-2">
+                        <div className="w-full">
+                            <p className="text-sm text-slate-600 dark:text-slate-400">
+                                You have watched
+                            </p>
+                            <div className="flex space-x-1">
+                                <p>{matchingLength}</p>
+                                <p>/</p>
+                                <p>{countAgainstLength}</p>
+                            </div>
+                        </div>
+                        <div>
+                            <h2 className="mt-1 text-slate-700 dark:text-slate-200">
+                                {(
+                                    (matchingLength / countAgainstLength) *
+                                    100
+                                ).toFixed()}
+                                %
+                            </h2>
+                        </div>
+                    </div>
+                    <div
+                        style={{
+                            width: `${(
+                                (matchingLength / countAgainstLength) *
+                                100
+                            ).toFixed()}%`,
+                        }}
+                        className={clxsm(
+                            "h-1 bg-crumble",
+                            matchingLength !== countAgainstLength
+                                ? "rounded-bl-md"
+                                : "rounded-b-md"
+                        )}
+                    />
+                </div>
+            </Tooltip.Trigger>
+            <Tooltip.Content>
+                <p>Click to toggle highlight watched</p>
+            </Tooltip.Content>
+        </Tooltip>
     );
 };
 
