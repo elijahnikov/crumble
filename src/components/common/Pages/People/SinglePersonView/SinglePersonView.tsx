@@ -13,6 +13,9 @@ import { type ZodType } from "zod";
 import Image from "next/image";
 import _ from "lodash";
 import MovieImage from "../../Movies/AllMovies/MovieImage/MovieImage";
+import { api } from "@/utils/api";
+import { useSession } from "next-auth/react";
+import clxsm from "@/utils/clsxm";
 
 interface CreditType {
     adult: boolean;
@@ -63,7 +66,11 @@ const SinglePersonView = ({
     type: string | string[] | undefined;
     name: string;
 }) => {
-    const router = useRouter();
+    const { data: session } = useSession();
+
+    const { data } = api.watched.watched.useQuery({
+        username: String(session?.user.name),
+    });
 
     const formattedName = name.split("-")[0];
     const formattedType = String(type).toLocaleLowerCase();
@@ -74,6 +81,13 @@ const SinglePersonView = ({
 
     const [details, setDetails] = useState<IPersonDetailsFetch>();
     const [credits, setCredits] = useState<Record<string, CreditType[]>>({});
+
+    const watched = data?.watched.map((w) => w.movieId);
+    const toCountAgainst = credits[formattedType]?.map((c) => c.id);
+    const matchingElementsFilter = watched?.filter((item) =>
+        toCountAgainst?.includes(item)
+    );
+    console.log({ matchingElementsFilter, credits: credits[formattedType] });
 
     const fetchPersonDetails = useCallback(async () => {
         setLoading(true);
@@ -127,7 +141,6 @@ const SinglePersonView = ({
                 }
             }
         }
-        console.log(tempObj);
         setCredits(tempObj);
     };
 
@@ -137,55 +150,117 @@ const SinglePersonView = ({
 
     return (
         <>
-            {loading && <LoadingSpinner />}
-            <div>
-                <div className="flex">
-                    <div>
-                        <Header
-                            formattedType={formattedType}
-                            formattedName={formattedName}
-                            name={name}
-                            credits={credits}
-                            details={details}
-                        />
-                        <div className="mt-2 grid w-full grid-cols-4 gap-3 border-t-[1px] py-2 dark:border-slate-700">
-                            {credits[formattedType]
-                                ?.sort((a, b) => b.popularity - a.popularity)
-                                .map((credit) => (
-                                    <MovieImage
-                                        key={credit.id}
-                                        movie={{
-                                            movieId: credit.id,
-                                            poster: credit.poster_path,
-                                            title: credit.original_title,
+            {loading ? (
+                <div className="mt-5 flex items-center justify-center align-middle">
+                    <LoadingSpinner size={50} />
+                </div>
+            ) : (
+                <div>
+                    <div className="flex">
+                        <div>
+                            <Header
+                                formattedType={formattedType}
+                                formattedName={formattedName}
+                                name={name}
+                                credits={credits}
+                                details={details}
+                            />
+                            <div className="mt-2 grid w-full grid-cols-4 gap-3 border-t-[1px] py-2 dark:border-slate-700">
+                                {credits[formattedType]
+                                    ?.sort(
+                                        (a, b) => b.popularity - a.popularity
+                                    )
+                                    .map((credit) => (
+                                        <MovieImage
+                                            key={credit.id}
+                                            movie={{
+                                                movieId: credit.id,
+                                                poster: credit.poster_path,
+                                                title: credit.original_title,
+                                            }}
+                                        />
+                                    ))}
+                            </div>
+                        </div>
+                        <div className="ml-4 px-10">
+                            <Image
+                                alt={formattedName ?? ""}
+                                src={`https://image.tmdb.org/t/p/w500/${details?.picture}`}
+                                width={400}
+                                height={400}
+                                className="rounded-md border-t-[1px] dark:border-gray-800"
+                            />
+                            <p className="mt-5 max-w-[300px] text-sm dark:text-slate-400">
+                                {showExtraText
+                                    ? details?.biography
+                                    : details?.biography.slice(0, 200) + "..."}
+
+                                <span
+                                    onClick={() =>
+                                        setShowExtraText(!showExtraText)
+                                    }
+                                    className="cursor-pointer text-crumble"
+                                >
+                                    {!showExtraText ? " More" : " Less"}
+                                </span>
+                            </p>
+                            {matchingElementsFilter && credits && (
+                                <div className="mt-5 w-full rounded-md border bg-brand  dark:border-slate-700">
+                                    <div className="flex p-2">
+                                        <div className="w-full">
+                                            <p className="text-sm dark:text-slate-400">
+                                                You have watched
+                                            </p>
+                                            <div className="flex space-x-1">
+                                                <p>
+                                                    {
+                                                        matchingElementsFilter.length
+                                                    }
+                                                </p>
+                                                <p>/</p>
+                                                <p>
+                                                    {
+                                                        credits[formattedType]!
+                                                            .length
+                                                    }
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <h2 className="mt-1 text-slate-700 dark:text-slate-200">
+                                                {(
+                                                    (matchingElementsFilter.length /
+                                                        credits[formattedType]!
+                                                            .length) *
+                                                    100
+                                                ).toFixed()}
+                                                %
+                                            </h2>
+                                        </div>
+                                    </div>
+                                    <div
+                                        style={{
+                                            width: `${(
+                                                (matchingElementsFilter.length /
+                                                    credits[formattedType]!
+                                                        .length) *
+                                                100
+                                            ).toFixed()}%`,
                                         }}
+                                        className={clxsm(
+                                            "h-1 bg-red-400",
+                                            matchingElementsFilter.length !==
+                                                credits[formattedType]!.length
+                                                ? "rounded-bl-md"
+                                                : "rounded-b-md"
+                                        )}
                                     />
-                                ))}
+                                </div>
+                            )}
                         </div>
                     </div>
-                    <div className="ml-4 px-10">
-                        <Image
-                            alt={formattedName ?? ""}
-                            src={`https://image.tmdb.org/t/p/w500/${details?.picture}`}
-                            width={400}
-                            height={400}
-                            className="rounded-md border-t-[1px] dark:border-gray-800"
-                        />
-                        <p className="mt-5 max-w-[300px] text-sm dark:text-slate-400">
-                            {showExtraText
-                                ? details?.biography
-                                : details?.biography.slice(0, 120) + "..."}
-
-                            <span
-                                onClick={() => setShowExtraText(!showExtraText)}
-                                className="cursor-pointer text-crumble"
-                            >
-                                {!showExtraText ? " More" : " Less"}
-                            </span>
-                        </p>
-                    </div>
                 </div>
-            </div>
+            )}
         </>
     );
 };
