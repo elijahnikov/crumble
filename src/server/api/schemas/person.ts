@@ -100,7 +100,7 @@ export const personCreditsSchema = z.object({
             z.object({
                 adult: z.boolean(),
                 backdrop_path: z.null(),
-                genre_ids: z.array(z.unknown()),
+                genre_ids: z.array(z.number()),
                 id: z.number(),
                 original_language: z.string(),
                 original_title: z.string(),
