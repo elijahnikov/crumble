@@ -14,6 +14,17 @@ export default function Home() {
                 <div className="ml-[100px] flex flex-col gap-6 lg:gap-8">
                     <dl className="w-full gap-6 md:columns-2 lg:gap-10 xl:columns-3 2xl:columns-4"></dl>
                 </div>
+                <Link
+                    href={{
+                        pathname: "people/[cast]/[name]/",
+                        query: {
+                            cast: "actor",
+                            name: "Test",
+                        },
+                    }}
+                >
+                    hello
+                </Link>
             </Layout>
         </>
     );
