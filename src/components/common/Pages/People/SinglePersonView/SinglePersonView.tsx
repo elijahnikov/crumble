@@ -214,7 +214,10 @@ const SinglePersonView = ({
                                 typeof toCountAgainst !== "undefined" && (
                                     <div
                                         className="cursor-pointer"
-                                        onClick={() => setHighlight(!highlight)}
+                                        onClick={() =>
+                                            matchingElementsFilter.length > 0 &&
+                                            setHighlight(!highlight)
+                                        }
                                     >
                                         <Tracker
                                             highlight={highlight}
