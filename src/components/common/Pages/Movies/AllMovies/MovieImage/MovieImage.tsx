@@ -3,12 +3,14 @@ import Image from "next/image";
 
 const MovieImage = ({
     movie,
+    highlight,
 }: {
     movie: {
         movieId: number;
         poster: string | null;
         title: string;
     };
+    highlight?: number[];
 }) => {
     return (
         <div className="w-[100%]">
@@ -29,6 +31,12 @@ const MovieImage = ({
                         style={{
                             width: "100%",
                             height: "auto",
+                            opacity:
+                                highlight &&
+                                typeof highlight !== undefined &&
+                                !highlight.includes(movie.movieId)
+                                    ? 0.1
+                                    : 1,
                         }}
                         alt={`${movie.title}`}
                         src={`https://image.tmdb.org/t/p/w500${movie.poster}`}
