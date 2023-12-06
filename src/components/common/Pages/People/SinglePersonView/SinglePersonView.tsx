@@ -226,25 +226,37 @@ const SinglePersonView = ({
                                         return 0;
                                     })
                                     .map((credit) => (
-                                        <Tooltip key={credit.id}>
-                                            <Tooltip.Trigger>
-                                                <MovieImage
-                                                    movie={{
-                                                        movieId: credit.id,
-                                                        poster: credit.poster_path,
-                                                        title: credit.original_title,
-                                                    }}
-                                                    highlight={
-                                                        highlight
-                                                            ? matchingElementsFilter
-                                                            : undefined
-                                                    }
-                                                />
-                                            </Tooltip.Trigger>
-                                            <Tooltip.Content>
-                                                as {credit.character}
-                                            </Tooltip.Content>
-                                        </Tooltip>
+                                        <div key={credit.id}>
+                                            <Tooltip>
+                                                <Tooltip.Trigger>
+                                                    <div>
+                                                        <MovieImage
+                                                            movie={{
+                                                                movieId:
+                                                                    credit.id,
+                                                                poster: credit.poster_path,
+                                                                title: credit.original_title,
+                                                            }}
+                                                            highlight={
+                                                                highlight
+                                                                    ? matchingElementsFilter
+                                                                    : undefined
+                                                            }
+                                                        />
+                                                    </div>
+                                                </Tooltip.Trigger>
+                                                <Tooltip.Content>
+                                                    <div className="flex space-x-1">
+                                                        <p className="text-crumble">
+                                                            as
+                                                        </p>
+                                                        <p>
+                                                            {credit.character}
+                                                        </p>
+                                                    </div>
+                                                </Tooltip.Content>
+                                            </Tooltip>
+                                        </div>
                                     ))}
                             </div>
                         </div>
