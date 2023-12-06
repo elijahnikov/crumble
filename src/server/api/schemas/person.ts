@@ -8,7 +8,7 @@ export const personDetailsFetchSchema = z
         birthday: z.string(),
         deathday: z.null(),
         gender: z.number(),
-        homepage: z.null(),
+        homepage: z.string().nullable(),
         id: z.number(),
         imdb_id: z.string(),
         known_for_department: z.string(),
