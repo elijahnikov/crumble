@@ -11,7 +11,7 @@ import { useRouter } from "next/router";
 import { useState, useCallback, useEffect } from "react";
 import { type ZodType } from "zod";
 import Image from "next/image";
-import _, { sortBy } from "lodash";
+import _ from "lodash";
 import MovieImage from "../../Movies/AllMovies/MovieImage/MovieImage";
 import { api } from "@/utils/api";
 import { useSession } from "next-auth/react";
@@ -68,8 +68,6 @@ const sortObj = {
     Watched: "watched",
 };
 
-type JobTypes = keyof typeof jobHeadingMapping;
-
 const SinglePersonView = ({
     type,
     name,
@@ -84,7 +82,7 @@ const SinglePersonView = ({
     });
 
     const formattedName = name.split("-")[0];
-    const formattedType: JobTypes = String(type).toLocaleLowerCase();
+    const formattedType = String(type).toLocaleLowerCase();
     const nameSplit = name.split("-");
     const personId = nameSplit[nameSplit.length - 1];
 
@@ -94,10 +92,7 @@ const SinglePersonView = ({
     const [sortBy, setSortBy] = useState<string>("popularity");
 
     const [details, setDetails] = useState<IPersonDetailsFetch>();
-    const [credits, setCredits] = useState<Record<JobTypes, CreditType[]>>({});
-    const [sortedCredits, setSortedCredits] = useState<
-        Record<string, CreditType[]>
-    >({});
+    const [credits, setCredits] = useState<Record<string, CreditType[]>>({});
 
     const watched = data?.watched.map((w) => w.movieId);
     const toCountAgainst = credits[formattedType]?.map((c) => c.id);
@@ -156,48 +151,7 @@ const SinglePersonView = ({
             }
         }
         setCredits(tempObj);
-        setSortedCredits(tempObj);
     };
-
-    const sortCredits = useCallback(
-        (sort: string) => {
-            const value = sort;
-            console.log("here");
-            const tempCredits = credits[formattedType];
-            console.log({ sort });
-
-            console.log({ tempCredits, og: credits[formattedType] });
-            if (value === "popularity") {
-                tempCredits?.sort(
-                    (a, b) =>
-                        (b[value as keyof CreditType] as number) -
-                        (a[value as keyof CreditType] as number)
-                );
-            }
-            if (value === "original_title") {
-                tempCredits?.sort((a, b) => a[value].localeCompare(b[value]));
-            }
-            if (value === "release_date") {
-                tempCredits?.sort((a, b) => {
-                    const dateA = new Date(a[value]).getTime();
-                    const dateB = new Date(b[value]).getTime();
-
-                    return dateB - dateA;
-                });
-            }
-
-            setSortedCredits((prevCreditData) => ({
-                ...prevCreditData,
-                [formattedType]: tempCredits!,
-            }));
-        },
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        [sortBy]
-    );
-
-    useEffect(() => {
-        sortCredits(sortBy);
-    }, [sortBy, sortCredits]);
 
     useEffect(() => {
         void fetchPersonDetails();
@@ -222,27 +176,76 @@ const SinglePersonView = ({
                                 sortBy={[sortBy, setSortBy]}
                             />
                             <div className="mt-2 grid w-full grid-cols-4 gap-3 border-t-[1px] py-2 dark:border-slate-700">
-                                {sortedCredits[formattedType]?.map((credit) => (
-                                    <Tooltip key={credit.id}>
-                                        <Tooltip.Trigger>
-                                            <MovieImage
-                                                movie={{
-                                                    movieId: credit.id,
-                                                    poster: credit.poster_path,
-                                                    title: credit.original_title,
-                                                }}
-                                                highlight={
-                                                    highlight
-                                                        ? matchingElementsFilter
-                                                        : undefined
-                                                }
-                                            />
-                                        </Tooltip.Trigger>
-                                        <Tooltip.Content>
-                                            as {credit.character}
-                                        </Tooltip.Content>
-                                    </Tooltip>
-                                ))}
+                                {credits[formattedType]
+                                    ?.sort((a, b) => {
+                                        if (sortBy === "popularity") {
+                                            return b.popularity - a.popularity;
+                                        } else if (sortBy === "release_date") {
+                                            return (
+                                                new Date(
+                                                    b.release_date
+                                                ).getTime() -
+                                                new Date(
+                                                    a.release_date
+                                                ).getTime()
+                                            );
+                                        } else if (
+                                            sortBy === "original_title"
+                                        ) {
+                                            if (
+                                                a.original_title <
+                                                b.original_title
+                                            )
+                                                return -1;
+                                            if (
+                                                a.original_title >
+                                                b.original_title
+                                            )
+                                                return 1;
+                                            return 0;
+                                        } else if (
+                                            sortBy === "watched" &&
+                                            watched
+                                        ) {
+                                            const aWatchedIndex =
+                                                watched.indexOf(a.id);
+                                            const bWatchedIndex =
+                                                watched.indexOf(b.id);
+
+                                            if (
+                                                aWatchedIndex === -1 &&
+                                                bWatchedIndex === -1
+                                            )
+                                                return 0;
+                                            if (aWatchedIndex === -1) return 1;
+                                            if (bWatchedIndex === -1) return -1;
+                                            return (
+                                                aWatchedIndex - bWatchedIndex
+                                            );
+                                        }
+                                        return 0;
+                                    })
+                                    .map((credit) => (
+                                        <Tooltip key={credit.id}>
+                                            <Tooltip.Trigger>
+                                                <MovieImage
+                                                    movie={{
+                                                        movieId: credit.id,
+                                                        poster: credit.poster_path,
+                                                        title: credit.original_title,
+                                                    }}
+                                                    highlight={
+                                                        highlight
+                                                            ? matchingElementsFilter
+                                                            : undefined
+                                                    }
+                                                />
+                                            </Tooltip.Trigger>
+                                            <Tooltip.Content>
+                                                as {credit.character}
+                                            </Tooltip.Content>
+                                        </Tooltip>
+                                    ))}
                             </div>
                         </div>
                         <div className="ml-4 px-10">
