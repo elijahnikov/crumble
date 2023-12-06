@@ -226,36 +226,55 @@ const SinglePersonView = ({
                                         return 0;
                                     })
                                     .map((credit) => (
-                                        <Tooltip key={credit.id}>
-                                            <Tooltip.Trigger>
-                                                <MovieImage
-                                                    movie={{
-                                                        movieId: credit.id,
-                                                        poster: credit.poster_path,
-                                                        title: credit.original_title,
-                                                    }}
-                                                    highlight={
-                                                        highlight
-                                                            ? matchingElementsFilter
-                                                            : undefined
-                                                    }
-                                                />
-                                            </Tooltip.Trigger>
-                                            <Tooltip.Content>
-                                                as {credit.character}
-                                            </Tooltip.Content>
-                                        </Tooltip>
+                                        <div key={credit.id}>
+                                            <Tooltip>
+                                                <Tooltip.Trigger>
+                                                    <div>
+                                                        <MovieImage
+                                                            movie={{
+                                                                movieId:
+                                                                    credit.id,
+                                                                poster: credit.poster_path,
+                                                                title: credit.original_title,
+                                                            }}
+                                                            highlight={
+                                                                highlight
+                                                                    ? matchingElementsFilter
+                                                                    : undefined
+                                                            }
+                                                        />
+                                                    </div>
+                                                </Tooltip.Trigger>
+                                                <Tooltip.Content>
+                                                    <div className="flex space-x-1">
+                                                        <p className="text-crumble">
+                                                            as
+                                                        </p>
+                                                        <p>
+                                                            {credit.character}
+                                                        </p>
+                                                    </div>
+                                                </Tooltip.Content>
+                                            </Tooltip>
+                                        </div>
                                     ))}
                             </div>
                         </div>
-                        <div className="ml-4 px-10">
-                            <Image
-                                alt={formattedName ?? ""}
-                                src={`https://image.tmdb.org/t/p/w500/${details?.picture}`}
-                                width={400}
-                                height={400}
-                                className="rounded-md border-t-[1px] dark:border-gray-800"
-                            />
+                        <div className="ml-4 w-[50%] px-10">
+                            <div className="max-w-[200px]">
+                                <Image
+                                    alt={formattedName ?? ""}
+                                    width={0}
+                                    height={0}
+                                    sizes="100vw"
+                                    style={{
+                                        width: "100%",
+                                        height: "auto",
+                                    }}
+                                    src={`https://image.tmdb.org/t/p/w500/${details?.picture}`}
+                                    className="rounded-md border-t-[1px] dark:border-gray-800"
+                                />
+                            </div>
                             <p className="mt-5 max-w-[300px] text-sm text-slate-700 dark:text-slate-400">
                                 {showExtraText
                                     ? details?.biography
@@ -323,6 +342,7 @@ const Header = ({
             <div className="mt-5 space-x-2">
                 <Select
                     size="sm"
+                    label="Job"
                     value={_.upperFirst(String(formattedType))}
                     setValue={() => null}
                 >
@@ -344,7 +364,12 @@ const Header = ({
                         );
                     })}
                 </Select>
-                <Select size="sm" value={sortByValue} setValue={() => null}>
+                <Select
+                    label="Sort"
+                    size="sm"
+                    value={sortByValue}
+                    setValue={() => null}
+                >
                     {Object.keys(sortObj).map((sort, index) => {
                         return (
                             <Select.Item
