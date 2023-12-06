@@ -11,7 +11,7 @@ import { useRouter } from "next/router";
 import { useState, useCallback, useEffect } from "react";
 import { type ZodType } from "zod";
 import Image from "next/image";
-import _ from "lodash";
+import _, { sortBy } from "lodash";
 import MovieImage from "../../Movies/AllMovies/MovieImage/MovieImage";
 import { api } from "@/utils/api";
 import { useSession } from "next-auth/react";
@@ -42,14 +42,15 @@ interface CreditType {
 
 const jobHeadingMapping: Record<string, string> = {
     actor: "starring",
-    "executive producer": "executive produced",
-    producer: "produced",
-    director: "directed",
-    editor: "edited",
-    writer: "written",
-    composer: "composed",
-    cinematography: "shot",
-    "set decoration": "with set decoration",
+    "executive producer": "executive produced by",
+    producer: "produced by",
+    director: "directed by",
+    editor: "edited by",
+    writer: "written by",
+    composer: "composed by",
+    cinematography: "shot by",
+    "set decoration": "with set decoration by",
+    "co-producer": "co-produced by",
 };
 
 const renamedJobTypes: Record<string, string> = {
@@ -59,6 +60,15 @@ const renamedJobTypes: Record<string, string> = {
 };
 
 const ignoredJobTypes = ["Screenplay", "Thanks", "Story", "Characters"];
+
+const sortObj = {
+    Popularity: "popularity",
+    "Release date": "release_date",
+    Alphabetical: "original_title",
+    Watched: "watched",
+};
+
+type JobTypes = keyof typeof jobHeadingMapping;
 
 const SinglePersonView = ({
     type,
@@ -74,15 +84,20 @@ const SinglePersonView = ({
     });
 
     const formattedName = name.split("-")[0];
-    const formattedType = String(type).toLocaleLowerCase();
-    const personId = name.split("-")[1];
+    const formattedType: JobTypes = String(type).toLocaleLowerCase();
+    const nameSplit = name.split("-");
+    const personId = nameSplit[nameSplit.length - 1];
 
     const [showExtraText, setShowExtraText] = useState<boolean>(false);
     const [highlight, setHighlight] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
+    const [sortBy, setSortBy] = useState<string>("popularity");
 
     const [details, setDetails] = useState<IPersonDetailsFetch>();
-    const [credits, setCredits] = useState<Record<string, CreditType[]>>({});
+    const [credits, setCredits] = useState<Record<JobTypes, CreditType[]>>({});
+    const [sortedCredits, setSortedCredits] = useState<
+        Record<string, CreditType[]>
+    >({});
 
     const watched = data?.watched.map((w) => w.movieId);
     const toCountAgainst = credits[formattedType]?.map((c) => c.id);
@@ -110,7 +125,6 @@ const SinglePersonView = ({
                 personCreditsSchema as ZodType
             )) as IPersonCreditsFetch;
             parseCreditsInfo(data);
-            // if (data) setCredits(data);
         }
 
         setTimeout(() => {
@@ -123,7 +137,6 @@ const SinglePersonView = ({
         const tempObj: Record<string, CreditType[]> = {};
 
         if (credits.cast) {
-            console.log(1, credits.cast);
             tempObj.actor = credits.cast;
         }
         if (credits.crew) {
@@ -143,7 +156,48 @@ const SinglePersonView = ({
             }
         }
         setCredits(tempObj);
+        setSortedCredits(tempObj);
     };
+
+    const sortCredits = useCallback(
+        (sort: string) => {
+            const value = sort;
+            console.log("here");
+            const tempCredits = credits[formattedType];
+            console.log({ sort });
+
+            console.log({ tempCredits, og: credits[formattedType] });
+            if (value === "popularity") {
+                tempCredits?.sort(
+                    (a, b) =>
+                        (b[value as keyof CreditType] as number) -
+                        (a[value as keyof CreditType] as number)
+                );
+            }
+            if (value === "original_title") {
+                tempCredits?.sort((a, b) => a[value].localeCompare(b[value]));
+            }
+            if (value === "release_date") {
+                tempCredits?.sort((a, b) => {
+                    const dateA = new Date(a[value]).getTime();
+                    const dateB = new Date(b[value]).getTime();
+
+                    return dateB - dateA;
+                });
+            }
+
+            setSortedCredits((prevCreditData) => ({
+                ...prevCreditData,
+                [formattedType]: tempCredits!,
+            }));
+        },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [sortBy]
+    );
+
+    useEffect(() => {
+        sortCredits(sortBy);
+    }, [sortBy, sortCredits]);
 
     useEffect(() => {
         void fetchPersonDetails();
@@ -165,27 +219,30 @@ const SinglePersonView = ({
                                 name={name}
                                 credits={credits}
                                 details={details}
+                                sortBy={[sortBy, setSortBy]}
                             />
                             <div className="mt-2 grid w-full grid-cols-4 gap-3 border-t-[1px] py-2 dark:border-slate-700">
-                                {credits[formattedType]
-                                    ?.sort(
-                                        (a, b) => b.popularity - a.popularity
-                                    )
-                                    .map((credit) => (
-                                        <MovieImage
-                                            key={credit.id}
-                                            movie={{
-                                                movieId: credit.id,
-                                                poster: credit.poster_path,
-                                                title: credit.original_title,
-                                            }}
-                                            highlight={
-                                                highlight
-                                                    ? matchingElementsFilter
-                                                    : undefined
-                                            }
-                                        />
-                                    ))}
+                                {sortedCredits[formattedType]?.map((credit) => (
+                                    <Tooltip key={credit.id}>
+                                        <Tooltip.Trigger>
+                                            <MovieImage
+                                                movie={{
+                                                    movieId: credit.id,
+                                                    poster: credit.poster_path,
+                                                    title: credit.original_title,
+                                                }}
+                                                highlight={
+                                                    highlight
+                                                        ? matchingElementsFilter
+                                                        : undefined
+                                                }
+                                            />
+                                        </Tooltip.Trigger>
+                                        <Tooltip.Content>
+                                            as {credit.character}
+                                        </Tooltip.Content>
+                                    </Tooltip>
+                                ))}
                             </div>
                         </div>
                         <div className="ml-4 px-10">
@@ -243,21 +300,24 @@ const Header = ({
     formattedName,
     name,
     credits,
+    sortBy,
 }: {
     formattedType: string;
     formattedName: string | undefined;
     name: string;
     credits: Record<string, unknown>;
     details: IPersonDetailsFetch | undefined;
+    sortBy: [string, React.Dispatch<React.SetStateAction<string>>];
 }) => {
     const router = useRouter();
+    const [sortByValue, setSortBy] = sortBy;
     return (
         <div>
             <p className="text-sm text-slate-600 dark:text-slate-400">
-                Movies {jobHeadingMapping[formattedType]} by
+                Movies {jobHeadingMapping[formattedType]}
             </p>
             <h3>{formattedName}</h3>
-            <div className="mt-5">
+            <div className="mt-5 space-x-2">
                 <Select
                     size="sm"
                     value={_.upperFirst(String(formattedType))}
@@ -277,6 +337,24 @@ const Header = ({
                                 }
                             >
                                 {formattedCredit}
+                            </Select.Item>
+                        );
+                    })}
+                </Select>
+                <Select size="sm" value={sortByValue} setValue={() => null}>
+                    {Object.keys(sortObj).map((sort, index) => {
+                        return (
+                            <Select.Item
+                                size="sm"
+                                key={index}
+                                value={sortObj[sort as keyof typeof sortObj]}
+                                onClick={() =>
+                                    setSortBy(
+                                        sortObj[sort as keyof typeof sortObj]
+                                    )
+                                }
+                            >
+                                {sort}
                             </Select.Item>
                         );
                     })}

@@ -3,6 +3,7 @@ import * as PopoverPrimitive from "@radix-ui/react-popover";
 import { BsChevronDown } from "react-icons/bs";
 import Input from "../Input/Input";
 import clxsm from "@/utils/clsxm";
+import _ from "lodash";
 
 interface SelectProps {
     placeholder?: string;
@@ -73,7 +74,9 @@ const Select = ({
                                 "w-[90%] font-normal"
                             )}
                         >
-                            {value !== "" ? value : placeholder}
+                            {value !== ""
+                                ? _.startCase(_.toLower(value))
+                                : placeholder}
                         </p>
                         <BsChevronDown className="mt-1 fill-ink-light" />
                     </div>
