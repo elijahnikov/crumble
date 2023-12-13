@@ -5,16 +5,10 @@ import {
     BiSolidCameraMovie,
     BiSolidCommentDetail,
 } from "react-icons/bi";
-import {
-    BsBook,
-    BsBookFill,
-    BsCardList,
-    BsPerson,
-    BsPersonFill,
-} from "react-icons/bs";
+import { BsCardList, BsPerson, BsPersonFill } from "react-icons/bs";
 import { FaListAlt } from "react-icons/fa";
 
-const pages = ["movies", "diary", "reviews", "people", "lists"] as const;
+const pages = ["movies", "reviews", "people", "lists"] as const;
 
 type pagesIndex = (typeof pages)[number];
 
@@ -34,7 +28,6 @@ const navigation: NavigationArrayType = [
         href: "/movies",
         includeUrls: ["movie"],
     },
-    { name: "Diary", icon: BsBook, hoverIcon: BsBookFill, href: "/diary" },
     {
         name: "Reviews",
         icon: BiCommentDetail,
