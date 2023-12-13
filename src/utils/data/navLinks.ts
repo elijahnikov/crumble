@@ -37,6 +37,7 @@ const navigation: NavigationArrayType = [
     },
     {
         name: "Members",
+        name: "Members",
         icon: BsPerson,
         hoverIcon: BsPersonFill,
         href: "/members",

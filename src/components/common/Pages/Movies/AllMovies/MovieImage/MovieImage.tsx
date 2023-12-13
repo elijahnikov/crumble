@@ -3,12 +3,14 @@ import Image from "next/image";
 
 const MovieImage = ({
     movie,
+    highlight,
 }: {
     movie: {
         movieId: number;
         poster: string | null;
         title: string;
     };
+    highlight?: number[];
 }) => {
     return (
         <div className="w-[100%]">
@@ -29,17 +31,43 @@ const MovieImage = ({
                         style={{
                             width: "100%",
                             height: "auto",
+                            opacity:
+                                highlight &&
+                                typeof highlight !== undefined &&
+                                !highlight.includes(movie.movieId)
+                                    ? 0.1
+                                    : 1,
                         }}
                         alt={`${movie.title}`}
                         src={`https://image.tmdb.org/t/p/w500${movie.poster}`}
                     />
                 ) : (
-                    <div className="align-center mx-auto my-auto h-full justify-center rounded-md border-[1px] text-center dark:border-slate-700">
-                        <p className="mt-5 text-xs dark:text-slate-400">
-                            {movie.title.length > 25
-                                ? `${movie.title.slice(0, 25)}...`
-                                : movie.title}
-                        </p>
+                    <div className="relative">
+                        <Image
+                            className="rounded-md border-[1px] dark:border-slate-700"
+                            width={0}
+                            height={0}
+                            sizes="100vw"
+                            style={{
+                                width: "100%",
+                                height: "auto",
+                                opacity:
+                                    highlight &&
+                                    typeof highlight !== undefined &&
+                                    !highlight.includes(movie.movieId)
+                                        ? 0.1
+                                        : 0.8,
+                            }}
+                            alt={`${movie.title}`}
+                            src={
+                                "https://i.ibb.co/D8SmS99/solid-color-image.png"
+                            }
+                        />
+                        <div className="absolute inset-0 flex items-center justify-center">
+                            <p className="text-xs font-semibold text-white">
+                                {movie.title}
+                            </p>
+                        </div>
                     </div>
                 )}
             </Link>
