@@ -1,7 +1,7 @@
 import { membersSchema } from "../schemas/members";
 import { createTRPCRouter, publicProcedure } from "../trpc";
 
-export const memberRouter = createTRPCRouter({
+export const membersRouter = createTRPCRouter({
     //
     // Get all members
     //
