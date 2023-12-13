@@ -21,6 +21,8 @@ import { privacySettingsRouter } from "./routers/privacy";
 import { notificationRouter } from "./routers/notification";
 // Watchlist
 import { watchlistRouter } from "./routers/watchlist";
+// Members
+import { membersRouter } from "./routers/members";
 
 export const appRouter = createTRPCRouter({
     user: userRouter,
@@ -34,6 +36,7 @@ export const appRouter = createTRPCRouter({
     privacy: privacySettingsRouter,
     notifications: notificationRouter,
     watchlist: watchlistRouter,
+    members: membersRouter,
 });
 
 export type AppRouter = typeof appRouter;
