@@ -26,7 +26,7 @@ const navigation: NavigationArrayType = [
         icon: BiCameraMovie,
         hoverIcon: BiSolidCameraMovie,
         href: "/movies",
-        includeUrls: ["movie"],
+        includeUrls: ["movie", "movies"],
     },
     {
         name: "Reviews",
@@ -36,7 +36,6 @@ const navigation: NavigationArrayType = [
         includeUrls: ["review"],
     },
     {
-        name: "Members",
         name: "Members",
         icon: BsPerson,
         hoverIcon: BsPersonFill,

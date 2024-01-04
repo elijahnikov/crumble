@@ -5,7 +5,7 @@ const useIsMobile = () => {
 
     useEffect(() => {
         function handleResize() {
-            const isMobileDevice = window.innerWidth <= 450;
+            const isMobileDevice = window.innerWidth <= 500;
             setIsMobile(isMobileDevice);
         }
 
