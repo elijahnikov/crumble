@@ -9,6 +9,7 @@ import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { type ZodType } from "zod";
 import MovieImage from "../../AllMovies/MovieImage/MovieImage";
+import clxsm from "@/utils/clsxm";
 
 const Recommended = () => {
     const [loading, setLoading] = useState<boolean>(false);
@@ -26,7 +27,6 @@ const Recommended = () => {
 
     const fetchAllMovies = async () => {
         setLoading(true);
-        console.log(watched);
         if (watched && watched.watched.length > 0) {
             const url = `https://api.themoviedb.org/3/movie/${watched.watched[0]?.movieId}/recommendations?language=en-US&page=1`;
 
@@ -38,7 +38,6 @@ const Recommended = () => {
             if (data) setRecommendedMovies(data);
         }
 
-        console.log(recommendedMovies);
         setTimeout(() => {
             setLoading(false);
         }, Math.floor(Math.random() * (1000 - 200 + 1)) + 200);
@@ -53,7 +52,7 @@ const Recommended = () => {
 
     return (
         <div>
-            <div className="flex">
+            <div className={clxsm("block sm:flex")}>
                 <h4 className="text-sm text-slate-600 dark:text-slate-400">
                     Recommended for you
                 </h4>
@@ -61,7 +60,11 @@ const Recommended = () => {
                     watched &&
                     watched.watched.length > 0 &&
                     recommendedMovies.length > 0 && (
-                        <p className="ml-2 mt-[2px] text-xs dark:text-slate-500">
+                        <p
+                            className={clxsm(
+                                "mt-[2px] text-xs dark:text-slate-500 sm:ml-2"
+                            )}
+                        >
                             Recommendations based on your recent watch of{" "}
                             <span className="text-crumble">
                                 {watched.watched[0]?.movieTitle}
@@ -86,7 +89,7 @@ const Recommended = () => {
                 watched &&
                 watched.watched.length > 0 &&
                 recommendedMovies.length > 0 && (
-                    <div className="grid w-full grid-cols-6 gap-3 py-2 dark:border-slate-700">
+                    <div className="grid w-full grid-cols-3 gap-3 py-2 dark:border-slate-700 sm:grid-cols-6">
                         {recommendedMovies.slice(0, 6).map((movie) => (
                             <MovieImage key={movie.movieId} movie={movie} />
                         ))}

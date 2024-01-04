@@ -1,13 +1,17 @@
 import { MovieSearchResultsMini } from "@/components/common/CreateReviewModal/CreateReviewModal";
 import Input from "@/components/ui/Input/Input";
 import { movieFetchSchema, type IMovieFetch } from "@/server/api/schemas/movie";
+import clxsm from "@/utils/clsxm";
 import { fetchWithZod } from "@/utils/fetch/zodFetch";
+import useIsMobile from "@/utils/hooks/useIsMobile";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 import { type ZodType } from "zod";
 
 const MovieSearch = () => {
     const router = useRouter();
+    const isMobile = useIsMobile();
+
     const [movieFetchData, setMovieFetchData] = useState<IMovieFetch[]>([]);
 
     const [searchText, setSearchText] = useState<string>("");
@@ -33,6 +37,10 @@ const MovieSearch = () => {
     return (
         <div>
             <Input
+                className={clxsm(
+                    isMobile && "-mt-[5px]",
+                    "w-[130px] md:w-[200px]"
+                )}
                 size={"sm"}
                 onChange={(e) => setSearchText(e.target.value)}
                 placeholder="search movies..."
