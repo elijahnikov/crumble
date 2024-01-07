@@ -5,6 +5,7 @@ import { BsPlus, BsX } from "react-icons/bs";
 import SearchAndAddMovieModal from "@/components/common/SearchAndAddMovieModal/SearchAndAddMovieModal";
 import type { IMovie } from "@/server/api/schemas/movie";
 import toast from "react-hot-toast";
+import clxsm from "@/utils/clsxm";
 
 type FavouriteMovieType = RouterOutputs["user"]["getFavouriteMoviesForUser"];
 
@@ -88,7 +89,11 @@ const FavouriteMoviesEditable = ({ data }: FavouriteMoviesEditableProps) => {
                 callback={(movie) => addMovie(movie!)}
             />
             <div>
-                <div className="columns mt-5 flex w-full space-x-2">
+                <div
+                    className={clxsm(
+                        "mt-5 flex grid w-full grid-cols-2 gap-2 sm:grid-cols-5"
+                    )}
+                >
                     {Array.from({ length: 5 }).map((_, index) => {
                         const movie = favouriteMovies[index];
 

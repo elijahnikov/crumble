@@ -251,7 +251,7 @@ export const userRouter = createTRPCRouter({
                     message: "User not found",
                 });
             return await ctx.prisma.favouriteMovies.findMany({
-                take: 5,
+                take: 6,
                 where: {
                     userId: user.id,
                 },
