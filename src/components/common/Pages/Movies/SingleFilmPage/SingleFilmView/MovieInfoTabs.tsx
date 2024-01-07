@@ -12,8 +12,10 @@ import Button from "@/components/ui/Button/Button";
 import { showJobs } from "@/utils/constants";
 import Tooltip from "@/components/ui/Tooltip/Tooltip";
 import Link from "next/link";
+import clxsm from "@/utils/clsxm";
 
 interface MovieInfoTabsProps {
+    isMobile: boolean;
     movieInfo: Pick<
         z.infer<typeof movieDetailsFetchSchema>,
         | "credits"
@@ -25,9 +27,9 @@ interface MovieInfoTabsProps {
     >;
 }
 
-const MovieInfoTabs = ({ movieInfo }: MovieInfoTabsProps) => {
+const MovieInfoTabs = ({ movieInfo, isMobile }: MovieInfoTabsProps) => {
     return (
-        <div className="float-right mr-7 mt-10 w-[93%]">
+        <div className="mt-10 w-[100%]">
             <Tabs defaultValue="cast" className="w-[100%]">
                 <TabsList className="grid w-full grid-cols-4">
                     <TabsTrigger value="cast">Cast</TabsTrigger>
@@ -36,7 +38,7 @@ const MovieInfoTabs = ({ movieInfo }: MovieInfoTabsProps) => {
                     <TabsTrigger value="genres">Genres</TabsTrigger>
                 </TabsList>
                 <TabsContent value="cast">
-                    <Cast cast={movieInfo.credits.cast} />
+                    <Cast isMobile={isMobile} cast={movieInfo.credits.cast} />
                 </TabsContent>
                 <TabsContent value="crew">
                     <Crew crew={movieInfo.credits.crew} />
@@ -61,8 +63,10 @@ export default MovieInfoTabs;
 
 const Cast = ({
     cast,
+    isMobile,
 }: {
     cast: MovieInfoTabsProps["movieInfo"]["credits"]["cast"];
+    isMobile: boolean;
 }) => {
     const [amountShowed, setAmountShowed] = useState<number>(16);
 
@@ -74,11 +78,21 @@ const Cast = ({
         <div className="mt-[20px]">
             <div className="flex">
                 <h3>Cast</h3>
-                <p className="pl-2 pt-[12px] text-xs text-slate-500 dark:text-slate-400">
+                <p
+                    className={clxsm(
+                        isMobile ? "pt-[8px]" : "pt-[12px]",
+                        "pl-2 text-xs text-slate-500 dark:text-slate-400"
+                    )}
+                >
                     {cast.length} cast members
                 </p>
             </div>
-            <div className="mb-[15px] mt-[10px] grid w-full grid-cols-8 gap-2">
+            <div
+                className={clxsm(
+                    isMobile ? "grid-cols-4" : "grid-cols-8",
+                    "mb-[15px] mt-[10px] grid w-full gap-2"
+                )}
+            >
                 {cast
                     ? cast
                           .filter((obj) => {

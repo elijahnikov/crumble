@@ -9,7 +9,7 @@ interface TertiaryInfoProps {
 
 const TertiaryInfo = ({ runtime, imdbLink, tmdbLink }: TertiaryInfoProps) => {
     return (
-        <div className="inline">
+        <div>
             <div className="inline">
                 <p className="inline text-xs text-slate-600 dark:text-gray-400">
                     {runtime} mins

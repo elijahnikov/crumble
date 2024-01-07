@@ -1,5 +1,4 @@
 import { numberFormatWithSuffix } from "@/utils/general/numberFormat";
-import { BsFillEyeFill, BsFillGridFill, BsFillHeartFill } from "react-icons/bs";
 
 interface MovieStatsProps {
     watchedCount?: number;
@@ -21,7 +20,7 @@ const MovieStats = ({
                     Views
                 </p>
                 <p className="text-md font-semibold text-slate-700 dark:text-slate-200">
-                    {watchedCount ?? 0}
+                    {numberFormatWithSuffix(watchedCount ?? 0)}
                 </p>
             </div>
             <div className="flex w-full justify-between pl-5 pr-5">
@@ -29,7 +28,7 @@ const MovieStats = ({
                     Likes
                 </p>
                 <p className="text-md font-semibold text-slate-700 dark:text-slate-200">
-                    {likeCount ?? 0}
+                    {numberFormatWithSuffix(likeCount ?? 0)}
                 </p>
             </div>
             <div className="flex w-full justify-between pl-5 pr-5">
@@ -37,7 +36,7 @@ const MovieStats = ({
                     Lists
                 </p>
                 <p className="text-md font-semibold text-slate-700 dark:text-slate-200">
-                    {listCount ?? 0}
+                    {numberFormatWithSuffix(listCount ?? 0)}
                 </p>
             </div>
             <div className="flex w-full justify-between pl-5 pr-5">
@@ -45,7 +44,7 @@ const MovieStats = ({
                     Ratings
                 </p>
                 <p className="text-md font-semibold text-slate-700 dark:text-slate-200">
-                    {ratings ?? 0}
+                    {numberFormatWithSuffix(ratings ?? 0)}
                 </p>
             </div>
         </div>
