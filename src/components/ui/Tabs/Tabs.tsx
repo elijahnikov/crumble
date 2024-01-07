@@ -13,7 +13,7 @@ const TabsList = React.forwardRef<
     <TabsPrimitive.List
         ref={ref}
         className={clxsm(
-            "inline-flex h-10 items-center justify-center rounded-md bg-brand-white p-1 text-slate-800 dark:bg-brand dark:text-white",
+            "inline-flex items-center justify-center rounded-md bg-brand-white p-1 text-slate-800 dark:bg-brand dark:text-white",
             className
         )}
         {...props}

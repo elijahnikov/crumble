@@ -1,15 +1,10 @@
-import { api, type RouterOutputs } from "@/utils/api";
+import { api } from "@/utils/api";
 import Link from "next/link";
 import Image from "next/image";
 import LoadingSpinner from "@/components/common/LoadingSpinner/LoadingSpinner";
+import { type TabProps } from "../../MainUserInformation";
 
-const RecentlyWatched = ({
-    user,
-    isMe,
-}: {
-    user: NonNullable<RouterOutputs["user"]["getUser"]>;
-    isMe?: boolean;
-}) => {
+const RecentlyWatched = ({ user }: TabProps) => {
     const { data: watched, isLoading: recentlyWatchedLoading } =
         api.watched.watched.useQuery({
             username: user.name!,
@@ -61,7 +56,7 @@ const RecentlyWatched = ({
                     {user.name} has not watched any movies recently
                 </p>
             ) : (
-                <div className="mt-2 h-max w-full columns-4 gap-2">
+                <div className="mt-2 h-max w-full columns-2 gap-2 sm:columns-4">
                     {watched.watched.slice(0, 5).map((w) => (
                         <div
                             key={w.id}

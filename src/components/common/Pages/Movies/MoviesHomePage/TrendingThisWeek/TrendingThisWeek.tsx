@@ -48,7 +48,7 @@ const TrendingThisWeek = () => {
                 </div>
             )}
             {!loading && (
-                <div className="grid w-full grid-cols-6 gap-3 py-2 dark:border-slate-700">
+                <div className="grid w-full grid-cols-3 gap-3 py-2 dark:border-slate-700 sm:grid-cols-6">
                     {trendingMovieData.slice(0, 6).map((movie) => (
                         <MovieImage key={movie.movieId} movie={movie} />
                     ))}

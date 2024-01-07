@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { Rating } from "react-simple-star-rating";
+import { type TabProps } from "../../MainUserInformation";
 
 const sortByMap: Array<{ label: string; dataName: string }> = [
     {
@@ -26,11 +27,7 @@ const sortByMap: Array<{ label: string; dataName: string }> = [
     },
 ];
 
-const MoviesTab = ({
-    user,
-}: {
-    user: NonNullable<RouterOutputs["user"]["getUser"]>;
-}) => {
+const MoviesTab = ({ user }: TabProps) => {
     const [sortBy, setSortBy] = useState<string>(sortByMap[1]!.label);
 
     const {

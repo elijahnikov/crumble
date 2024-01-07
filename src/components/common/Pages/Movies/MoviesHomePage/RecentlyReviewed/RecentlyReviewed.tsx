@@ -5,7 +5,7 @@ import LoadingSpinner from "@/components/common/LoadingSpinner/LoadingSpinner";
 
 const RecentlyReviewed = () => {
     const { data, isLoading } = api.review.reviews.useQuery({
-        limit: 12,
+        limit: 10,
         dateSortBy: getDatesToSortBy("3 months"),
         orderBy: "createdAt",
         orderDirection: "desc",
@@ -23,17 +23,19 @@ const RecentlyReviewed = () => {
                 </div>
             )}
             {!isLoading && (
-                <div className="grid w-full grid-cols-12 gap-3 py-2 dark:border-slate-700">
-                    {data?.reviews.map((review) => (
-                        <MovieImage
-                            key={review.id}
-                            movie={{
-                                movieId: review.movieId,
-                                poster: review.moviePoster ?? null,
-                                title: review.movieTitle,
-                            }}
-                        />
-                    ))}
+                <div className="grid w-full grid-cols-5 gap-3 py-2 dark:border-slate-700 md:grid-cols-10">
+                    {[...data!.reviews, ...data!.reviews]
+                        .slice(0, 10)
+                        .map((review) => (
+                            <MovieImage
+                                key={review.id}
+                                movie={{
+                                    movieId: review.movieId,
+                                    poster: review.moviePoster ?? null,
+                                    title: review.movieTitle,
+                                }}
+                            />
+                        ))}
                 </div>
             )}
         </div>

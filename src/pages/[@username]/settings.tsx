@@ -76,7 +76,7 @@ const UserSettingsPage = () => {
                             Settings
                         </h2>
                         <div className="flex">
-                            <div className="w-[20%]">
+                            <div className="w-[20%] min-w-[100px]">
                                 {settingsMenu.map(
                                     (setting: string, index: number) => (
                                         <div
@@ -86,11 +86,11 @@ const UserSettingsPage = () => {
                                             key={index}
                                             className={`${
                                                 setting === selectedTab
-                                                    ? "border-[1px] border-slate-300 bg-brand-white  text-crumble dark:border-slate-700 dark:bg-brand"
+                                                    ? "border-[1px] border-slate-300 bg-brand-white text-crumble dark:border-slate-700 dark:bg-brand"
                                                     : "text-slate-700 dark:text-white"
                                             } mb-2 mt-2 cursor-pointer rounded-md  p-3`}
                                         >
-                                            <p className="text-left font-semibold">
+                                            <p className="text-left text-[12px] font-semibold md:text-[12px]">
                                                 {setting}
                                             </p>
                                         </div>

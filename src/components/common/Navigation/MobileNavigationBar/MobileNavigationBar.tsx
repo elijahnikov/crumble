@@ -10,6 +10,7 @@ import SignIn from "../../SignIn/SignIn";
 import AvatarMenu from "../AvatarMenu/AvatarMenu";
 import DarkModeSwitch from "../../DarkModeSwitch/DarkModeSwitch";
 import { BiMenu } from "react-icons/bi";
+import Notifications from "../../Notifications/Notification";
 
 const MobileNavigationBar = () => {
     const [currentPath, setCurrentPath] = useState("");
@@ -98,6 +99,7 @@ const MobileNavigationBar = () => {
                                                         {session?.user.name}
                                                     </p>
                                                     <DarkModeSwitch />
+                                                    <Notifications />
                                                 </div>
                                             </div>
                                         </div>

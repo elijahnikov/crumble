@@ -15,12 +15,9 @@ import { Rating } from "react-simple-star-rating";
 import Image from "next/image";
 import Link from "next/link";
 import Button from "@/components/ui/Button/Button";
+import { type TabProps } from "../../MainUserInformation";
 
-const DiaryTab = ({
-    user,
-}: {
-    user: NonNullable<RouterOutputs["user"]["getUser"]>;
-}) => {
+const DiaryTab = ({ user }: TabProps) => {
     const {
         data: movies,
         isInitialLoading,

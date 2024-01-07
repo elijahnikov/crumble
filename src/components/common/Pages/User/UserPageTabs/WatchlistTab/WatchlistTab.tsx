@@ -3,12 +3,9 @@ import { api, type RouterOutputs } from "@/utils/api";
 import Link from "next/link";
 import Image from "next/image";
 import Button from "@/components/ui/Button/Button";
+import { type TabProps } from "../../MainUserInformation";
 
-const WatchlistTab = ({
-    user,
-}: {
-    user: NonNullable<RouterOutputs["user"]["getUser"]>;
-}) => {
+const WatchlistTab = ({ user }: TabProps) => {
     const {
         data: movies,
         isInitialLoading,

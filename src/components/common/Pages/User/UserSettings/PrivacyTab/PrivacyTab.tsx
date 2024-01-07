@@ -50,7 +50,7 @@ const PrivacyTab = ({ user }: PrivacyTabProps) => {
             <div className="flex">
                 <h2 className="w-[80%]">Privacy</h2>
                 <Link href="/[username]/profile" as={`/@${user.name}/profile`}>
-                    <Button className="mt-[5px]" size="sm" intent={"secondary"}>
+                    <Button size="sm" intent={"secondary"}>
                         Back to profile
                     </Button>
                 </Link>
@@ -96,28 +96,30 @@ const PrivacyTab = ({ user }: PrivacyTabProps) => {
                                                 key={index}
                                             >
                                                 <div className="flex space-x-4">
-                                                    <Switch
-                                                        checked={checked}
-                                                        onChange={() =>
-                                                            handleChangeSetting(
-                                                                setting,
-                                                                !checked
-                                                            )
-                                                        }
-                                                        className={`${
-                                                            checked
-                                                                ? "bg-crumble"
-                                                                : "bg-slate-300 dark:bg-slate-700"
-                                                        } relative inline-flex h-6 w-11 items-center rounded-full`}
-                                                    >
-                                                        <span
+                                                    <div className="w-max">
+                                                        <Switch
+                                                            checked={checked}
+                                                            onChange={() =>
+                                                                handleChangeSetting(
+                                                                    setting,
+                                                                    !checked
+                                                                )
+                                                            }
                                                             className={`${
                                                                 checked
-                                                                    ? "translate-x-6"
-                                                                    : "translate-x-1"
-                                                            } inline-block h-4 w-4 transform rounded-full bg-white transition`}
-                                                        />
-                                                    </Switch>
+                                                                    ? "bg-crumble"
+                                                                    : "bg-slate-300 dark:bg-slate-700"
+                                                            } relative inline-flex h-6 w-11 items-center rounded-full`}
+                                                        >
+                                                            <span
+                                                                className={`${
+                                                                    checked
+                                                                        ? "translate-x-6"
+                                                                        : "translate-x-1"
+                                                                } inline-block h-4 w-4 transform rounded-full bg-white transition`}
+                                                            />
+                                                        </Switch>
+                                                    </div>
                                                     <p>{uncamelize(setting)}</p>
                                                     {changeSettingLoading &&
                                                         setting ===

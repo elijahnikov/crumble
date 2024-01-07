@@ -7,6 +7,7 @@ import clxsm from "@/utils/clsxm";
 import Link from "next/link";
 import InfiniteScroll from "react-infinite-scroll-component";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
+import useIsMobile from "@/utils/hooks/useIsMobile";
 
 const notificationTypesMap = {
     follow: "followed you",
@@ -15,6 +16,7 @@ const notificationTypesMap = {
 };
 
 const Notifications = () => {
+    const isMobile = useIsMobile(1023);
     const trpcUtils = api.useContext();
 
     const [hasUnread, setHasUnread] = useState<boolean>(false);
@@ -59,7 +61,7 @@ const Notifications = () => {
     }
 
     return (
-        <div className="relative ml-2 ml-4 mt-[6px] hidden rounded-md md:block">
+        <div id="test" className="relative ml-2 ml-4 mt-[6px] rounded-md">
             <Popover className="relative">
                 <Popover.Button>
                     <>
@@ -75,7 +77,10 @@ const Notifications = () => {
                         notifications && notifications.length > 0
                             ? "max-h-[300px] min-h-[300px]"
                             : "max-h-[100px] min-h-[100px]",
-                        "absolute bottom-10 z-10  w-[280px] overflow-y-auto rounded-lg border bg-white p-2 dark:border-slate-700 dark:bg-brand-light"
+                        isMobile
+                            ? "absolute right-0 top-12"
+                            : "absolute bottom-10",
+                        "absolute  z-10  w-[280px] overflow-y-auto rounded-lg border bg-white p-2 dark:border-slate-700 dark:bg-brand-light"
                     )}
                 >
                     {notifications && notifications.length > 0 && (

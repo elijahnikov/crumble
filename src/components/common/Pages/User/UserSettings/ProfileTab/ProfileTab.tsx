@@ -13,6 +13,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import FavouriteMoviesEditable from "./FavouriteMoviesEditable";
+import clxsm from "@/utils/clsxm";
 
 interface ProfileTabProps {
     user: NonNullable<RouterOutputs["user"]["getUserForSettings"]>;
@@ -164,7 +165,11 @@ const ProfileTab = ({ user }: ProfileTabProps) => {
             <div className="flex">
                 <h2 className="w-[80%]">Profile</h2>
                 <Link href="/[username]/profile" as={`/@${user.name}/profile`}>
-                    <Button className="mt-[5px]" size="sm" intent={"secondary"}>
+                    <Button
+                        className={clxsm("mt-[5px]")}
+                        size="sm"
+                        intent={"secondary"}
+                    >
                         Back to profile
                     </Button>
                 </Link>
@@ -239,11 +244,11 @@ const ProfileTab = ({ user }: ProfileTabProps) => {
             </div>
             <div className="h-[50px]" />
             <div className="space-y-5">
-                <div className="flex">
-                    <div className="w-[50%]">
-                        <p className="ml-1 mt-2 text-sm">Username</p>
+                <div>
+                    <div>
                         <Input
                             fullWidth
+                            label="Username"
                             name="username"
                             placeholder="Username"
                             value={inputs.username}
@@ -303,9 +308,9 @@ const ProfileTab = ({ user }: ProfileTabProps) => {
                     ) : null}
                 </div>
                 <div>
-                    <p className="ml-1 mt-2 text-sm">Display name</p>
-                    <div className="w-[50%]">
+                    <div>
                         <Input
+                            label="Display name"
                             fullWidth
                             name="displayName"
                             placeholder="Display name"
@@ -315,9 +320,9 @@ const ProfileTab = ({ user }: ProfileTabProps) => {
                     </div>
                 </div>
                 <div>
-                    <p className="ml-1 mt-2 text-sm">Website</p>
-                    <div className="w-[50%]">
+                    <div>
                         <Input
+                            label="Website"
                             fullWidth
                             name="bioLink"
                             placeholder="Share something interesting"
@@ -327,9 +332,9 @@ const ProfileTab = ({ user }: ProfileTabProps) => {
                     </div>
                 </div>
                 <div>
-                    <p className="ml-1 mt-2 text-sm">About you</p>
-                    <div className="w-[100%]">
+                    <div>
                         <InputArea
+                            label="About you"
                             fullWidth
                             name="bio"
                             placeholder="Write a few words about yourself"

@@ -9,19 +9,18 @@ import LoadingSpinner from "@/components/common/LoadingSpinner/LoadingSpinner";
 import Image from "next/image";
 import Checkbox from "@/components/ui/Checkbox/Checkbox";
 import Modal from "@/components/ui/Modal/Modal";
-import { useRouter } from "next/router";
 
 const CastSearch = ({
     chosenCast,
     setChosenCast,
     handleRemove,
+    isMobile,
 }: {
+    isMobile: boolean;
     chosenCast: Array<ICastSearch>;
     setChosenCast: React.Dispatch<React.SetStateAction<Array<ICastSearch>>>;
     handleRemove: (castId: number) => void;
 }) => {
-    const router = useRouter();
-
     const [open, setOpen] = useState<boolean>(false);
     const [castSearchTerm, setCastSearchTerm] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
@@ -73,16 +72,18 @@ const CastSearch = ({
         <>
             <Modal open={open} onOpenChange={setOpen}>
                 <Modal.Trigger styling={false}>
-                    <div className="relative top-[-3px] ml-[2px] text-left">
-                        <p
-                            className={clxsm(
-                                "text-black dark:text-white",
-                                "text-xs"
-                            )}
-                        >
-                            Cast
-                        </p>
-                    </div>
+                    {!isMobile && (
+                        <div className="relative top-[-3px] ml-[2px] text-left">
+                            <p
+                                className={clxsm(
+                                    "text-black dark:text-white",
+                                    "text-xs"
+                                )}
+                            >
+                                Cast
+                            </p>
+                        </div>
+                    )}
                     <div
                         className={clxsm(
                             "px-2 py-1.5",
