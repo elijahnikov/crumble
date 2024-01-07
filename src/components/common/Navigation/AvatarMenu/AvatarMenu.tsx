@@ -1,4 +1,6 @@
 import { PLACEHOLDER_USER_IMAGE_URL } from "@/constants";
+import clxsm from "@/utils/clsxm";
+import useIsMobile from "@/utils/hooks/useIsMobile";
 import { Menu, Transition } from "@headlessui/react";
 import { signOut } from "next-auth/react";
 import Image from "next/image";
@@ -12,6 +14,7 @@ const AvatarMenu = ({
     avatar: string | null | undefined;
     username: string;
 }) => {
+    const isMobile = useIsMobile(1023);
     return (
         <>
             <Menu as="div">
@@ -33,7 +36,14 @@ const AvatarMenu = ({
                     leaveFrom="transform opacity-100 scale-100"
                     leaveTo="transform opacity-0 scale-95"
                 >
-                    <Menu.Items className="right absolute bottom-[60px] mt-2 h-max w-40 divide-y divide-gray-700 rounded-md bg-brand ring-1 ring-black ring-opacity-5 focus:outline-none">
+                    <Menu.Items
+                        className={clxsm(
+                            isMobile
+                                ? "absolute right-0 top-12"
+                                : "absolute bottom-[60px]",
+                            " mt-2 h-max w-40 divide-y divide-gray-700 rounded-md bg-brand ring-1 ring-black ring-opacity-5 focus:outline-none"
+                        )}
+                    >
                         <div className="px-1 py-1 ">
                             <Menu.Item>
                                 <Link

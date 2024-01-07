@@ -89,8 +89,8 @@ const NavigationBar = () => {
                 </div>
             ) : null}
             {authenticated ? (
-                <div className="flex flex-shrink-0 border-t border-gray-200 p-4 dark:border-gray-700">
-                    <div className="group block w-full flex-shrink-0">
+                <div className="flex border-t border-gray-200 p-4 dark:border-gray-700">
+                    <div className="group block w-full">
                         <div className="flex items-center">
                             <AvatarMenu
                                 username={session.user.name!}
