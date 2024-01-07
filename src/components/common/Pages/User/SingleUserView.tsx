@@ -110,7 +110,7 @@ const UserInfo = ({
     });
 
     return (
-        <div className="mt-12 flex px-5">
+        <div className="mt-12 px-5 ">
             <FollowersModal
                 username={user.name!}
                 toggleSubscription={mutate}
@@ -123,7 +123,7 @@ const UserInfo = ({
                 open={followingModalOpen}
                 setOpen={setFollowingModalOpen}
             />
-            <div className="w-[80%]">
+            <div>
                 <div className="flex">
                     <div className="flex">
                         <div>
@@ -155,13 +155,13 @@ const UserInfo = ({
                         )}
                     </div>
                 </div>
-                <div className="mt-5 ">
-                    <p className="text-[14px] font-semibold text-slate-700 dark:text-slate-300">
+                <div className="mt-5">
+                    <span className="whitespace-normal break-words text-[14px] font-semibold text-slate-700 dark:text-slate-300">
                         {user.bio}
-                    </p>
-                    <div className="flex">
+                    </span>
+                    <div>
                         {user.bioLink && (
-                            <div>
+                            <div className="flex">
                                 <BsLink className="mr-1 mt-1" />
                                 <a
                                     target="_blank"
@@ -175,8 +175,8 @@ const UserInfo = ({
                     </div>
                 </div>
             </div>
-            <div className="relative w-[100%]">
-                <div className="ml-5 flex w-[90%] w-full space-x-4 text-center text-sm text-slate-600 dark:text-slate-300">
+            <div className="mx-auto mt-5 flex w-[100%] justify-center">
+                <div className="flex  space-x-4 text-center text-xs text-slate-600 dark:text-slate-300 sm:text-sm">
                     <div
                         className="cursor-pointer"
                         onClick={() =>

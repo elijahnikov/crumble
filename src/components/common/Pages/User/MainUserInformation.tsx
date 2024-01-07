@@ -31,7 +31,7 @@ const MainUserInformation = ({
                 value={tabView}
                 className="w-[100%]"
             >
-                <TabsList className="grid w-full grid-cols-7">
+                <TabsList className="grid w-full grid-cols-2 sm:grid-cols-7">
                     <TabsTrigger value="profile">Profile</TabsTrigger>
                     <TabsTrigger value="activity">Activity</TabsTrigger>
                     <TabsTrigger value="movies">Movies</TabsTrigger>
