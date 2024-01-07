@@ -6,14 +6,9 @@ import ReviewActivity from "./Activities/ReviewActivity";
 import WatchedActivity from "./Activities/WatchedActivity";
 import Button from "@/components/ui/Button/Button";
 import ReviewLikeActivity from "./Activities/ReviewLikeActivity";
+import { type TabProps } from "../../MainUserInformation";
 
-const ActivityTab = ({
-    user,
-    isMe,
-}: {
-    user: NonNullable<RouterOutputs["user"]["getUser"]>;
-    isMe: boolean;
-}) => {
+const ActivityTab = ({ user }: TabProps) => {
     const {
         data,
         isError,

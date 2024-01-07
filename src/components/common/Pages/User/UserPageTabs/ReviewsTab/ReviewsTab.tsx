@@ -9,7 +9,7 @@ import { Select } from "@/components/ui/Select/Select";
 import { Rating } from "react-simple-star-rating";
 import { BsHeartFill } from "react-icons/bs";
 import clxsm from "@/utils/clsxm";
-import { BiSolidComment } from "react-icons/bi";
+import { type TabProps } from "../../MainUserInformation";
 
 const sortToKeyMap: Record<
     string,
@@ -25,11 +25,7 @@ const filterMap = {
     sortBy: ["Newest", "Top", "Controversial"],
 };
 
-const ReviewsTab = ({
-    user,
-}: {
-    user: NonNullable<RouterOutputs["user"]["getUser"]>;
-}) => {
+const ReviewsTab = ({ user }: TabProps) => {
     const [selectedDurationSort, setSelectedDurationSort] =
         useState<string>("30 days");
     const [sortBySelection, setSortBySelection] = useState<string>("Newest");

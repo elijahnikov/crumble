@@ -1,15 +1,10 @@
-import { api, type RouterOutputs } from "@/utils/api";
+import { api } from "@/utils/api";
 import Link from "next/link";
 import Image from "next/image";
 import LoadingSpinner from "@/components/common/LoadingSpinner/LoadingSpinner";
+import { type TabProps } from "../../MainUserInformation";
 
-const FavouriteMovies = ({
-    user,
-    isMe,
-}: {
-    user: NonNullable<RouterOutputs["user"]["getUser"]>;
-    isMe?: boolean;
-}) => {
+const FavouriteMovies = ({ user, isMe, isMobile }: TabProps) => {
     const { data: favouriteMovies, isLoading: favouriteMoviesLoading } =
         api.user.getFavouriteMoviesForUser.useQuery({
             username: user.name!,
@@ -82,7 +77,7 @@ const FavouriteMovies = ({
                     )}
                 </p>
             ) : (
-                <div className="mt-2 h-max w-full columns-5 gap-2">
+                <div className="mt-2 h-max w-full columns-2 gap-2 sm:columns-5">
                     {favouriteMovies?.slice(0, 5).map(({ movie, id }) => (
                         <div
                             key={id}

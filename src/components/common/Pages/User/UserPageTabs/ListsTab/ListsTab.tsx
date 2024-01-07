@@ -1,16 +1,14 @@
 import LoadingSpinner from "@/components/common/LoadingSpinner/LoadingSpinner";
 import { api, type RouterOutputs } from "@/utils/api";
 import Link from "next/link";
-import Image from "next/image";
 import Button from "@/components/ui/Button/Button";
 import { useEffect, useState } from "react";
 import { getDatesToSortBy } from "@/utils/date/getDatesToSortBy";
 import { Select } from "@/components/ui/Select/Select";
-import { Rating } from "react-simple-star-rating";
 import { BsHeartFill } from "react-icons/bs";
-import clxsm from "@/utils/clsxm";
 import { BiSolidComment } from "react-icons/bi";
 import ListImageWide from "../../../Lists/ListsHomePage/ListImageWide";
+import { type TabProps } from "../../MainUserInformation";
 
 const sortToKeyMap: Record<
     string,
@@ -26,11 +24,7 @@ const filterMap = {
     sortBy: ["Newest", "Top", "Controversial"],
 };
 
-const ListsTab = ({
-    user,
-}: {
-    user: NonNullable<RouterOutputs["user"]["getUser"]>;
-}) => {
+const ListsTab = ({ user }: TabProps) => {
     const [selectedDurationSort, setSelectedDurationSort] =
         useState<string>("30 days");
     const [sortBySelection, setSortBySelection] = useState<string>("Newest");
