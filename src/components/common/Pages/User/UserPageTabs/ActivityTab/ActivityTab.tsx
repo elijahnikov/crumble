@@ -1,5 +1,5 @@
 import LoadingSpinner from "@/components/common/LoadingSpinner/LoadingSpinner";
-import { type RouterOutputs, api } from "@/utils/api";
+import { api } from "@/utils/api";
 import FavouriteMovieActivity from "./Activities/FavouriteMovieActivity";
 import ListEntryActivity from "./Activities/ListEntryActivity";
 import ReviewActivity from "./Activities/ReviewActivity";
@@ -7,6 +7,8 @@ import WatchedActivity from "./Activities/WatchedActivity";
 import Button from "@/components/ui/Button/Button";
 import ReviewLikeActivity from "./Activities/ReviewLikeActivity";
 import { type TabProps } from "../../MainUserInformation";
+import ListCreateActivity from "./Activities/ListCreateActivity";
+import WatchlistActivity from "./Activities/WatchlistActivity";
 
 const ActivityTab = ({ user }: TabProps) => {
     const {
@@ -62,13 +64,19 @@ const ActivityTab = ({ user }: TabProps) => {
                         <WatchedActivity card={false} activity={activity} />
                     )}
                     {activity.listEntry && (
-                        <ListEntryActivity card={false} activity={activity} />
+                        <ListEntryActivity activity={activity} />
+                    )}
+                    {activity.list && (
+                        <ListCreateActivity activity={activity} />
                     )}
                     {activity.review && !activity.reviewLike && (
                         <ReviewActivity card={false} activity={activity} />
                     )}
                     {activity.reviewLike && activity.review && (
                         <ReviewLikeActivity activity={activity} />
+                    )}
+                    {activity.watchlist && (
+                        <WatchlistActivity activity={activity} />
                     )}
                     <hr className="my-4 dark:border-slate-700" />
                 </div>

@@ -2,11 +2,9 @@ import { type RouterOutputs } from "@/utils/api";
 import { fromNow } from "@/utils/general/dateFormat";
 import Link from "next/link";
 
-const FavouriteMovieActivity = ({
-    card = true,
+const WatchlistActivity = ({
     activity,
 }: {
-    card?: boolean;
     activity: RouterOutputs["activity"]["getActivityForUser"]["activities"][number];
 }) => {
     return (
@@ -25,18 +23,18 @@ const FavouriteMovieActivity = ({
                     href={{
                         pathname: "/movie/[id]",
                         query: {
-                            id: activity.favouriteMovie?.movieId,
+                            id: activity.listEntry?.movie.movieId,
                         },
                     }}
                 >
                     <span className="font-bold text-black hover:underline dark:text-white">
-                        {activity.favouriteMovie?.movie.title}
+                        {activity.watchlist?.movie.title}
                     </span>
                 </Link>{" "}
-                to their favourite movies.
+                to their watchlist.
             </p>
         </div>
     );
 };
 
-export default FavouriteMovieActivity;
+export default WatchlistActivity;

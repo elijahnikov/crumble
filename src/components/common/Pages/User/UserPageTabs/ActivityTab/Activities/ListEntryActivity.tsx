@@ -3,10 +3,8 @@ import { fromNow } from "@/utils/general/dateFormat";
 import Link from "next/link";
 
 const ListEntryActivity = ({
-    card = true,
     activity,
 }: {
-    card?: boolean;
     activity: RouterOutputs["activity"]["getActivityForUser"]["activities"][number];
 }) => {
     return (

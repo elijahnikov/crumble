@@ -2,7 +2,7 @@ import { type RouterOutputs } from "@/utils/api";
 import { fromNow } from "@/utils/general/dateFormat";
 import Link from "next/link";
 
-const FavouriteMovieActivity = ({
+const ListCreateActivity = ({
     card = true,
     activity,
 }: {
@@ -20,23 +20,34 @@ const FavouriteMovieActivity = ({
                 <span className="font-semibold text-slate-600 dark:text-slate-300">
                     {activity.user.name}{" "}
                 </span>
-                added{" "}
+                created a new list{" "}
                 <Link
                     href={{
                         pathname: "/movie/[id]",
                         query: {
-                            id: activity.favouriteMovie?.movieId,
+                            id: activity.listEntry?.movie.movieId,
                         },
                     }}
                 >
                     <span className="font-bold text-black hover:underline dark:text-white">
-                        {activity.favouriteMovie?.movie.title}
+                        {activity.list?.title}
                     </span>
                 </Link>{" "}
-                to their favourite movies.
+                <Link
+                    href={{
+                        pathname: "/list/[id]",
+                        query: {
+                            id: activity.list?.id,
+                        },
+                    }}
+                >
+                    <span className="font-bold text-black hover:underline dark:text-white">
+                        {activity.listEntry?.list.title}
+                    </span>
+                </Link>
             </p>
         </div>
     );
 };
 
-export default FavouriteMovieActivity;
+export default ListCreateActivity;

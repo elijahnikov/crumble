@@ -49,37 +49,41 @@ const RecentListsCard = ({ user }: RecentActivityCardProps) => {
                                                     (list) => list.movie.poster
                                                 )}
                                             />
-                                            <hr className="my-2 dark:border-slate-800" />
-                                            <Link
-                                                href={{
-                                                    pathname: "/list/[id]",
-                                                    query: {
-                                                        id: list.id,
-                                                    },
-                                                }}
-                                            >
-                                                <p className="mt-1 text-sm font-semibold text-slate-600 dark:text-slate-300">
-                                                    {list.title.length > 35
-                                                        ? `${list.title.slice(
-                                                              0,
-                                                              35
-                                                          )}...`
-                                                        : list.title}
-                                                </p>
-                                            </Link>
-                                            <div className="flex w-full flex-row">
-                                                <div className="mt-[1px]  flex space-x-2">
-                                                    <div className="flex space-x-1">
-                                                        <BsHeartFill className="mt-[2px] h-3 w-3 fill-slate-400 dark:fill-slate-500" />
-                                                        <p className="text-xs text-slate-500 dark:text-slate-500">
-                                                            {list.likeCount}
-                                                        </p>
-                                                    </div>
-                                                    <div className="flex space-x-1">
-                                                        <BiSolidComment className="mt-[2px] h-3 w-3 fill-slate-400 dark:fill-slate-500" />
-                                                        <p className="text-xs text-slate-500 dark:text-slate-500">
-                                                            {list.commentCount}
-                                                        </p>
+                                            <div className="hidden xl:block">
+                                                <hr className="my-2 dark:border-slate-800" />
+                                                <Link
+                                                    href={{
+                                                        pathname: "/list/[id]",
+                                                        query: {
+                                                            id: list.id,
+                                                        },
+                                                    }}
+                                                >
+                                                    <p className="mt-1 text-sm font-semibold text-slate-600 dark:text-slate-300">
+                                                        {list.title.length > 35
+                                                            ? `${list.title.slice(
+                                                                  0,
+                                                                  35
+                                                              )}...`
+                                                            : list.title}
+                                                    </p>
+                                                </Link>
+                                                <div className="flex w-full flex-row">
+                                                    <div className="mt-[1px]  flex space-x-2">
+                                                        <div className="flex space-x-1">
+                                                            <BsHeartFill className="mt-[2px] h-3 w-3 fill-slate-400 dark:fill-slate-500" />
+                                                            <p className="text-xs text-slate-500 dark:text-slate-500">
+                                                                {list.likeCount}
+                                                            </p>
+                                                        </div>
+                                                        <div className="flex space-x-1">
+                                                            <BiSolidComment className="mt-[2px] h-3 w-3 fill-slate-400 dark:fill-slate-500" />
+                                                            <p className="text-xs text-slate-500 dark:text-slate-500">
+                                                                {
+                                                                    list.commentCount
+                                                                }
+                                                            </p>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
