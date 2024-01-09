@@ -55,13 +55,10 @@ const ActivityTab = ({ user }: TabProps) => {
             {activities.map((activity) => (
                 <div key={activity.id}>
                     {activity.favouriteMovie && (
-                        <FavouriteMovieActivity
-                            card={false}
-                            activity={activity}
-                        />
+                        <FavouriteMovieActivity activity={activity} />
                     )}
                     {activity.watched && (
-                        <WatchedActivity card={false} activity={activity} />
+                        <WatchedActivity activity={activity} />
                     )}
                     {activity.listEntry && (
                         <ListEntryActivity activity={activity} />
