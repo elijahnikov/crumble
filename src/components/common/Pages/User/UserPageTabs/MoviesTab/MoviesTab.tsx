@@ -1,7 +1,7 @@
 import LoadingSpinner from "@/components/common/LoadingSpinner/LoadingSpinner";
 import Button from "@/components/ui/Button/Button";
 import { Select } from "@/components/ui/Select/Select";
-import { api, type RouterOutputs } from "@/utils/api";
+import { api } from "@/utils/api";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -89,7 +89,7 @@ const MoviesTab = ({ user }: TabProps) => {
                 </Select>
             </div>
 
-            <div className="mt-5 grid  w-full grid-cols-8 gap-3 border-t-[1px] py-2 dark:border-slate-700">
+            <div className="mt-5 grid w-full grid-cols-4 gap-3 border-t-[1px] py-2 dark:border-slate-700 md:grid-cols-8">
                 {watched.map((movie) => (
                     <div key={movie.id} className="w-[100%]">
                         <Link
@@ -113,8 +113,8 @@ const MoviesTab = ({ user }: TabProps) => {
                                 src={`https://image.tmdb.org/t/p/w500${movie.poster}`}
                             />
                         </Link>
-                        <div className="mt-[-15px]">
-                            {movie.ratingGiven ? (
+                        {movie.ratingGiven ? (
+                            <div className="mt-[-10px] md:mt-[-15px]">
                                 <Rating
                                     className="relative w-[100%] flex-shrink"
                                     emptyStyle={{ display: "flex" }}
@@ -127,8 +127,8 @@ const MoviesTab = ({ user }: TabProps) => {
                                     size={14}
                                     fillColor="#EF4444"
                                 />
-                            ) : null}
-                        </div>
+                            </div>
+                        ) : null}
                     </div>
                 ))}
             </div>

@@ -11,6 +11,11 @@ import { BsHeartFill } from "react-icons/bs";
 import clxsm from "@/utils/clsxm";
 import { type TabProps } from "../../MainUserInformation";
 
+interface ReviewRowProps {
+    review: RouterOutputs["review"]["reviews"]["reviews"][0];
+    isMobile: boolean;
+}
+
 const sortToKeyMap: Record<
     string,
     { key: string; direction: "desc" | "asc" | undefined }
@@ -25,7 +30,7 @@ const filterMap = {
     sortBy: ["Newest", "Top", "Controversial"],
 };
 
-const ReviewsTab = ({ user }: TabProps) => {
+const ReviewsTab = ({ user, isMobile }: TabProps) => {
     const [selectedDurationSort, setSelectedDurationSort] =
         useState<string>("30 days");
     const [sortBySelection, setSortBySelection] = useState<string>("Newest");
@@ -144,7 +149,11 @@ const ReviewsTab = ({ user }: TabProps) => {
             </div>
             <div className="mt-2 w-full gap-3 border-t-[1px] py-2 dark:border-slate-700">
                 {reviews.map((review) => (
-                    <ReviewRow review={review} key={review.id} />
+                    <ReviewRow
+                        isMobile={isMobile}
+                        review={review}
+                        key={review.id}
+                    />
                 ))}
             </div>
             {hasNextPage && (
@@ -164,15 +173,11 @@ const ReviewsTab = ({ user }: TabProps) => {
 
 export default ReviewsTab;
 
-interface ReviewRow {
-    review: RouterOutputs["review"]["reviews"]["reviews"][0];
-}
-
-export const ReviewRow = ({ review }: ReviewRow) => {
+export const ReviewRow = ({ review, isMobile }: ReviewRowProps) => {
     return (
         <div className="mt-5 w-full px-5">
             <div className="flex space-x-5">
-                <div>
+                <div className="w-[10%] min-w-[80px]">
                     <Link href="/review/[id]/" as={`/review/${review.id}`}>
                         <Image
                             alt={review.movieTitle}
@@ -184,15 +189,21 @@ export const ReviewRow = ({ review }: ReviewRow) => {
                     </Link>
                 </div>
                 <div>
-                    <div>
+                    <div className="max-w-[70%]">
                         <div className="flex">
-                            <h4>{review.movieTitle}</h4>
-                            <p className="-mt-[5px] ml-1 text-[18px] font-semibold text-slate-500 dark:text-slate-500">
-                                {review.movieReleaseYear.slice(0, 4)}
-                            </p>
+                            <div className="flex ">
+                                <h4>
+                                    {isMobile && review.movieTitle.length > 25
+                                        ? `${review.movieTitle.slice(0, 25)}...`
+                                        : review.movieTitle}
+                                </h4>
+                                <p className="ml-2 text-[18px] font-semibold text-slate-500 dark:text-slate-500">
+                                    {review.movieReleaseYear.slice(0, 4)}
+                                </p>
+                            </div>
                         </div>
                         <div className="-mt-2 flex">
-                            <div className="mt-2">
+                            <div className="mt-2 min-w-[20px]">
                                 {review.user.image && (
                                     <Image
                                         alt={review.user.name!}
@@ -207,7 +218,7 @@ export const ReviewRow = ({ review }: ReviewRow) => {
                                 {review.user.name}
                             </p>
                             <Rating
-                                className="-mt-[3px] ml-2"
+                                className="ml-2 mt-1 md:-mt-[3px]"
                                 emptyStyle={{ display: "flex" }}
                                 fillStyle={{
                                     display: "-webkit-inline-box",
@@ -221,7 +232,7 @@ export const ReviewRow = ({ review }: ReviewRow) => {
                         </div>
                     </div>
                     <div>
-                        <div className=" text-[16px] font-semibold text-slate-700 dark:text-gray-400 dark:text-slate-300">
+                        <div className=" mt-2 text-[16px] font-semibold leading-6 text-slate-700 dark:text-gray-400 dark:text-slate-300 sm:mt-0">
                             {review.text.length > 50
                                 ? review.text.slice(0, 50) + "..."
                                 : review.text}
