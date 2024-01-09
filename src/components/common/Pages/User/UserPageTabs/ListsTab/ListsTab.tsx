@@ -9,6 +9,8 @@ import { BsHeartFill } from "react-icons/bs";
 import { BiSolidComment } from "react-icons/bi";
 import ListImageWide from "../../../Lists/ListsHomePage/ListImageWide";
 import { type TabProps } from "../../MainUserInformation";
+import useIsMobile from "@/utils/hooks/useIsMobile";
+import clxsm from "@/utils/clsxm";
 
 const sortToKeyMap: Record<
     string,
@@ -142,7 +144,7 @@ const ListsTab = ({ user }: TabProps) => {
                 </Select>
             </div>
             <div className="mt-2 w-full gap-3 border-t-[1px] py-2 dark:border-slate-700">
-                {lists.map((list) => (
+                {[...lists, ...lists].map((list) => (
                     <ListRow key={list.id} list={list} />
                 ))}
             </div>
@@ -168,73 +170,84 @@ interface ListRow {
 }
 
 const ListRow = ({ list }: ListRow) => {
+    const isMobile = useIsMobile(550);
     return (
         <div className=" flex" key={list.id}>
-            <div className="m-1 mt-2 flex h-[150px] max-h-[150px] min-h-[150px] min-w-[300px] max-w-[300px] rounded-md border bg-brand-white p-2 dark:border-gray-800 dark:bg-brand">
+            <div
+                className={clxsm(
+                    isMobile
+                        ? "h-[100%] w-full"
+                        : "h-[150px] max-h-[150px]  min-h-[150px] min-w-[300px] max-w-[300px]",
+                    "m-1 mt-2 flex rounded-md border bg-brand-white p-2 dark:border-gray-800 dark:bg-brand"
+                )}
+            >
                 <ListImageWide
                     listId={list.id}
                     size={50}
                     posters={list.listEntries.map((list) => list.movie.poster)}
                 />
             </div>
-            <div>
+            {!isMobile && (
                 <div>
-                    <Link
-                        href={{
-                            pathname: "/list/[id]",
-                            query: {
-                                id: list.id,
-                            },
-                        }}
-                    >
-                        <h4 className="ml-3 mt-3 text-slate-700 dark:text-slate-200">
-                            {list.title.length > 35
-                                ? `${list.title.slice(0, 35)}...`
-                                : list.title}
-                        </h4>
-                    </Link>
-                </div>
-                <div className="ml-3 mt-1 flex w-full flex-row">
-                    <div className="mt-[1px]  flex space-x-2">
-                        <div className="flex space-x-1">
-                            <BsHeartFill className="mt-[2px] h-3 w-3 fill-slate-400 dark:fill-slate-500" />
-                            <p className="text-xs text-slate-500 dark:text-slate-500">
-                                {list.likeCount}
-                            </p>
-                        </div>
-                        <div className="flex space-x-1">
-                            <BiSolidComment className="mt-[2px] h-3 w-3 fill-slate-400 dark:fill-slate-500" />
-                            <p className="text-xs text-slate-500 dark:text-slate-500">
-                                {list.commentCount}
-                            </p>
+                    <div>
+                        <Link
+                            href={{
+                                pathname: "/list/[id]",
+                                query: {
+                                    id: list.id,
+                                },
+                            }}
+                            className="max-h-[100px]"
+                        >
+                            <h4 className="ml-3 mt-3 text-slate-700 dark:text-slate-200">
+                                {list.title.length > 35
+                                    ? `${list.title.slice(0, 35)}...`
+                                    : list.title}
+                            </h4>
+                        </Link>
+                    </div>
+                    <div className="ml-3 mt-1 flex w-full flex-row">
+                        <div className="mt-[1px]  flex space-x-2">
+                            <div className="flex space-x-1">
+                                <BsHeartFill className="mt-[2px] h-3 w-3 fill-slate-400 dark:fill-slate-500" />
+                                <p className="text-xs text-slate-500 dark:text-slate-500">
+                                    {list.likeCount}
+                                </p>
+                            </div>
+                            <div className="flex space-x-1">
+                                <BiSolidComment className="mt-[2px] h-3 w-3 fill-slate-400 dark:fill-slate-500" />
+                                <p className="text-xs text-slate-500 dark:text-slate-500">
+                                    {list.commentCount}
+                                </p>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <p className="relative ml-3 mt-3 hidden max-w-[500px] text-sm text-slate-600 dark:text-slate-300 xl:block">
-                    {list.description && list.description.length > 100 ? (
-                        <span className="flex">
-                            <span>
-                                {list.description?.slice(0, 100)}
-                                ...
-                                <Link
-                                    href={{
-                                        pathname: "/lists/all/[sorting]",
-                                        query: {
-                                            sorting: "recent",
-                                        },
-                                    }}
-                                >
-                                    <span className="ml-1 text-xs text-crumble underline">
-                                        See more
-                                    </span>
-                                </Link>
+                    <p className="relative ml-3 mt-3 hidden max-w-[500px] text-sm text-slate-600 dark:text-slate-300 xl:block">
+                        {list.description && list.description.length > 100 ? (
+                            <span className="flex">
+                                <span>
+                                    {list.description?.slice(0, 100)}
+                                    ...
+                                    <Link
+                                        href={{
+                                            pathname: "/lists/all/[sorting]",
+                                            query: {
+                                                sorting: "recent",
+                                            },
+                                        }}
+                                    >
+                                        <span className="ml-1 text-xs text-crumble underline">
+                                            See more
+                                        </span>
+                                    </Link>
+                                </span>
                             </span>
-                        </span>
-                    ) : (
-                        list.description
-                    )}
-                </p>
-            </div>
+                        ) : (
+                            list.description
+                        )}
+                    </p>
+                </div>
+            )}
         </div>
     );
 };
