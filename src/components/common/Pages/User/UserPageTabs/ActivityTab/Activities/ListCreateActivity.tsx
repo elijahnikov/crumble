@@ -2,9 +2,11 @@ import { type RouterOutputs } from "@/utils/api";
 import { fromNow } from "@/utils/general/dateFormat";
 import Link from "next/link";
 
-const ListEntryActivity = ({
+const ListCreateActivity = ({
+    card = true,
     activity,
 }: {
+    card?: boolean;
     activity: RouterOutputs["activity"]["getActivityForUser"]["activities"][number];
 }) => {
     return (
@@ -18,7 +20,7 @@ const ListEntryActivity = ({
                 <span className="font-semibold text-slate-600 dark:text-slate-300">
                     {activity.user.name}{" "}
                 </span>
-                added{" "}
+                created a new list{" "}
                 <Link
                     href={{
                         pathname: "/movie/[id]",
@@ -28,10 +30,9 @@ const ListEntryActivity = ({
                     }}
                 >
                     <span className="font-bold text-black hover:underline dark:text-white">
-                        {activity.listEntry?.movie.title}
+                        {activity.list?.title}
                     </span>
                 </Link>{" "}
-                to their list{" "}
                 <Link
                     href={{
                         pathname: "/list/[id]",
@@ -49,4 +50,4 @@ const ListEntryActivity = ({
     );
 };
 
-export default ListEntryActivity;
+export default ListCreateActivity;

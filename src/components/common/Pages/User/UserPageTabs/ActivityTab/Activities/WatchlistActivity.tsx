@@ -2,7 +2,7 @@ import { type RouterOutputs } from "@/utils/api";
 import { fromNow } from "@/utils/general/dateFormat";
 import Link from "next/link";
 
-const ListEntryActivity = ({
+const WatchlistActivity = ({
     activity,
 }: {
     activity: RouterOutputs["activity"]["getActivityForUser"]["activities"][number];
@@ -28,25 +28,13 @@ const ListEntryActivity = ({
                     }}
                 >
                     <span className="font-bold text-black hover:underline dark:text-white">
-                        {activity.listEntry?.movie.title}
+                        {activity.watchlist?.movie.title}
                     </span>
                 </Link>{" "}
-                to their list{" "}
-                <Link
-                    href={{
-                        pathname: "/list/[id]",
-                        query: {
-                            id: activity.list?.id,
-                        },
-                    }}
-                >
-                    <span className="font-bold text-black hover:underline dark:text-white">
-                        {activity.listEntry?.list.title}
-                    </span>
-                </Link>
+                to their watchlist.
             </p>
         </div>
     );
 };
 
-export default ListEntryActivity;
+export default WatchlistActivity;

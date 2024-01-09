@@ -13,7 +13,7 @@ const ProfileTab = (props: TabProps) => {
             <div className="flex">
                 <div
                     className={clxsm(
-                        isMobile ? "w-[60%]" : "w-[70%]",
+                        isMobile ? "w-[50%]" : "w-[65%]",
                         "px-4 pt-2"
                     )}
                 >
@@ -26,7 +26,7 @@ const ProfileTab = (props: TabProps) => {
                 <div className="w-[2%]" />
                 <div
                     className={clxsm(
-                        isMobile ? "w-[40%]" : "w-[30%]",
+                        isMobile ? "w-[50%]" : "w-[35%]",
                         "px-4 pt-2"
                     )}
                 >

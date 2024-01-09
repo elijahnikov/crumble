@@ -1,5 +1,5 @@
 import LoadingSpinner from "@/components/common/LoadingSpinner/LoadingSpinner";
-import { api, type RouterOutputs } from "@/utils/api";
+import { api } from "@/utils/api";
 import Link from "next/link";
 import Image from "next/image";
 import Button from "@/components/ui/Button/Button";
@@ -60,7 +60,7 @@ const WatchlistTab = ({ user }: TabProps) => {
                 </span>{" "}
                 movies
             </p>
-            <div className="mt-2 grid  w-full grid-cols-8 gap-3 border-t-[1px] py-2 dark:border-slate-700">
+            <div className="mt-2 grid w-full grid-cols-4 gap-3 border-t-[1px] py-2 dark:border-slate-700 sm:grid-cols-8">
                 {watchlist.map((movie) => (
                     <div key={movie.id} className="w-[100%]">
                         <Link

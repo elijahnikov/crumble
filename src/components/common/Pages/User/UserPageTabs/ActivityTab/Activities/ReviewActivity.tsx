@@ -14,7 +14,7 @@ const ReviewActivity = ({
     if (!card) {
         return (
             <div className="flex">
-                <div className="w-[15%] py-3 pl-2">
+                <div className="py-3 pl-2">
                     {activity.review?.moviePoster && (
                         <Image
                             src={`https://image.tmdb.org/t/p/w500${activity.review.moviePoster}`}
@@ -25,7 +25,7 @@ const ReviewActivity = ({
                         />
                     )}
                 </div>
-                <div className="w-full py-3">
+                <div className="ml-5 py-3">
                     <p className="mb-2 text-xs font-normal text-crumble">
                         {fromNow(activity.createdAt)}
                     </p>

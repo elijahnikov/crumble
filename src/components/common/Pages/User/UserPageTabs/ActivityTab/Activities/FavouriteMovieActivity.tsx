@@ -3,10 +3,8 @@ import { fromNow } from "@/utils/general/dateFormat";
 import Link from "next/link";
 
 const FavouriteMovieActivity = ({
-    card = true,
     activity,
 }: {
-    card?: boolean;
     activity: RouterOutputs["activity"]["getActivityForUser"]["activities"][number];
 }) => {
     return (
@@ -33,7 +31,7 @@ const FavouriteMovieActivity = ({
                         {activity.favouriteMovie?.movie.title}
                     </span>
                 </Link>{" "}
-                to their favourite movie list.
+                to their favourite movies.
             </p>
         </div>
     );

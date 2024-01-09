@@ -17,6 +17,7 @@ export const activityRouter = createTRPCRouter({
                             "review",
                             "favouriteMovie",
                             "reviewLike",
+                            "watchlist",
                         ])
                     )
                     .optional(),
@@ -90,6 +91,16 @@ export const activityRouter = createTRPCRouter({
                                     select: {
                                         name: true,
                                         id: true,
+                                    },
+                                },
+                            },
+                        },
+                        watchlist: {
+                            include: {
+                                movie: {
+                                    select: {
+                                        title: true,
+                                        movieId: true,
                                     },
                                 },
                             },

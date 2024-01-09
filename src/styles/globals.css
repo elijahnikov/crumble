@@ -37,7 +37,7 @@
 
     body,
     .p {
-        @apply bg-gray-100 font-primary text-sm dark:bg-black md:text-base;
+        @apply bg-gray-100 font-primary text-sm dark:bg-brand md:text-base;
     }
 
     .layout {
@@ -53,10 +53,6 @@
     /* Class to adjust with sticky footer */
     .min-h-main {
         @apply min-h-[calc(100vh-56px)];
-    }
-
-    html {
-        @apply bg-brand-white dark:bg-brand;
     }
 }
 
