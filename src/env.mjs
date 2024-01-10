@@ -26,10 +26,15 @@ export const env = createEnv({
         NEXT_PUBLIC_TMDB_ACCESS_TOKEN: z.string(),
         GITHUB_CLIENT_ID: z.string(),
         GITHUB_CLIENT_SECRET: z.string(),
+        GOOGLE_CLIENT_ID: z.string(),
+        GOOGLE_CLIENT_SECRET: z.string(),
+        TWITTER_CLIENT_ID: z.string(),
+        TWITTER_CLIENT_SECRET: z.string(),
         AWS_ACCESS_KEY_ID: z.string(),
         AWS_SECRET_ACCESS_KEY: z.string(),
         AWS_BUCKET_NAME: z.string(),
         AWS_REGION: z.string(),
+        JWT_SECRET: z.string(),
     },
 
     /**
@@ -55,12 +60,17 @@ export const env = createEnv({
         DISCORD_CLIENT_SECRET: process.env.DISCORD_CLIENT_SECRET,
         GITHUB_CLIENT_ID: process.env.GITHUB_CLIENT_ID,
         GITHUB_CLIENT_SECRET: process.env.GITHUB_CLIENT_SECRET,
+        GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
+        GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
+        TWITTER_CLIENT_ID: process.env.TWITTER_CLIENT_ID,
+        TWITTER_CLIENT_SECRET: process.env.TWITTER_CLIENT_SECRET,
         NEXT_PUBLIC_TMDB_ACCESS_TOKEN:
             process.env.NEXT_PUBLIC_TMDB_ACCESS_TOKEN,
         AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID,
         AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY,
         AWS_BUCKET_NAME: process.env.AWS_BUCKET_NAME,
         AWS_REGION: process.env.AWS_REGION,
+        JWT_SECRET: process.env.JWT_SECRET,
     },
     /**
      * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation.

@@ -5,12 +5,12 @@ import clxsm from "@/utils/clsxm";
 import { useEffect, useState } from "react";
 import DarkModeSwitch from "../../DarkModeSwitch/DarkModeSwitch";
 import navigation from "@/utils/data/navLinks";
-import SignIn from "../../SignIn/SignIn";
 import CreateModalMenu from "../../CreateModalMenu/CreateModalMenu";
 import AvatarMenu from "../AvatarMenu/AvatarMenu";
 import MoreMenu from "../MoreMenu/MoreMenu";
 import { LOGO_URL } from "@/constants";
 import Notifications from "../../Notifications/Notification";
+import Button from "@/components/ui/Button/Button";
 
 const NavigationBar = () => {
     const [currentPath, setCurrentPath] = useState("");
@@ -107,8 +107,11 @@ const NavigationBar = () => {
                     </div>
                 </div>
             ) : (
-                <div className="mb-5 text-center">
-                    <SignIn callbackUrl={"/"} />
+                <div className="mb-10 text-center">
+                    {/* <SignIn callbackUrl={"/"} /> */}
+                    <Link href="/login">
+                        <Button>Login</Button>
+                    </Link>
                 </div>
             )}
         </div>

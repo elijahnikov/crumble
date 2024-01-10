@@ -7,9 +7,11 @@ import {
 } from "next-auth";
 import DiscordProvider from "next-auth/providers/discord";
 import GitHubProvider, { type GithubProfile } from "next-auth/providers/github";
+import GoogleProvider from "next-auth/providers/google";
+import TwitterProvider from "next-auth/providers/twitter";
+
 import { env } from "@/env.mjs";
 import { prisma } from "@/server/db";
-import cuid from "cuid";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -49,6 +51,7 @@ export const authOptions: NextAuthOptions = {
     },
     events: {
         async signIn(message) {
+            console.log({ message });
             if (message.isNewUser) {
                 await prisma.privacy.create({
                     data: {
@@ -60,6 +63,15 @@ export const authOptions: NextAuthOptions = {
     },
     adapter: PrismaAdapter(prisma),
     providers: [
+        GoogleProvider({
+            clientId: env.GOOGLE_CLIENT_ID,
+            clientSecret: env.GOOGLE_CLIENT_SECRET,
+        }),
+        TwitterProvider({
+            clientId: env.TWITTER_CLIENT_ID,
+            clientSecret: env.TWITTER_CLIENT_SECRET,
+            version: "2.0",
+        }),
         DiscordProvider({
             clientId: env.DISCORD_CLIENT_ID,
             clientSecret: env.DISCORD_CLIENT_SECRET,

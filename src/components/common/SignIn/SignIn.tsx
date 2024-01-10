@@ -7,11 +7,19 @@ import {
     getProviders,
 } from "next-auth/react";
 import { useEffect, useState } from "react";
-import { BsDiscord, BsGithub } from "react-icons/bs";
+import { type IconType } from "react-icons";
+import { BsDiscord, BsGithub, BsGoogle, BsTwitter } from "react-icons/bs";
 
 interface DiscordSignInProps {
     callbackUrl: string | string[] | undefined;
 }
+
+const providerLogoMap: Record<string, IconType> = {
+    Discord: BsDiscord,
+    GitHub: BsGithub,
+    Google: BsGoogle,
+    Twitter: BsTwitter,
+};
 
 const SignIn = ({ callbackUrl }: DiscordSignInProps) => {
     const [providers, setProviders] = useState<Record<
@@ -44,6 +52,7 @@ const SignIn = ({ callbackUrl }: DiscordSignInProps) => {
                         <form
                             action={providers[providerKey]?.signinUrl}
                             method="POST"
+                            className="space-y-3 text-center"
                         >
                             <input
                                 type="hidden"
@@ -59,16 +68,17 @@ const SignIn = ({ callbackUrl }: DiscordSignInProps) => {
                             )}
 
                             <Button
-                                className="mt-2"
+                                className="mt-2 min-w-[250px] py-2"
                                 intent="secondary"
                                 type="submit"
-                                rightIcon={
-                                    providers[providerKey]?.name === "Discord"
-                                        ? BsDiscord
-                                        : BsGithub
+                                size={"base"}
+                                leftIcon={
+                                    providerLogoMap[
+                                        providers[providerKey]!.name
+                                    ]
                                 }
                             >
-                                Sign in with
+                                Sign in with {providers[providerKey]!.name}
                             </Button>
                         </form>
                     </div>
