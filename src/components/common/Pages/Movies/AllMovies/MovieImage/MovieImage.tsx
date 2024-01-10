@@ -64,7 +64,10 @@ const MovieImage = ({
                             }
                         />
                         <div className="absolute inset-0 flex items-center justify-center">
-                            <p className="text-xs font-semibold text-white">
+                            <p
+                                style={highlight ? { opacity: 0.1 } : {}}
+                                className="text-xs font-semibold text-white"
+                            >
                                 {movie.title}
                             </p>
                         </div>

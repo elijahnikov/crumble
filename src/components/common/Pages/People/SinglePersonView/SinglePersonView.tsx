@@ -17,6 +17,7 @@ import { api } from "@/utils/api";
 import { useSession } from "next-auth/react";
 import clxsm from "@/utils/clsxm";
 import Tooltip from "@/components/ui/Tooltip/Tooltip";
+import useIsMobile from "@/utils/hooks/useIsMobile";
 
 interface CreditType {
     adult: boolean;
@@ -86,7 +87,6 @@ const SinglePersonView = ({
     const nameSplit = name.split("-");
     const personId = nameSplit[nameSplit.length - 1];
 
-    const [showExtraText, setShowExtraText] = useState<boolean>(false);
     const [highlight, setHighlight] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
     const [sortBy, setSortBy] = useState<string>("popularity");
@@ -165,7 +165,7 @@ const SinglePersonView = ({
                 </div>
             ) : (
                 <div>
-                    <div className="flex">
+                    <div>
                         <div>
                             <Header
                                 formattedType={formattedType}
@@ -174,8 +174,12 @@ const SinglePersonView = ({
                                 credits={credits}
                                 details={details}
                                 sortBy={[sortBy, setSortBy]}
+                                matchingElementsFilter={matchingElementsFilter}
+                                toCountAgainst={toCountAgainst}
+                                highlight={highlight}
+                                setHighlight={setHighlight}
                             />
-                            <div className="mt-2 grid w-full grid-cols-4 gap-3 border-t-[1px] py-2 dark:border-slate-700">
+                            <div className="mt-2 grid w-full grid-cols-3 gap-3 border-t-[1px] py-2 dark:border-slate-700 sm:grid-cols-6">
                                 {credits[formattedType]
                                     ?.sort((a, b) => {
                                         if (sortBy === "popularity") {
@@ -227,88 +231,57 @@ const SinglePersonView = ({
                                     })
                                     .map((credit) => (
                                         <div key={credit.id}>
-                                            <Tooltip>
-                                                <Tooltip.Trigger>
-                                                    <div>
-                                                        <MovieImage
-                                                            movie={{
-                                                                movieId:
-                                                                    credit.id,
-                                                                poster: credit.poster_path,
-                                                                title: credit.original_title,
-                                                            }}
-                                                            highlight={
-                                                                highlight
-                                                                    ? matchingElementsFilter
-                                                                    : undefined
-                                                            }
-                                                        />
-                                                    </div>
-                                                </Tooltip.Trigger>
-                                                <Tooltip.Content>
-                                                    <div className="flex space-x-1">
-                                                        <p className="text-crumble">
-                                                            as
-                                                        </p>
-                                                        <p>
-                                                            {credit.character}
-                                                        </p>
-                                                    </div>
-                                                </Tooltip.Content>
-                                            </Tooltip>
+                                            {credit.character ? (
+                                                <Tooltip>
+                                                    <Tooltip.Trigger>
+                                                        <div>
+                                                            <MovieImage
+                                                                movie={{
+                                                                    movieId:
+                                                                        credit.id,
+                                                                    poster: credit.poster_path,
+                                                                    title: credit.original_title,
+                                                                }}
+                                                                highlight={
+                                                                    highlight
+                                                                        ? matchingElementsFilter
+                                                                        : undefined
+                                                                }
+                                                            />
+                                                        </div>
+                                                    </Tooltip.Trigger>
+                                                    <Tooltip.Content>
+                                                        <div className="flex space-x-1">
+                                                            <p className="text-crumble">
+                                                                as
+                                                            </p>
+                                                            <p>
+                                                                {
+                                                                    credit.character
+                                                                }
+                                                            </p>
+                                                        </div>
+                                                    </Tooltip.Content>
+                                                </Tooltip>
+                                            ) : (
+                                                <div>
+                                                    <MovieImage
+                                                        movie={{
+                                                            movieId: credit.id,
+                                                            poster: credit.poster_path,
+                                                            title: credit.original_title,
+                                                        }}
+                                                        highlight={
+                                                            highlight
+                                                                ? matchingElementsFilter
+                                                                : undefined
+                                                        }
+                                                    />
+                                                </div>
+                                            )}
                                         </div>
                                     ))}
                             </div>
-                        </div>
-                        <div className="ml-4 w-[50%] px-10">
-                            <div className="max-w-[200px]">
-                                <Image
-                                    alt={formattedName ?? ""}
-                                    width={0}
-                                    height={0}
-                                    sizes="100vw"
-                                    style={{
-                                        width: "100%",
-                                        height: "auto",
-                                    }}
-                                    src={`https://image.tmdb.org/t/p/w500/${details?.picture}`}
-                                    className="rounded-md border-t-[1px] dark:border-gray-800"
-                                />
-                            </div>
-                            <p className="mt-5 max-w-[300px] text-sm text-slate-700 dark:text-slate-400">
-                                {showExtraText
-                                    ? details?.biography
-                                    : details?.biography.slice(0, 200) + "..."}
-
-                                <span
-                                    onClick={() =>
-                                        setShowExtraText(!showExtraText)
-                                    }
-                                    className="cursor-pointer text-crumble"
-                                >
-                                    {!showExtraText ? " More" : " Less"}
-                                </span>
-                            </p>
-                            {matchingElementsFilter &&
-                                typeof toCountAgainst !== "undefined" && (
-                                    <div
-                                        className="cursor-pointer"
-                                        onClick={() =>
-                                            matchingElementsFilter.length > 0 &&
-                                            setHighlight(!highlight)
-                                        }
-                                    >
-                                        <Tracker
-                                            highlight={highlight}
-                                            countAgainstLength={
-                                                toCountAgainst.length
-                                            }
-                                            matchingLength={
-                                                matchingElementsFilter.length
-                                            }
-                                        />
-                                    </div>
-                                )}
                         </div>
                     </div>
                 </div>
@@ -323,6 +296,11 @@ const Header = ({
     name,
     credits,
     sortBy,
+    matchingElementsFilter,
+    toCountAgainst,
+    details,
+    highlight,
+    setHighlight,
 }: {
     formattedType: string;
     formattedName: string | undefined;
@@ -330,16 +308,87 @@ const Header = ({
     credits: Record<string, unknown>;
     details: IPersonDetailsFetch | undefined;
     sortBy: [string, React.Dispatch<React.SetStateAction<string>>];
+    matchingElementsFilter: number[] | undefined;
+    toCountAgainst: number[] | undefined;
+    highlight: boolean;
+    setHighlight: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
+    const isMobile = useIsMobile(600);
     const router = useRouter();
     const [sortByValue, setSortBy] = sortBy;
+    const [showExtraText, setShowExtraText] = useState<boolean>(false);
+
     return (
         <div>
+            {details && (
+                <div>
+                    <div className={clxsm(isMobile ? "block" : "flex")}>
+                        <div
+                            className={clxsm(
+                                isMobile && "mx-auto flex justify-center"
+                            )}
+                        >
+                            {details.picture && (
+                                <Image
+                                    alt={formattedName ?? ""}
+                                    width={0}
+                                    height={0}
+                                    sizes="100vw"
+                                    style={{
+                                        width: "100%",
+                                        height: "auto",
+                                    }}
+                                    src={`https://image.tmdb.org/t/p/w500/${details.picture}`}
+                                    className="min-w-[150px] max-w-[150px] rounded-md border-t-[1px] dark:border-gray-800"
+                                />
+                            )}
+                        </div>
+
+                        <p className="mt-5 px-5 text-sm text-slate-700 dark:text-slate-400">
+                            <h1 className="mb-2 text-black dark:text-white">
+                                {formattedName}
+                            </h1>
+                            <p className="text-[16px] font-semibold text-slate-700 dark:text-slate-300">
+                                About
+                            </p>
+                            {showExtraText
+                                ? details.biography
+                                : details.biography.slice(0, 300) + "..."}
+
+                            <span
+                                onClick={() => setShowExtraText(!showExtraText)}
+                                className="cursor-pointer text-crumble"
+                            >
+                                {!showExtraText ? " More" : " Less"}
+                            </span>
+                        </p>
+                    </div>
+                    {matchingElementsFilter &&
+                        typeof toCountAgainst !== "undefined" && (
+                            <div
+                                className="cursor-pointer"
+                                onClick={() =>
+                                    matchingElementsFilter.length > 0 &&
+                                    setHighlight(!highlight)
+                                }
+                            >
+                                <Tracker
+                                    highlight={highlight}
+                                    countAgainstLength={toCountAgainst.length}
+                                    matchingLength={
+                                        matchingElementsFilter.length
+                                    }
+                                />
+                            </div>
+                        )}
+                </div>
+            )}
+            <div className="h-[20px]" />
             <p className="text-sm text-slate-600 dark:text-slate-400">
                 Movies {jobHeadingMapping[formattedType]}
             </p>
             <h3>{formattedName}</h3>
-            <div className="mt-5 space-x-2">
+            <div className="mt-5 block xs:flex">
                 <Select
                     size="sm"
                     label="Job"
@@ -364,6 +413,7 @@ const Header = ({
                         );
                     })}
                 </Select>
+                <div className="h-[10px] w-[10px]" />
                 <Select
                     label="Sort"
                     size="sm"
