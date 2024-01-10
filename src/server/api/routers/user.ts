@@ -5,6 +5,7 @@ import { TRPCError } from "@trpc/server";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis/nodejs";
 import { createNewActivity } from "@/server/helpers/createActivity";
+import { hash } from "argon2";
 
 const ratelimit = new Ratelimit({
     redis: Redis.fromEnv(),
@@ -259,5 +260,61 @@ export const userRouter = createTRPCRouter({
                     movie: true,
                 },
             });
+        }),
+    //
+    // Register
+    //
+    register: publicProcedure
+        .input(
+            z.object({
+                email: z.string(),
+                username: z.string(),
+                password: z.string(),
+            })
+        )
+        .mutation(async ({ ctx, input }) => {
+            const { email, password, username } = input;
+            if (!email || !password || !username) {
+                throw new TRPCError({
+                    code: "INTERNAL_SERVER_ERROR",
+                    message: "All fields must be supplied",
+                });
+            }
+
+            const emailExists = await ctx.prisma.user.findUnique({
+                where: {
+                    email: email,
+                },
+            });
+
+            const nameExists = await ctx.prisma.user.findFirst({
+                where: {
+                    name: username,
+                },
+            });
+
+            if (emailExists ?? nameExists) {
+                throw new TRPCError({
+                    code: "INTERNAL_SERVER_ERROR",
+                    message: "User already exists",
+                });
+            }
+
+            const hashedPassword = await hash(password);
+
+            const user = await ctx.prisma.user.create({
+                data: {
+                    name: username,
+                    email: email,
+                    password: hashedPassword,
+                },
+                select: {
+                    name: true,
+                    email: true,
+                    createdAt: true,
+                },
+            });
+
+            return user;
         }),
 });

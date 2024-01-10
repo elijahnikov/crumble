@@ -25,6 +25,7 @@ const config = {
             "image.tmdb.org",
             "avatars.githubusercontent.com",
             "fitnessappstorage.s3.eu-west-2.amazonaws.com",
+            "pbs.twimg.com",
         ],
     },
 };
