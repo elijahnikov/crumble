@@ -151,7 +151,7 @@ const CreateListModal = ({
                 )}
                 <Modal.Content title="Create a new list">
                     <div>
-                        <div className="flex-end float-right mb-5 space-x-2">
+                        <div className="float-right mb-5 w-full space-x-2">
                             <Button
                                 loading={listLoading}
                                 onClick={() => handleCreateList()}
@@ -160,12 +160,12 @@ const CreateListModal = ({
                             </Button>
                             <Button intent="outline">Cancel</Button>
                         </div>
-                        <div className="flex w-[100%] space-x-5">
+
+                        <div className="w-[100%] space-y-4 md:flex md:space-x-5 md:space-y-0">
                             <div className="w-[40%] space-y-2">
                                 <Input
                                     placeholder="Name your list"
                                     autoFocus
-                                    fullWidth
                                     value={listName}
                                     onChange={(e) =>
                                         setListName(e.target.value)
@@ -179,7 +179,7 @@ const CreateListModal = ({
                                     reviewStarted={true}
                                 />
                             </div>
-                            <div className="w-[60%]">
+                            <div className="w-[100%]">
                                 <InputArea
                                     placeholder="Describe your list with a few words..."
                                     fullWidth
