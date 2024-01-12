@@ -236,7 +236,7 @@ const CreateReviewModal = ({
                     </Modal.Trigger>
                 )}
                 <Modal.Content title="Create a review">
-                    {!blockInput ? (
+                    {!blockInput && !chosenMovieDetails ? (
                         <Input
                             className="mb-[10px] w-[25vw]"
                             value={searchedMovieName}
@@ -453,7 +453,7 @@ const SelectedFilmForm = ({
                 <BsArrowLeft className="mr-1 mt-[2px]" />
                 Back
             </Button>
-            <div className="mt-5 flex p-5">
+            <div className="mt-5 block p-5 lg:flex">
                 <Image
                     alt={movie.title}
                     src={`https://image.tmdb.org/t/p/w500${movie.poster}`}
@@ -461,9 +461,9 @@ const SelectedFilmForm = ({
                     height={0}
                     sizes="100vw"
                     className="mr-5 aspect-auto rounded-lg"
-                    style={{ width: "20%", height: "200px" }}
+                    style={{ height: "200px", width: "120px" }}
                 />
-                <div className="ml-5 w-[100%] text-left">
+                <div className="mt-2 w-[100%] text-left lg:ml-5">
                     <div className="mb-5 flex h-max w-[100%]">
                         <h2>
                             {movie.title}{" "}
@@ -473,27 +473,29 @@ const SelectedFilmForm = ({
                         </h2>
                     </div>
                     {watchedOnChecked ? (
-                        <div className="flex space-x-5">
+                        <div className="space-y-4 md:flex md:space-x-5 md:space-y-0">
                             <div className="flex space-x-2">
                                 <Checkbox
                                     checked={watchedOnChecked}
                                     onChange={handleWatchedOnCheck}
                                 />
                                 <p>Watched on</p>
-                                <DatePicker
-                                    dateValue={watchedOnDate!}
-                                    selectDateValue={setWatchedOnDate}
-                                    buttonText={
-                                        watchedOnDate
-                                            ?.toLocaleDateString("en-GB", {
-                                                day: "numeric",
-                                                month: "short",
-                                                year: "numeric",
-                                            })
-                                            .replace(/ /g, " ") ??
-                                        "Watched date"
-                                    }
-                                />
+                                <div className="-mt-1 md:-mt-[1px]">
+                                    <DatePicker
+                                        dateValue={watchedOnDate!}
+                                        selectDateValue={setWatchedOnDate}
+                                        buttonText={
+                                            watchedOnDate
+                                                ?.toLocaleDateString("en-GB", {
+                                                    day: "numeric",
+                                                    month: "short",
+                                                    year: "numeric",
+                                                })
+                                                .replace(/ /g, " ") ??
+                                            "Watched date"
+                                        }
+                                    />
+                                </div>
                             </div>
                             <div className="flex space-x-2">
                                 <Checkbox
@@ -524,7 +526,7 @@ const SelectedFilmForm = ({
                             placeholder="Write your thoughts"
                         />
                     </div>
-                    <div className="flex space-x-10">
+                    <div className="lg-space-y-0 space-y-4 lg:flex lg:space-x-10">
                         <InputTags
                             reviewStarted={reviewStarted}
                             tags={tags}
