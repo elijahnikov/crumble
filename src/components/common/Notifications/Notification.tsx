@@ -1,13 +1,13 @@
 import { type RouterOutputs, api } from "@/utils/api";
 import { Popover } from "@headlessui/react";
 import { useEffect, useState } from "react";
-import { BsBellFill } from "react-icons/bs";
 import Image from "next/image";
 import clxsm from "@/utils/clsxm";
 import Link from "next/link";
 import InfiniteScroll from "react-infinite-scroll-component";
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 import useIsMobile from "@/utils/hooks/useIsMobile";
+import { Bell } from "lucide-react";
 
 const notificationTypesMap = {
     follow: "followed you",
@@ -61,15 +61,15 @@ const Notifications = () => {
     }
 
     return (
-        <div id="test" className="relative ml-2 ml-4 mt-[6px] rounded-md">
+        <div id="test" className="relative mt-[6px] rounded-md">
             <Popover className="relative">
                 <Popover.Button>
-                    <>
-                        <BsBellFill />
+                    <div className="rounded-lg p-1.5 text-stone-700 transition-all duration-150 ease-in-out hover:bg-slate-100 active:bg-slate-200 dark:text-white dark:hover:bg-slate-700 dark:active:bg-slate-800">
+                        <Bell width={18} />
                         {hasUnread && (
                             <div className="absolute right-0 top-0 h-2 w-2 rounded-full bg-crumble" />
                         )}
-                    </>
+                    </div>
                 </Popover.Button>
 
                 <Popover.Panel

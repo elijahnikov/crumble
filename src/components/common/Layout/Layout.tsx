@@ -2,6 +2,8 @@ import NavigationBar from "../Navigation/NavigationBar/NavigationBar";
 import MobileNavigationBar from "../Navigation/MobileNavigationBar/MobileNavigationBar";
 import clxsm from "@/utils/clsxm";
 import Footer from "../Footer/Footer";
+import Nav from "../Navigation/NavigationBar/NavigationBarTwo";
+import Profile from "../Profile/Profile";
 
 interface LayoutProps {
     children: React.ReactNode;
@@ -26,7 +28,12 @@ const Layout = ({
             {!hideNavBar && (
                 <div className="sticky top-0 z-20">
                     <aside className="sticky top-0 hidden h-screen lg:block">
-                        <NavigationBar />
+                        {/* <Nav>
+                            <Profile />
+                        </Nav> */}
+                        <NavigationBar>
+                            <Profile />
+                        </NavigationBar>
                     </aside>
                     <aside className="sticky top-0 z-20 lg:hidden">
                         <MobileNavigationBar />

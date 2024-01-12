@@ -4,8 +4,7 @@ import { useTheme } from "next-themes";
 // React
 import { useEffect, useState } from "react";
 
-// ReactIcons
-import { BsFillSunFill, BsMoonFill } from "react-icons/bs";
+import { Moon, Sun } from "lucide-react";
 
 const DarkModeSwitch = () => {
     const { theme, setTheme } = useTheme();
@@ -15,18 +14,18 @@ const DarkModeSwitch = () => {
     }, [theme]);
 
     return (
-        <div
-            className="ml-2 cursor-pointer rounded-md p-2"
+        <button
+            className="rounded-lg p-1.5 text-stone-700 transition-all duration-150 ease-in-out hover:bg-slate-100 active:bg-slate-200 dark:text-white dark:hover:bg-slate-700 dark:active:bg-slate-800"
             onClick={() => {
                 setTheme(theme === "light" ? "dark" : "light");
             }}
         >
             {!isDark ? (
-                <BsMoonFill className="fill-black" />
+                <Moon width={18} className="fill-slate-700" />
             ) : (
-                <BsFillSunFill className="fill-white" />
+                <Sun width={18} className="fill-white" />
             )}
-        </div>
+        </button>
     );
 };
 

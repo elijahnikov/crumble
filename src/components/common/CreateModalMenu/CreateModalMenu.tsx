@@ -22,7 +22,7 @@ const CreateModalMenu = () => {
                             "transition-colors duration-75",
                             "bg-crumble-base text-white",
                             "hover:bg-crumble-dark active:bg-crumble-darker",
-                            "px-3 py-1.5 text-sm md:text-base",
+                            "px-2 py-1 text-sm md:text-base",
                         ])}
                     >
                         Add

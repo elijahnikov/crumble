@@ -1,18 +1,13 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
-import clxsm from "@/utils/clsxm";
 import { useEffect, useState } from "react";
-import DarkModeSwitch from "../../DarkModeSwitch/DarkModeSwitch";
-import navigation from "@/utils/data/navLinks";
 import CreateModalMenu from "../../CreateModalMenu/CreateModalMenu";
-import AvatarMenu from "../AvatarMenu/AvatarMenu";
-import MoreMenu from "../MoreMenu/MoreMenu";
 import { LOGO_URL } from "@/constants";
-import Notifications from "../../Notifications/Notification";
-import Button from "@/components/ui/Button/Button";
+import navigation, { secondaryNavigation } from "@/utils/data/navLinks";
+import clxsm from "@/utils/clsxm";
 
-const NavigationBar = () => {
+const NavigationBar = ({ children }: { children: React.ReactNode }) => {
     const [currentPath, setCurrentPath] = useState("");
 
     const { data: session } = useSession();
@@ -28,7 +23,6 @@ const NavigationBar = () => {
                 <div className="flex border-b px-4 pb-4 dark:border-gray-700">
                     <Link href="/" className="flex gap-2">
                         <span className="sr-only">Crumble</span>
-
                         <Image
                             alt="Supercrumble logo"
                             width={40}
@@ -44,43 +38,28 @@ const NavigationBar = () => {
                     className="mt-5 flex-1 space-y-1 bg-white px-2 dark:bg-brand-light"
                     aria-label="Sidebar"
                 >
-                    {navigation.map((item) => (
-                        <Link
-                            key={item.name}
-                            href={item.href}
-                            className={clxsm(
-                                currentPath === item.href ||
-                                    (item.includeUrls &&
-                                        item.includeUrls?.includes(
-                                            currentPath.split("/")[1] ?? ""
-                                        ))
-                                    ? "bg-gray-100 text-gray-900 hover:bg-gray-100 hover:text-gray-900 dark:bg-brand dark:text-white"
-                                    : "text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-white dark:hover:bg-brand",
-                                "group flex items-center rounded-md px-2 py-2 text-sm font-medium"
-                            )}
-                        >
-                            {currentPath === item.href ? (
-                                <item.hoverIcon
-                                    className={clxsm(
-                                        "dark:fill-white",
-                                        "mr-3 h-6 w-6 flex-shrink-0 text-brand"
-                                    )}
-                                    aria-hidden="true"
-                                />
-                            ) : (
-                                <item.icon
-                                    className={clxsm(
-                                        "dark:fill-white",
-                                        "mr-3 h-6 w-6 flex-shrink-0 text-brand"
-                                    )}
-                                    aria-hidden="true"
-                                />
-                            )}
-
-                            <span className="flex-1">{item.name}</span>
-                        </Link>
-                    ))}
-                    <MoreMenu />
+                    <div className="grid gap-1">
+                        {navigation.map(({ name, href, icon, includeUrls }) => (
+                            <Link
+                                key={name}
+                                href={href}
+                                className={clxsm(
+                                    currentPath === href ||
+                                        includeUrls?.includes(href)
+                                        ? "bg-slate-100 dark:bg-slate-700"
+                                        : "",
+                                    `flex items-center space-x-3 rounded-lg px-2`,
+                                    `py-1.5 transition-all duration-150 ease-in-out`,
+                                    `hover:bg-slate-100 active:bg-slate-200 dark:text-white dark:hover:bg-slate-700 dark:active:bg-slate-800`
+                                )}
+                            >
+                                {icon}
+                                <span className="text-sm font-medium">
+                                    {name}
+                                </span>
+                            </Link>
+                        ))}
+                    </div>
                 </nav>
             </div>
             {authenticated ? (
@@ -88,32 +67,38 @@ const NavigationBar = () => {
                     <CreateModalMenu />
                 </div>
             ) : null}
-            {authenticated ? (
-                <div className="flex border-t border-gray-200 p-4 dark:border-gray-700">
-                    <div className="group block w-full">
-                        <div className="flex items-center">
-                            <AvatarMenu
-                                username={session.user.name!}
-                                avatar={session.user.image}
-                            />
-                            <div className="ml-3 flex">
-                                <p className="mt-[5px] text-sm font-medium text-gray-700 dark:text-white">
-                                    {session?.user.name}
-                                </p>
-                                <DarkModeSwitch />
-                                <Notifications />
-                            </div>
-                        </div>
-                    </div>
+            <div>
+                <div className="grid gap-1 px-2">
+                    {session &&
+                        secondaryNavigation(session.user.name!).map(
+                            ({ name, href, icon, as }) => (
+                                <Link
+                                    key={name}
+                                    href={href}
+                                    as={as}
+                                    className={clxsm(
+                                        currentPath.split("/")[2] ===
+                                            href.split("/")[2]
+                                            ? "bg-slate-100 dark:bg-slate-700"
+                                            : "",
+                                        `flex items-center space-x-3 rounded-lg px-2`,
+                                        `py-1.5 transition-all duration-150 ease-in-out`,
+                                        `hover:bg-slate-100 active:bg-slate-200 dark:text-white dark:hover:bg-slate-700 dark:active:bg-slate-800`
+                                    )}
+                                >
+                                    <div className="flex items-center space-x-3">
+                                        {icon}
+                                        <span className="text-sm font-medium">
+                                            {name}
+                                        </span>
+                                    </div>
+                                </Link>
+                            )
+                        )}
                 </div>
-            ) : (
-                <div className="mb-10 text-center">
-                    {/* <SignIn callbackUrl={"/"} /> */}
-                    <Link href="/login">
-                        <Button>Login</Button>
-                    </Link>
-                </div>
-            )}
+                <div className="mt-2 border-t border-slate-200 dark:border-slate-700" />
+                <div className="p-3">{children}</div>
+            </div>
         </div>
     );
 };
