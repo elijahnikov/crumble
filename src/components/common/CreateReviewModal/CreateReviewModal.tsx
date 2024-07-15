@@ -139,6 +139,11 @@ const CreateReviewModal = ({
                 fromReview: true,
                 rating: parseFloat(ratingValue.toString()),
             });
+            console.log("film mutate", {
+                ...chosenMovieDetails,
+                fromReview: true,
+                rating: parseFloat(ratingValue.toString()),
+            });
 
             if (reviewText) {
                 const review = await reviewMutate({
@@ -163,6 +168,15 @@ const CreateReviewModal = ({
                     reviewLink: review.id,
                 });
             } else {
+                console.log("watched mutate", {
+                    ratingGiven: ratingValue,
+                    movieTitle: chosenMovieDetails.title,
+                    movieId: chosenMovieDetails.movieId,
+                    poster: chosenMovieDetails.poster,
+                    runtime: extraMovieDetails?.runtime ?? 0,
+                    rewatch: rewatchChecked,
+                    withReview: Boolean(reviewText) || reviewText !== "",
+                });
                 await watchedMutate({
                     ratingGiven: ratingValue,
                     movieTitle: chosenMovieDetails.title,

@@ -104,11 +104,11 @@ export const watchedRouter = createTRPCRouter({
                     },
                 });
             }
-            if (!withReview)
-                await createNewActivity({
-                    currentUserId: userId,
-                    idMap: [{ watchedId: watched.id }],
-                });
+            // if (!withReview)
+            //     await createNewActivity({
+            //         currentUserId: userId,
+            //         idMap: [{ watchedId: watched.id }],
+            //     });
             return watched;
         }),
 });

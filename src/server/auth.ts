@@ -1,17 +1,17 @@
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import { PrismaAdapter } from "@auth/prisma-adapter";
 import { type GetServerSidePropsContext } from "next";
 import {
     getServerSession,
-    type NextAuthOptions,
     type DefaultSession,
+    type NextAuthOptions,
 } from "next-auth";
+import { type Adapter } from "next-auth/adapters";
 import DiscordProvider from "next-auth/providers/discord";
-import GitHubProvider, { type GithubProfile } from "next-auth/providers/github";
-import GoogleProvider from "next-auth/providers/google";
-import TwitterProvider from "next-auth/providers/twitter";
-
+import { prisma } from "./db";
 import { env } from "@/env.mjs";
-import { prisma } from "@/server/db";
+
+// import { env } from "~/env";
+// import { db } from "~/server/db";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -51,7 +51,6 @@ export const authOptions: NextAuthOptions = {
     },
     events: {
         async signIn(message) {
-            console.log({ message });
             if (message.isNewUser) {
                 await prisma.privacy.create({
                     data: {
@@ -61,33 +60,21 @@ export const authOptions: NextAuthOptions = {
             }
         },
     },
-    adapter: PrismaAdapter(prisma),
+    adapter: PrismaAdapter(prisma) as Adapter,
     providers: [
-        GoogleProvider({
-            clientId: env.GOOGLE_CLIENT_ID,
-            clientSecret: env.GOOGLE_CLIENT_SECRET,
-        }),
-        TwitterProvider({
-            clientId: env.TWITTER_CLIENT_ID,
-            clientSecret: env.TWITTER_CLIENT_SECRET,
-            version: "2.0",
-        }),
         DiscordProvider({
             clientId: env.DISCORD_CLIENT_ID,
             clientSecret: env.DISCORD_CLIENT_SECRET,
         }),
-        GitHubProvider({
-            clientId: env.GITHUB_CLIENT_ID,
-            clientSecret: env.GITHUB_CLIENT_SECRET,
-            profile(profile: GithubProfile) {
-                return {
-                    id: crypto.randomUUID(),
-                    name: profile.login,
-                    email: profile.email,
-                    image: profile.avatar_url,
-                };
-            },
-        }),
+        /**
+         * ...add more providers here.
+         *
+         * Most other providers require a bit more work than the Discord provider. For example, the
+         * GitHub provider requires you to add the `refresh_token_expires_in` field to the Account
+         * model. Refer to the NextAuth.js docs for the provider you want to use. Example:
+         *
+         * @see https://next-auth.js.org/providers/github
+         */
     ],
 };
 

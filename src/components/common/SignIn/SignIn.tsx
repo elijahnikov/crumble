@@ -48,7 +48,7 @@ const SignIn = ({ callbackUrl }: DiscordSignInProps) => {
         <>
             {providers &&
                 Object.keys(providers).map((providerKey, index) => (
-                    <div className="hidden lg:block" key={index}>
+                    <div className="" key={index}>
                         <form
                             action={providers[providerKey]?.signinUrl}
                             method="POST"

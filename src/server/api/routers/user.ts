@@ -201,15 +201,15 @@ export const userRouter = createTRPCRouter({
                     userId: currentUserId,
                 },
             });
-            if (entry) {
-                await createNewActivity({
-                    currentUserId,
-                    idMap: [{ favouriteMovieId: entry.id }],
-                });
-                return entry;
-            } else {
-                return null;
-            }
+            // if (entry) {
+            //     await createNewActivity({
+            //         currentUserId,
+            //         idMap: [{ favouriteMovieId: entry.id }],
+            //     });
+            //     return entry;
+            // } else {
+            //     return null;
+            // }
         }),
     deleteFromFavouriteMovies: protectedProcedure
         .input(z.object({ movieId: z.number() }))

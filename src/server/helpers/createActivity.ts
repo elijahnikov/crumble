@@ -38,36 +38,33 @@ export const createNewActivity = async ({
     currentUserId,
     idMap,
 }: CreateNewActivityParams) => {
-    const privacySettingsForUser = await prisma.privacy.findFirst({
-        where: {
-            userId: currentUserId,
-        },
-    });
-    const privacySettings: RouterOutputs["privacy"]["getPrivacySettingsByUserId"] =
-        privacySettingsForUser;
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const allowedActivities: any = {
-        userId: currentUserId,
-    };
-
-    for (const obj of idMap) {
-        if (
-            privacySettings![
-                activityToPrivacySettingMapping[
-                    Object.keys(
-                        obj
-                    )[0] as keyof typeof activityToPrivacySettingMapping
-                ] as keyof typeof privacySettings
-            ]
-        ) {
-            Object.assign(allowedActivities, obj);
-        }
-    }
-
-    if (Object.keys(allowedActivities).length > 0) {
-        await prisma.activity.create({
-            data: allowedActivities,
-        });
-    }
+    // const privacySettingsForUser = await prisma.privacy.findFirst({
+    //     where: {
+    //         userId: currentUserId,
+    //     },
+    // });
+    // const privacySettings: RouterOutputs["privacy"]["getPrivacySettingsByUserId"] =
+    //     privacySettingsForUser;
+    // // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // const allowedActivities: any = {
+    //     userId: currentUserId,
+    // };
+    // for (const obj of idMap) {
+    //     if (
+    //         privacySettings![
+    //             activityToPrivacySettingMapping[
+    //                 Object.keys(
+    //                     obj
+    //                 )[0] as keyof typeof activityToPrivacySettingMapping
+    //             ] as keyof typeof privacySettings
+    //         ]
+    //     ) {
+    //         Object.assign(allowedActivities, obj);
+    //     }
+    // }
+    // if (Object.keys(allowedActivities).length > 0) {
+    //     await prisma.activity.create({
+    //         data: allowedActivities,
+    //     });
+    // }
 };

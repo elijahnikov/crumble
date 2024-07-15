@@ -89,10 +89,10 @@ export const watchlistRouter = createTRPCRouter({
                     userId: currentUserId,
                 },
             });
-            await createNewActivity({
-                currentUserId: currentUserId,
-                idMap: [{ watchlistId: watchlist.id }],
-            });
+            // await createNewActivity({
+            //     currentUserId: currentUserId,
+            //     idMap: [{ watchlistId: watchlist.id }],
+            // });
             return watchlist;
         }),
 });
